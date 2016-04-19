@@ -1,0 +1,133 @@
+#ifndef BWT_H
+#define BWT_H
+
+#define _GNU_SOURCE
+#include <stdlib.h>
+#include <string.h>
+#include <limits.h>
+
+
+typedef unsigned short bwt_size_t;
+
+struct bwt_info_t
+{
+	unsigned char* restrict rotations;
+	bwt_size_t len;
+};
+
+
+static inline int bwt_cmp(const void *a, const void *b, void *arg);
+static inline int ibwt_cmp(const void *a, const void *b);
+static bwt_size_t bwt(unsigned char* restrict data, const bwt_size_t n);
+static void ibwt(unsigned char *data, const bwt_size_t n, bwt_size_t index);
+static bwt_size_t rle(unsigned char* restrict data, const bwt_size_t n);
+static bwt_size_t rld(unsigned char* restrict data, const bwt_size_t n);
+
+
+static inline int bwt_cmp(const void *a, const void *b, void *arg)
+{
+	const bwt_size_t i = *(bwt_size_t *)a;
+	const bwt_size_t j = *(bwt_size_t *)b;
+	const struct bwt_info_t *data_info = (struct bwt_info_t *)arg;
+
+	return memcmp(data_info->rotations + i, data_info->rotations + j, data_info->len);
+}
+
+static inline int ibwt_cmp(const void *a, const void *b)
+{
+	return *(unsigned char *)a - *(unsigned char *)b;
+}
+
+static bwt_size_t bwt(unsigned char* restrict data, const bwt_size_t n)
+{
+	bwt_size_t i, index;
+	bwt_size_t* restrict positions = malloc(sizeof(bwt_size_t) * n);
+	struct bwt_info_t data_info;
+	data_info.rotations = malloc(sizeof(unsigned char) * n * 2 + 1);
+
+	memcpy(data_info.rotations, data, n);
+	memcpy(data_info.rotations + n, data, n);
+	data_info.len = n;
+
+	for(i = 0; i < n; i++) positions[i] = i;
+
+	qsort_r(positions, n, sizeof(bwt_size_t), bwt_cmp, &data_info);
+
+	for(i = 0; i < n; i++)
+	{
+		data[i] = data_info.rotations[(positions[i] + n - 1) % n];
+		if(!positions[i]) index = i;
+	}
+
+	free(positions);
+	free(data_info.rotations);
+
+	return index;
+}
+
+static void ibwt(unsigned char *data, const bwt_size_t n, bwt_size_t index)
+{
+	bwt_size_t i, count;
+	unsigned char *result = malloc(sizeof(unsigned char) * n * 2 + 1);
+	unsigned char *pos, *sorted = result + n;
+
+	memcpy(sorted, data, n);
+	qsort(sorted, n, sizeof(unsigned char), ibwt_cmp);
+
+	for(i = 0; i < n; i++)
+	{
+		result[n - i - 1] = data[index];
+
+		for(count = 0, pos = data; (pos = memchr(pos, data[index], index - (pos - data))); count++, pos++);
+
+		/*for(bwt_size_t j = count = 0; j < index; j++)
+		{
+			if(data[j] == data[index]) count++;
+		}*/
+
+		index = ((unsigned char *) memchr(sorted, data[index], n)) - sorted + count;
+	}
+
+	memcpy(data, result, n);
+	free(result);
+}
+
+static bwt_size_t rle(unsigned char* restrict data, const bwt_size_t n)
+{
+	bwt_size_t i, j, len;
+	unsigned char* restrict result = malloc(sizeof(unsigned char) * n + 1);
+
+	for(i = len = 0; i < n && len < n - 1; i = j, len += 2)
+	{
+		for(j = i + 1; j < n && data[i] == data[j] && (j - i - 1) < UCHAR_MAX; j++);
+
+		result[len] = data[i];
+		result[len + 1] = j - i - 1;
+	}
+
+	if(len < n) memcpy(data, result, len);
+	else len = 0;
+
+	free(result);
+	return len;
+}
+
+static bwt_size_t rld(unsigned char* restrict data, const bwt_size_t n)
+{
+	bwt_size_t i, len;
+	unsigned char j;
+	unsigned char* restrict tmp_data = malloc(sizeof(unsigned char) * n + 1);
+
+	memcpy(tmp_data, data, n);
+
+	for(i = len = 0; i < n; i += 2)
+	{
+		for(j = 0; j < tmp_data[i + 1]; j++) data[len++] = tmp_data[i];
+		data[len++] = tmp_data[i];
+	}
+
+	free(tmp_data);
+	return len;
+}
+
+#endif

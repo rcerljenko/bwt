@@ -119,7 +119,8 @@ static bwt_size_t rle(unsigned char* restrict data, const bwt_size_t n)
 
 static bwt_size_t rld(unsigned char* restrict data, const bwt_size_t n)
 {
-	bwt_size_t i, j, len;
+	bwt_size_t i, len;
+	unsigned short j;
 	unsigned char* restrict tmp_data = malloc(sizeof(unsigned char) * n + 1);
 
 	memcpy(tmp_data, data, n);

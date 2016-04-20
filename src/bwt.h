@@ -80,11 +80,6 @@ static void ibwt(unsigned char *data, const bwt_size_t n, bwt_size_t index)
 
 		for(count = 0, pos = data; (pos = memchr(pos, data[index], index - (pos - data))); count++, pos++);
 
-		/*for(bwt_size_t j = count = 0; j < index; j++)
-		{
-			if(data[j] == data[index]) count++;
-		}*/
-
 		index = ((unsigned char *) memchr(sorted, data[index], n)) - sorted + count;
 	}
 

@@ -158,7 +158,7 @@ static int bwt_compress(FILE* restrict fp_in, FILE* restrict fp_out, const unsig
 	struct bwt_data_t bwt_data[thread_count];
 	pthread_t threads[thread_count];
 
-	const unsigned char main_block_size = log2f(BLOCK_SIZE);
+	const unsigned char main_block_size = (unsigned char) log2(BLOCK_SIZE);
 	stats.curr_fs_out = fwrite(&main_block_size, sizeof(unsigned char), 1, fp_out);
 
 	while((n = fread(data, sizeof(unsigned char), fread_size, fp_in)))

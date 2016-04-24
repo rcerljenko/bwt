@@ -23,13 +23,11 @@
 #define FOPEN_OUTPUT_MODE "wb"
 
 
-static char *filename;
-
 struct stats_t
 {
 	size_t filesize_in, curr_fs_in, curr_fs_out;
 	time_t start_time, end_time;
-} stats = {0};
+};
 
 struct flags_t
 {
@@ -46,6 +44,9 @@ struct bwt_data_t
 	unsigned char *data, status : 1;
 	struct header_t header;
 };
+
+static char *filename;
+static struct stats_t stats = {0};
 
 
 static size_t get_filesize(FILE* restrict fp);

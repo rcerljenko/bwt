@@ -55,8 +55,8 @@ static int bwt_compress(FILE* restrict fp_in, FILE* restrict fp_out, const unsig
 static int bwt_decompress(FILE* restrict fp_in, FILE* restrict fp_out, const unsigned short thread_count);
 static size_t get_filesize(FILE* restrict fp);
 static size_t get_memusage();
-static void show_progress();
-static void show_statistics();
+static void show_statistics(const unsigned char signal);
+static void sighandler();
 static void show_help();
 
 
@@ -280,42 +280,7 @@ static size_t get_memusage()
 	return vm_rss * page_size;
 }
 
-static void show_progress()
-{
-	time(&stats.end_time);
-
-	char time_buffer[8];
-	unsigned short progress = 0;
-	float diff_perc = 0, ratio = 0, speed = 0;
-
-	const size_t diff_fs = abs(stats.curr_fs_in - stats.curr_fs_out);
-	if(stats.filesize_in) progress = (100 * stats.curr_fs_in) / stats.filesize_in;
-	if(stats.curr_fs_in && stats.curr_fs_out)
-	{
-		if(stats.curr_fs_in > stats.curr_fs_out) diff_perc = (100 * diff_fs) / (float)stats.curr_fs_in;
-		else diff_perc = (100 * diff_fs) / (float)stats.curr_fs_out;
-
-		ratio = stats.curr_fs_in / (float)stats.curr_fs_out;
-	}
-
-	const time_t diff_time = difftime(stats.end_time, stats.start_time);
-	if(diff_time) speed = (float)stats.curr_fs_in / (1024 * 1024 * diff_time);
-
-	const struct tm* restrict time_info = localtime(&diff_time);
-	strftime(time_buffer, sizeof(time_buffer), "%Mm:%Ss", time_info);
-
-	const float memory = (float) get_memusage() / (1024 * 1024);
-
-	fprintf(stderr, "Progress: %hu%%\n"
-	"Diff: %lu B (%.2f%%)\n"
-	"Ratio: %.2f\n"
-	"Time: %s\n"
-	"Speed: %.2f MB/s\n"
-	"Memory (RAM): %.2f MB\n\n"
-	, progress, diff_fs, diff_perc, ratio, time_buffer, speed, memory);
-}
-
-static void show_statistics()
+static void show_statistics(const unsigned char signal)
 {
 	char time_buffer[8];
 	float diff_perc = 0, ratio = 0, speed = 0;
@@ -335,13 +300,31 @@ static void show_statistics()
 	const struct tm* restrict time_info = localtime(&diff_time);
 	strftime(time_buffer, sizeof(time_buffer), "%Mm:%Ss", time_info);
 
-	fprintf(stderr, "Old size: %lu B\n"
-	"New size: %lu B\n"
+	if(signal && stats.filesize_in)
+	{
+		const unsigned short progress = (100 * stats.curr_fs_in) / stats.filesize_in;
+		fprintf(stderr, "Progress: %hu%%\n", progress);
+	}
+
+	fprintf(stderr, "Bytes read: %lu B\n"
+	"Bytes written: %lu B\n"
 	"Diff: %lu B (%.2f%%)\n"
 	"Ratio: %.2f\n"
 	"Time: %s\n"
 	"Speed: %.2f MB/s\n"
 	, stats.curr_fs_in, stats.curr_fs_out, diff_fs, diff_perc, ratio, time_buffer, speed);
+
+	if(signal)
+	{
+		const float memory = (float) get_memusage() / (1024 * 1024);
+		fprintf(stderr, "Memory (RAM): %.2f MB\n\n", memory);
+	}
+}
+
+static void sighandler()
+{
+	time(&stats.end_time);
+	show_statistics(1);
 }
 
 static void show_help()
@@ -477,7 +460,7 @@ int main(const int argc, char **argv)
 	unsigned short thread_count = sysconf(_SC_NPROCESSORS_ONLN);
 	if(jobs && jobs < thread_count) thread_count = jobs;
 
-	signal(SIGTYPE, show_progress);
+	signal(SIGTYPE, sighandler);
 	time(&stats.start_time);
 
 	if(!flags.dec) status = bwt_compress(fp_in, fp_out, thread_count);
@@ -489,7 +472,7 @@ int main(const int argc, char **argv)
 
 	if(status == EXIT_SUCCESS)
 	{
-		if(flags.verbose) show_statistics();
+		if(flags.verbose) show_statistics(0);
 		if(flags.remove) remove(input);
 	}
 	else if(output[0]) remove(output);

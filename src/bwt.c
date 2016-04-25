@@ -52,7 +52,6 @@ static struct stats_t stats = {0};
 static size_t get_filesize(FILE* restrict fp);
 static size_t get_memusage();
 static void update_progress();
-static void sighandler();
 static void *threaded_compress(void *void_bwt_data);
 static void *threaded_decompress(void *void_bwt_data);
 static int bwt_compress(FILE* restrict fp_in, FILE* restrict fp_out, const unsigned short thread_count);
@@ -89,30 +88,34 @@ static void update_progress()
 	time(&stats.end_time);
 
 	char time_buffer[8];
-	float speed;
+	unsigned short progress = 0;
+	float diff_perc = 0, ratio = 0, speed = 0;
 
-	const unsigned short progress = (100 * stats.curr_fs_in) / stats.filesize_in;
+	const size_t diff_fs = abs(stats.curr_fs_in - stats.curr_fs_out);
+	if(stats.filesize_in) progress = (100 * stats.curr_fs_in) / stats.filesize_in;
+	if(stats.curr_fs_in && stats.curr_fs_out)
+	{
+		if(stats.curr_fs_in > stats.curr_fs_out) diff_perc = (100 * diff_fs) / (float)stats.curr_fs_in;
+		else diff_perc = (100 * diff_fs) / (float)stats.curr_fs_out;
+
+		ratio = stats.curr_fs_in / (float)stats.curr_fs_out;
+	}
+
 	const time_t diff_time = difftime(stats.end_time, stats.start_time);
+	if(diff_time) speed = (float)stats.curr_fs_in / (1024 * 1024 * diff_time);
 
 	const struct tm* restrict time_info = localtime(&diff_time);
 	strftime(time_buffer, sizeof(time_buffer), "%Mm:%Ss", time_info);
 
-	if(diff_time) speed = (float)stats.filesize_in / (1024 * 1024 * diff_time);
-	else speed = 0;
-
 	const float memory = (float) get_memusage() / (1024 * 1024);
 
 	fprintf(stderr, "Progress: %hu%%\n"
+	"Diff: %lu B (%.2f%%)\n"
+	"Ratio: %.2f\n"
 	"Time: %s\n"
 	"Speed: %.2f MB/s\n"
 	"Memory (RAM): %.2f MB\n\n"
-	, progress, time_buffer, speed, memory);
-}
-
-static void sighandler()
-{
-	if(stats.filesize_in) update_progress();
-	else fprintf(stderr, "%s: Progress unavailable.\n", filename);
+	, progress, diff_fs, diff_perc, ratio, time_buffer, speed, memory);
 }
 
 static void *threaded_compress(void *void_bwt_data)
@@ -315,10 +318,11 @@ static int bwt_decompress(FILE* restrict fp_in, FILE* restrict fp_out, const uns
 static void show_statistics()
 {
 	char time_buffer[8];
-	float diff_perc, ratio, speed;
+	float diff_perc = 0, ratio = 0, speed = 0;
 
 	const size_t diff_fs = abs(stats.curr_fs_in - stats.curr_fs_out);
 	const time_t diff_time = difftime(stats.end_time, stats.start_time);
+	if(diff_time) speed = (float)stats.curr_fs_in / (1024 * 1024 * diff_time);
 
 	if(stats.curr_fs_in && stats.curr_fs_out)
 	{
@@ -327,13 +331,9 @@ static void show_statistics()
 
 		ratio = stats.curr_fs_in / (float)stats.curr_fs_out;
 	}
-	else diff_perc = ratio = 0;
 
 	const struct tm* restrict time_info = localtime(&diff_time);
 	strftime(time_buffer, sizeof(time_buffer), "%Mm:%Ss", time_info);
-
-	if(diff_time) speed = (float)stats.curr_fs_in / (1024 * 1024 * diff_time);
-	else speed = 0;
 
 	fprintf(stderr, "Old size: %lu B\n"
 	"New size: %lu B\n"
@@ -477,15 +477,13 @@ int main(const int argc, char **argv)
 	unsigned short thread_count = sysconf(_SC_NPROCESSORS_ONLN);
 	if(jobs && jobs < thread_count) thread_count = jobs;
 
-	signal(SIGTYPE, sighandler);
-
+	signal(SIGTYPE, update_progress);
 	time(&stats.start_time);
 
 	if(!flags.dec) status = bwt_compress(fp_in, fp_out, thread_count);
 	else status = bwt_decompress(fp_in, fp_out, thread_count);
 
 	time(&stats.end_time);
-
 	fclose(fp_in);
 	fclose(fp_out);
 

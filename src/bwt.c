@@ -23,17 +23,6 @@
 #define FOPEN_OUTPUT_MODE "wb"
 
 
-struct stats_t
-{
-	size_t filesize_in, curr_fs_in, curr_fs_out;
-	time_t start_time, end_time;
-};
-
-struct flags_t
-{
-	unsigned char dec : 1, remove : 1, verbose : 1;
-};
-
 struct header_t
 {
 	bwt_size_t block_size, index;
@@ -43,6 +32,17 @@ struct bwt_data_t
 {
 	unsigned char *data, status : 1;
 	struct header_t header;
+};
+
+struct flags_t
+{
+	unsigned char dec : 1, remove : 1, verbose : 1;
+};
+
+struct stats_t
+{
+	size_t filesize_in, curr_fs_in, curr_fs_out;
+	time_t start_time, end_time;
 };
 
 static char *filename;
@@ -55,7 +55,7 @@ static int bwt_compress(FILE* restrict fp_in, FILE* restrict fp_out, const unsig
 static int bwt_decompress(FILE* restrict fp_in, FILE* restrict fp_out, const unsigned short thread_count);
 static size_t get_filesize(FILE* restrict fp);
 static size_t get_memusage();
-static void update_progress();
+static void show_progress();
 static void show_statistics();
 static void show_help();
 
@@ -280,7 +280,7 @@ static size_t get_memusage()
 	return vm_rss * page_size;
 }
 
-static void update_progress()
+static void show_progress()
 {
 	time(&stats.end_time);
 
@@ -477,7 +477,7 @@ int main(const int argc, char **argv)
 	unsigned short thread_count = sysconf(_SC_NPROCESSORS_ONLN);
 	if(jobs && jobs < thread_count) thread_count = jobs;
 
-	signal(SIGTYPE, update_progress);
+	signal(SIGTYPE, show_progress);
 	time(&stats.start_time);
 
 	if(!flags.dec) status = bwt_compress(fp_in, fp_out, thread_count);

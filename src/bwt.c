@@ -49,74 +49,16 @@ static char *filename;
 static struct stats_t stats = {0};
 
 
-static size_t get_filesize(FILE* restrict fp);
-static size_t get_memusage();
-static void update_progress();
 static void *threaded_compress(void *void_bwt_data);
 static void *threaded_decompress(void *void_bwt_data);
 static int bwt_compress(FILE* restrict fp_in, FILE* restrict fp_out, const unsigned short thread_count);
 static int bwt_decompress(FILE* restrict fp_in, FILE* restrict fp_out, const unsigned short thread_count);
+static size_t get_filesize(FILE* restrict fp);
+static size_t get_memusage();
+static void update_progress();
 static void show_statistics();
 static void show_help();
 
-
-static size_t get_filesize(FILE* restrict fp)
-{
-	fseek(fp, 0, SEEK_END);
-	const size_t size = ftell(fp);
-	fseek(fp, 0, SEEK_SET);
-
-	return size;
-}
-
-static size_t get_memusage()
-{
-	FILE* restrict fp = fopen("/proc/self/statm", "rb");
-	if(!fp) return 0;
-
-	unsigned int vm_rss;
-	const unsigned short page_size = sysconf(_SC_PAGESIZE);
-
-	fscanf(fp, "%*u %u", &vm_rss);
-	fclose(fp);
-
-	return vm_rss * page_size;
-}
-
-static void update_progress()
-{
-	time(&stats.end_time);
-
-	char time_buffer[8];
-	unsigned short progress = 0;
-	float diff_perc = 0, ratio = 0, speed = 0;
-
-	const size_t diff_fs = abs(stats.curr_fs_in - stats.curr_fs_out);
-	if(stats.filesize_in) progress = (100 * stats.curr_fs_in) / stats.filesize_in;
-	if(stats.curr_fs_in && stats.curr_fs_out)
-	{
-		if(stats.curr_fs_in > stats.curr_fs_out) diff_perc = (100 * diff_fs) / (float)stats.curr_fs_in;
-		else diff_perc = (100 * diff_fs) / (float)stats.curr_fs_out;
-
-		ratio = stats.curr_fs_in / (float)stats.curr_fs_out;
-	}
-
-	const time_t diff_time = difftime(stats.end_time, stats.start_time);
-	if(diff_time) speed = (float)stats.curr_fs_in / (1024 * 1024 * diff_time);
-
-	const struct tm* restrict time_info = localtime(&diff_time);
-	strftime(time_buffer, sizeof(time_buffer), "%Mm:%Ss", time_info);
-
-	const float memory = (float) get_memusage() / (1024 * 1024);
-
-	fprintf(stderr, "Progress: %hu%%\n"
-	"Diff: %lu B (%.2f%%)\n"
-	"Ratio: %.2f\n"
-	"Time: %s\n"
-	"Speed: %.2f MB/s\n"
-	"Memory (RAM): %.2f MB\n\n"
-	, progress, diff_fs, diff_perc, ratio, time_buffer, speed, memory);
-}
 
 static void *threaded_compress(void *void_bwt_data)
 {
@@ -313,6 +255,64 @@ static int bwt_decompress(FILE* restrict fp_in, FILE* restrict fp_out, const uns
 
 	free(data);
 	return EXIT_SUCCESS;
+}
+
+static size_t get_filesize(FILE* restrict fp)
+{
+	fseek(fp, 0, SEEK_END);
+	const size_t size = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+
+	return size;
+}
+
+static size_t get_memusage()
+{
+	FILE* restrict fp = fopen("/proc/self/statm", "rb");
+	if(!fp) return 0;
+
+	unsigned int vm_rss;
+	const unsigned short page_size = sysconf(_SC_PAGESIZE);
+
+	fscanf(fp, "%*u %u", &vm_rss);
+	fclose(fp);
+
+	return vm_rss * page_size;
+}
+
+static void update_progress()
+{
+	time(&stats.end_time);
+
+	char time_buffer[8];
+	unsigned short progress = 0;
+	float diff_perc = 0, ratio = 0, speed = 0;
+
+	const size_t diff_fs = abs(stats.curr_fs_in - stats.curr_fs_out);
+	if(stats.filesize_in) progress = (100 * stats.curr_fs_in) / stats.filesize_in;
+	if(stats.curr_fs_in && stats.curr_fs_out)
+	{
+		if(stats.curr_fs_in > stats.curr_fs_out) diff_perc = (100 * diff_fs) / (float)stats.curr_fs_in;
+		else diff_perc = (100 * diff_fs) / (float)stats.curr_fs_out;
+
+		ratio = stats.curr_fs_in / (float)stats.curr_fs_out;
+	}
+
+	const time_t diff_time = difftime(stats.end_time, stats.start_time);
+	if(diff_time) speed = (float)stats.curr_fs_in / (1024 * 1024 * diff_time);
+
+	const struct tm* restrict time_info = localtime(&diff_time);
+	strftime(time_buffer, sizeof(time_buffer), "%Mm:%Ss", time_info);
+
+	const float memory = (float) get_memusage() / (1024 * 1024);
+
+	fprintf(stderr, "Progress: %hu%%\n"
+	"Diff: %lu B (%.2f%%)\n"
+	"Ratio: %.2f\n"
+	"Time: %s\n"
+	"Speed: %.2f MB/s\n"
+	"Memory (RAM): %.2f MB\n\n"
+	, progress, diff_fs, diff_perc, ratio, time_buffer, speed, memory);
 }
 
 static void show_statistics()

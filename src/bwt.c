@@ -274,7 +274,7 @@ static size_t get_memusage()
 	unsigned int vm_rss;
 	const unsigned short page_size = sysconf(_SC_PAGESIZE);
 
-	fscanf(fp, "%*u %u", &vm_rss);
+	if(fscanf(fp, "%*u %u", &vm_rss) != 1) vm_rss = 0;
 	fclose(fp);
 
 	return vm_rss * page_size;

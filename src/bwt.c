@@ -285,7 +285,7 @@ static void show_statistics(const unsigned char signal)
 	char time_buffer[8];
 	float diff_perc = 0, ratio = 0, speed = 0;
 
-	const size_t diff_fs = abs(stats.curr_fs_in - stats.curr_fs_out);
+	const size_t diff_fs = labs(stats.curr_fs_in - stats.curr_fs_out);
 	const time_t diff_time = difftime(stats.end_time, stats.start_time);
 	if(diff_time) speed = (float)stats.curr_fs_in / (1024 * 1024 * diff_time);
 

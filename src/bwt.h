@@ -67,8 +67,9 @@ static bwt_size_t bwt(unsigned char* restrict data, const bwt_size_t n)
 static void ibwt(unsigned char *data, const bwt_size_t n, bwt_size_t index)
 {
 	bwt_size_t i, count;
-	unsigned char *result = malloc(sizeof(unsigned char) * n * 2 + 1);
-	unsigned char *pos, *sorted = result + n;
+	unsigned char *pos;
+	unsigned char* restrict result = malloc(sizeof(unsigned char) * n * 2 + 1);
+	unsigned char* restrict sorted = result + n;
 
 	memcpy(sorted, data, n);
 	qsort(sorted, n, sizeof(unsigned char), ibwt_cmp);

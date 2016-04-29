@@ -19,7 +19,7 @@ struct bwt_info_t
 static inline int bwt_cmp(const void *a, const void *b, void *arg);
 static inline int ibwt_cmp(const void *a, const void *b);
 static bwt_size_t bwt(unsigned char* restrict data, const bwt_size_t n);
-static void ibwt(unsigned char *data, const bwt_size_t n, bwt_size_t index);
+static void ibwt(unsigned char* restrict data, const bwt_size_t n, bwt_size_t index);
 static bwt_size_t rle(unsigned char* restrict data, const bwt_size_t n);
 static bwt_size_t rld(unsigned char* restrict data, const bwt_size_t n);
 
@@ -28,7 +28,7 @@ static inline int bwt_cmp(const void *a, const void *b, void *arg)
 {
 	const bwt_size_t i = *(bwt_size_t *)a;
 	const bwt_size_t j = *(bwt_size_t *)b;
-	const struct bwt_info_t *data_info = (struct bwt_info_t *)arg;
+	const struct bwt_info_t* restrict data_info = (struct bwt_info_t *)arg;
 
 	return memcmp(data_info->rotations + i, data_info->rotations + j, data_info->len);
 }
@@ -64,10 +64,10 @@ static bwt_size_t bwt(unsigned char* restrict data, const bwt_size_t n)
 	return index;
 }
 
-static void ibwt(unsigned char *data, const bwt_size_t n, bwt_size_t index)
+static void ibwt(unsigned char* restrict data, const bwt_size_t n, bwt_size_t index)
 {
 	bwt_size_t i, count;
-	unsigned char *pos;
+	unsigned char* restrict pos;
 	unsigned char* restrict result = malloc(sizeof(unsigned char) * n * 2 + 1);
 	unsigned char* restrict sorted = result + n;
 

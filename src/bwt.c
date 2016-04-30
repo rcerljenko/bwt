@@ -16,7 +16,7 @@
 
 #define ARGS "hdcrvj:o:"
 #define FILE_EXT ".bwt"
-#define BLOCK_SIZE 4096U
+#define BLOCK_SIZE 65536U
 #define SIGTYPE SIGUSR1
 
 #define FOPEN_INPUT_MODE "rb"
@@ -349,7 +349,7 @@ int main(const int argc, char **argv)
 {
 	int c;
 	unsigned long jobs = 0;
-	char *input, output[PATH_MAX] = {'\0'};
+	char *input, output[PATH_MAX] = {0};
 	FILE *fp_in = stdin, *fp_out = NULL;
 	struct flags_t flags = {0};
 
@@ -414,7 +414,7 @@ int main(const int argc, char **argv)
 			if(flags.dec)
 			{
 				char *ext_pos = strstr(output + strlen(output) - ext_len, FILE_EXT);
-				if(ext_pos) *ext_pos = '\0';
+				if(ext_pos) *ext_pos = 0;
 			}
 			else strcat(output, FILE_EXT);
 		}

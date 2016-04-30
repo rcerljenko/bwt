@@ -118,28 +118,31 @@ static bwt_size_t rle(unsigned char* restrict data, const bwt_size_t n)
 
 static bwt_size_t rld(unsigned char* restrict data, const bwt_size_t n)
 {
-	bwt_size_t i = 0, len = 0;
-	unsigned char curr_char, count;
-	unsigned short j;
+	bwt_size_t i = 0;
+	unsigned char curr_char, count, *start = data;
 	unsigned char* restrict tmp_data = malloc(sizeof(unsigned char) * n + 1);
 
 	memcpy(tmp_data, data, n);
 
 	while(i < n)
 	{
-		data[len++] = curr_char = tmp_data[i];
+		*data++ = curr_char = tmp_data[i];
 
 		if(i < n - 2 && curr_char == tmp_data[i + 1])
 		{
 			count = tmp_data[i + 2];
-			for(j = 0; j <= count; j++) data[len++] = curr_char;
+			do
+			{
+				*data++ = curr_char;
+			}
+			while(count--);
 			i += 3;
 		}
 		else i++;
 	}
 
 	free(tmp_data);
-	return len;
+	return data - start;
 }
 
 #endif

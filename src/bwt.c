@@ -16,7 +16,7 @@
 
 #define ARGS "hdcrvj:o:"
 #define FILE_EXT ".bwt"
-#define BLOCK_SIZE 65536U
+#define BLOCK_SIZE 4096U
 #define SIGTYPE SIGUSR1
 
 #define FOPEN_INPUT_MODE "rb"

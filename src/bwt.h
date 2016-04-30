@@ -7,7 +7,7 @@
 #include <limits.h>
 
 
-typedef unsigned int bwt_size_t;
+typedef unsigned short bwt_size_t;
 
 struct bwt_info_t
 {
@@ -66,8 +66,7 @@ static bwt_size_t bwt(unsigned char* restrict data, const bwt_size_t n)
 
 static void ibwt(unsigned char* restrict data, const bwt_size_t n, bwt_size_t index)
 {
-	bwt_size_t i, count;
-	bwt_size_t pos_cache[UCHAR_MAX + 1] = {0};
+	bwt_size_t i, count, pos_cache[UCHAR_MAX + 1] = {0};
 	unsigned char* restrict pos;
 	unsigned char* restrict result = malloc(sizeof(unsigned char) * n * 2 + 1);
 	unsigned char* restrict sorted = result + n;

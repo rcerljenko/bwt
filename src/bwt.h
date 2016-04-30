@@ -67,6 +67,7 @@ static bwt_size_t bwt(unsigned char* restrict data, const bwt_size_t n)
 static void ibwt(unsigned char* restrict data, const bwt_size_t n, bwt_size_t index)
 {
 	bwt_size_t i, count;
+	bwt_size_t* restrict pos_cache = calloc(UCHAR_MAX + 1, sizeof(bwt_size_t));
 	unsigned char* restrict pos;
 	unsigned char* restrict result = malloc(sizeof(unsigned char) * n * 2 + 1);
 	unsigned char* restrict sorted = result + n;
@@ -80,11 +81,13 @@ static void ibwt(unsigned char* restrict data, const bwt_size_t n, bwt_size_t in
 
 		for(count = 0, pos = data; (pos = memchr(pos, data[index], index - (pos - data))); count++, pos++);
 
-		index = ((unsigned char *) memchr(sorted, data[index], n)) - sorted + count;
+		if(!pos_cache[data[index]]) pos_cache[data[index]] = ((unsigned char *) memchr(sorted, data[index], n)) - sorted + 1;
+		index = pos_cache[data[index]] + count - 1;
 	}
 
 	memcpy(data, result, n);
 	free(result);
+	free(pos_cache);
 }
 
 static bwt_size_t rle(unsigned char* restrict data, const bwt_size_t n)

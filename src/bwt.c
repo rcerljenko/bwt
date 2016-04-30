@@ -330,10 +330,10 @@ static void sighandler()
 static void show_help()
 {
 	fprintf(stderr, "Usage: %s [<input_file>] [OPTIONS]\n"
-	"\tBuild date: " __DATE__ " @ " __TIME__ "\n\n"
-	"\tIf <input_file> is omitted, input file is STDIN.\n"
-	"\tIf <input_file> is STDIN and output file is omitted (no valid -%c flag), output file is STDOUT (like -%c flag).\n"
-	"\tOther processes can send signal SIGUSR1 to get progress info (unavailable when input file is STDIN).\n\n"
+	"Build date: " __DATE__ " @ " __TIME__ "\n\n"
+	"If <input_file> is omitted, input file is STDIN.\n"
+	"If <input_file> is STDIN and output file is omitted (no valid -%c flag), output file is STDOUT (like -%c flag).\n"
+	"Other processes can send signal SIGUSR1 to get progress info.\n\n"
 	"Possible options (can be combined together):\n"
 	"\t-%c - Write output to STDOUT (ignored if valid -%c flag exists).\n"
 	"\t-%c - Decompression mode.\n"

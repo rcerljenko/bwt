@@ -153,11 +153,11 @@ static int bwt_compress(FILE* restrict fp_in, FILE* restrict fp_out, const unsig
 
 static int bwt_decompress(FILE* restrict fp_in, FILE* restrict fp_out, const unsigned short thread_count)
 {
-	unsigned char header_block_size;
-	stats.curr_fs_in = fread(&header_block_size, sizeof(unsigned char), 1, fp_in);
+	bwt_size_t main_block_size;
+	stats.curr_fs_in = fread(&main_block_size, sizeof(unsigned char), 1, fp_in);
 	if(stats.curr_fs_in != 1) return EXIT_SUCCESS;
 
-	const bwt_size_t main_block_size = 1U << header_block_size;
+	main_block_size = 1U << main_block_size;
 	unsigned char *data = malloc(sizeof(unsigned char) * main_block_size * thread_count + 1);
 	if(!data)
 	{

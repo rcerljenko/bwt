@@ -67,6 +67,7 @@ static bwt_size_t bwt(unsigned char* restrict data, const bwt_size_t n)
 static void ibwt(unsigned char* restrict data, const bwt_size_t n, bwt_size_t index)
 {
 	bwt_size_t i, count, pos_cache[UCHAR_MAX + 1] = {0};
+	unsigned char curr_char;
 	unsigned char* restrict pos;
 	unsigned char* restrict result = malloc(sizeof(unsigned char) * n * 2 + 1);
 	unsigned char* restrict sorted = result + n;
@@ -76,12 +77,12 @@ static void ibwt(unsigned char* restrict data, const bwt_size_t n, bwt_size_t in
 
 	for(i = 0; i < n; i++)
 	{
-		result[n - i - 1] = data[index];
+		result[n - i - 1] = curr_char = data[index];
 
-		for(count = 0, pos = data; (pos = memchr(pos, data[index], index - (pos - data))); count++, pos++);
+		for(count = 0, pos = data; (pos = memchr(pos, curr_char, index - (pos - data))); count++, pos++);
 
-		if(!pos_cache[data[index]]) pos_cache[data[index]] = ((unsigned char *) memchr(sorted, data[index], n)) - sorted + 1;
-		index = pos_cache[data[index]] + count - 1;
+		if(!pos_cache[curr_char]) pos_cache[curr_char] = ((unsigned char *) memchr(sorted, curr_char, n)) - sorted + 1;
+		index = pos_cache[curr_char] + count - 1;
 	}
 
 	memcpy(data, result, n);
@@ -91,17 +92,19 @@ static void ibwt(unsigned char* restrict data, const bwt_size_t n, bwt_size_t in
 static bwt_size_t rle(unsigned char* restrict data, const bwt_size_t n)
 {
 	bwt_size_t i, j, len;
+	unsigned char curr_char;
 	unsigned short count;
 	unsigned char* restrict result = malloc(sizeof(unsigned char) * n + 1);
 
 	for(i = len = 0; i < n && len < n; i = j)
 	{
-		for(j = i + 1, count = 0; j < n && data[i] == data[j] && count <= UCHAR_MAX; j++, count++);
+		curr_char = data[i];
+		for(j = i + 1, count = 0; j < n && curr_char == data[j] && count <= UCHAR_MAX; j++, count++);
 
-		result[len++] = data[i];
+		result[len++] = curr_char;
 		if(count)
 		{
-			result[len++] = data[i];
+			result[len++] = curr_char;
 			result[len++] = (unsigned char)(count - 1);
 		}
 	}
@@ -116,6 +119,7 @@ static bwt_size_t rle(unsigned char* restrict data, const bwt_size_t n)
 static bwt_size_t rld(unsigned char* restrict data, const bwt_size_t n)
 {
 	bwt_size_t i = 0, len = 0;
+	unsigned char curr_char, count;
 	unsigned short j;
 	unsigned char* restrict tmp_data = malloc(sizeof(unsigned char) * n + 1);
 
@@ -123,11 +127,12 @@ static bwt_size_t rld(unsigned char* restrict data, const bwt_size_t n)
 
 	while(i < n)
 	{
-		data[len++] = tmp_data[i];
+		data[len++] = curr_char = tmp_data[i];
 
-		if(i < n - 2 && tmp_data[i] == tmp_data[i + 1])
+		if(i < n - 2 && curr_char == tmp_data[i + 1])
 		{
-			for(j = 0; j <= tmp_data[i + 2]; j++) data[len++] = tmp_data[i];
+			count = tmp_data[i + 2];
+			for(j = 0; j <= count; j++) data[len++] = curr_char;
 			i += 3;
 		}
 		else i++;

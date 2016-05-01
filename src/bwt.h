@@ -125,30 +125,29 @@ static bwt_size_t rld(unsigned char* restrict data, const bwt_size_t n)
 {
 	if(!n) return 0;
 
-	bwt_size_t i = 0;
-	unsigned char curr_char, count, *start = data;
+	unsigned char curr_char, *start = data;
 	unsigned char* restrict tmp_data = malloc(sizeof(unsigned char) * n + 1);
+	unsigned char *tmp_end = tmp_data + n;
 
 	memcpy(tmp_data, data, n);
 
-	while(i < n)
+	while(tmp_data < tmp_end)
 	{
-		*data++ = curr_char = tmp_data[i];
+		*data++ = curr_char = *tmp_data++;
 
-		if(i < n - 2 && curr_char == tmp_data[i + 1])
+		if(tmp_data < tmp_end - 1 && curr_char == *tmp_data)
 		{
-			count = tmp_data[i + 2];
+			tmp_data++;
 			do
 			{
 				*data++ = curr_char;
 			}
-			while(count--);
-			i += 3;
+			while((*tmp_data)--);
+			tmp_data++;
 		}
-		else i++;
 	}
 
-	free(tmp_data);
+	free(tmp_data - n);
 	return data - start;
 }
 

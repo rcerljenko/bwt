@@ -40,6 +40,8 @@ static inline int ibwt_cmp(const void *a, const void *b)
 
 static bwt_size_t bwt(unsigned char* restrict data, const bwt_size_t n)
 {
+	if(!n) return 0;
+
 	bwt_size_t i, index;
 	bwt_size_t* restrict positions = malloc(sizeof(bwt_size_t) * n);
 	struct bwt_info_t data_info;
@@ -66,19 +68,20 @@ static bwt_size_t bwt(unsigned char* restrict data, const bwt_size_t n)
 
 static void ibwt(unsigned char* restrict data, const bwt_size_t n, bwt_size_t index)
 {
-	bwt_size_t i, count, pos_cache[UCHAR_MAX + 1] = {0};
+	if(!n) return;
+
+	bwt_size_t count, pos_cache[UCHAR_MAX + 1] = {0};
 	unsigned char curr_char;
-	unsigned char* restrict pos;
 	unsigned char* restrict result = malloc(sizeof(unsigned char) * n * 2 + 1);
 	unsigned char* restrict sorted = result + n;
+	unsigned char *pos, *curr_pos = sorted;
 
 	memcpy(sorted, data, n);
 	qsort(sorted, n, sizeof(unsigned char), ibwt_cmp);
 
-	for(i = 0; i < n; i++)
+	while(curr_pos-- > result)
 	{
-		result[n - i - 1] = curr_char = data[index];
-
+		*curr_pos = curr_char = data[index];
 		for(count = 0, pos = data; (pos = memchr(pos, curr_char, index - (pos - data))); count++, pos++);
 
 		if(!pos_cache[curr_char]) pos_cache[curr_char] = ((unsigned char *) memchr(sorted, curr_char, n)) - sorted + 1;
@@ -91,6 +94,8 @@ static void ibwt(unsigned char* restrict data, const bwt_size_t n, bwt_size_t in
 
 static bwt_size_t rle(unsigned char* restrict data, const bwt_size_t n)
 {
+	if(!n) return 0;
+
 	bwt_size_t i, j, len;
 	unsigned char curr_char;
 	unsigned short count;
@@ -118,6 +123,8 @@ static bwt_size_t rle(unsigned char* restrict data, const bwt_size_t n)
 
 static bwt_size_t rld(unsigned char* restrict data, const bwt_size_t n)
 {
+	if(!n) return 0;
+
 	bwt_size_t i = 0;
 	unsigned char curr_char, count, *start = data;
 	unsigned char* restrict tmp_data = malloc(sizeof(unsigned char) * n + 1);

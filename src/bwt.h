@@ -56,11 +56,11 @@ static bwt_size_t bwt(unsigned char* restrict data, const bwt_size_t n)
 
 	for(i = 0; i < n; i++)
 	{
-		*data++ = data_info.rotations[(positions[i] + n - 1) % n];
-		if(!positions[i]) index = i;
+		*data++ = data_info.rotations[(*positions + n - 1) % n];
+		if(!*positions++) index = i;
 	}
 
-	free(positions);
+	free(positions - n);
 	free(data_info.rotations);
 
 	return index;

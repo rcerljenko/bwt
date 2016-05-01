@@ -178,7 +178,7 @@ static int bwt_decompress(FILE* restrict fp_in, FILE* restrict fp_out, const uns
 			status = fread(bwt_data[i].data, sizeof(unsigned char), bwt_data[i].header.block_size, fp_in);
 			if(status == bwt_data[i].header.block_size)
 			{
-				stats.curr_fs_in += status;
+				stats.curr_fs_in += status + sizeof(struct header_t);
 				bwt_data[i].status = 1;
 			}
 			else
@@ -201,14 +201,12 @@ static int bwt_decompress(FILE* restrict fp_in, FILE* restrict fp_out, const uns
 			}
 			else
 			{
-				stats.curr_fs_in += bwt_data[i].header.block_size;
+				stats.curr_fs_in += bwt_data[i].header.block_size + sizeof(struct header_t);
 				bwt_data[i].status = 0;
 			}
 		}
 
 		pthread_create(&threads[i], NULL, threaded_decompress, &bwt_data[i]);
-
-		stats.curr_fs_in += sizeof(struct header_t);
 		i++;
 
 		if(i == thread_count)
@@ -472,8 +470,8 @@ int main(const int argc, char **argv)
 
 	if(status == EXIT_SUCCESS)
 	{
-		if(flags.verbose) show_statistics(0);
 		if(flags.remove) remove(input);
+		if(flags.verbose) show_statistics(0);
 	}
 	else if(output[0]) remove(output);
 

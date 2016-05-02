@@ -71,10 +71,9 @@ static void ibwt(unsigned char* restrict data, const bwt_size_t n, bwt_size_t in
 	if(!n) return;
 
 	bwt_size_t count, pos_cache[UCHAR_MAX + 1] = {0};
-	unsigned char curr_char;
 	unsigned char* restrict result = malloc(sizeof(unsigned char) * n * 2 + 1);
 	unsigned char* restrict sorted = result + n;
-	unsigned char *pos, *curr_pos = sorted;
+	unsigned char curr_char, *pos, *curr_pos = sorted;
 
 	memcpy(sorted, data, n);
 	qsort(sorted, n, sizeof(unsigned char), ibwt_cmp);
@@ -125,9 +124,8 @@ static bwt_size_t rld(unsigned char* restrict data, const bwt_size_t n)
 {
 	if(!n) return 0;
 
-	unsigned char curr_char, *start = data;
 	unsigned char* restrict tmp_data = malloc(sizeof(unsigned char) * n + 1);
-	unsigned char *tmp_end = tmp_data + n;
+	unsigned char curr_char, *start = data, *tmp_end = tmp_data + n;
 
 	memcpy(tmp_data, data, n);
 

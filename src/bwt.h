@@ -43,9 +43,9 @@ static bwt_size_t bwt(unsigned char* restrict data, const bwt_size_t n)
 	if(!n) return 0;
 
 	bwt_size_t i, index;
-	bwt_size_t* restrict positions = malloc(sizeof(bwt_size_t) * n);
 	struct bwt_info_t data_info;
 	data_info.rotations = malloc(sizeof(unsigned char) * n * 2 + 1);
+	bwt_size_t* restrict positions = malloc(sizeof(bwt_size_t) * n);
 
 	memcpy(data_info.rotations, data, n);
 	memcpy(data_info.rotations + n, data, n);
@@ -98,8 +98,8 @@ static bwt_size_t rle(unsigned char* restrict data, const bwt_size_t n)
 	bwt_size_t len = 0;
 	unsigned short count;
 	unsigned char curr_char;
-	unsigned char* restrict result = malloc(sizeof(unsigned char) * n + 1);
 	unsigned char* const end = data + n;
+	unsigned char* restrict result = malloc(sizeof(unsigned char) * n + 1);
 
 	while(data < end && len < n)
 	{

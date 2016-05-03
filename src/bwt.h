@@ -19,8 +19,8 @@ struct bwt_info_t
 static inline int bwt_cmp(const void* const a, const void* const b, void* const arg);
 static inline int ibwt_cmp(const void* const a, const void* const b);
 static bwt_size_t bwt(unsigned char* restrict data, const bwt_size_t n);
-static void ibwt(unsigned char* restrict data, const bwt_size_t n, bwt_size_t index);
-static bwt_size_t rle(unsigned char* restrict data, const bwt_size_t n);
+static void ibwt(unsigned char* const restrict data, const bwt_size_t n, bwt_size_t index);
+static bwt_size_t rle(unsigned char* const restrict data, const bwt_size_t n);
 static bwt_size_t rld(unsigned char* restrict data, const bwt_size_t n);
 
 
@@ -66,7 +66,7 @@ static bwt_size_t bwt(unsigned char* restrict data, const bwt_size_t n)
 	return index;
 }
 
-static void ibwt(unsigned char* restrict data, const bwt_size_t n, bwt_size_t index)
+static void ibwt(unsigned char* const restrict data, const bwt_size_t n, bwt_size_t index)
 {
 	if(!n) return;
 
@@ -91,7 +91,7 @@ static void ibwt(unsigned char* restrict data, const bwt_size_t n, bwt_size_t in
 	free(result);
 }
 
-static bwt_size_t rle(unsigned char* restrict data, const bwt_size_t n)
+static bwt_size_t rle(unsigned char* const restrict data, const bwt_size_t n)
 {
 	if(!n) return 0;
 

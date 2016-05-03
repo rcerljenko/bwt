@@ -20,7 +20,7 @@ static inline int bwt_cmp(const void* const a, const void* const b, void* const 
 static inline int ibwt_cmp(const void* const a, const void* const b);
 static bwt_size_t bwt(unsigned char* restrict data, const bwt_size_t n);
 static void ibwt(unsigned char* const restrict data, const bwt_size_t n, bwt_size_t index);
-static bwt_size_t rle(unsigned char* const restrict data, const bwt_size_t n);
+static bwt_size_t rle(unsigned char* restrict data, const bwt_size_t n);
 static bwt_size_t rld(unsigned char* restrict data, const bwt_size_t n);
 
 
@@ -91,29 +91,33 @@ static void ibwt(unsigned char* const restrict data, const bwt_size_t n, bwt_siz
 	free(result);
 }
 
-static bwt_size_t rle(unsigned char* const restrict data, const bwt_size_t n)
+static bwt_size_t rle(unsigned char* restrict data, const bwt_size_t n)
 {
-	if(!n) return 0;
+	if(n < 4) return 0;
 
-	bwt_size_t i, j, len;
-	unsigned char curr_char;
+	bwt_size_t len = 0;
 	unsigned short count;
-	unsigned char* const restrict result = malloc(sizeof(unsigned char) * n + 1);
+	unsigned char curr_char;
+	unsigned char* restrict result = malloc(sizeof(unsigned char) * n + 1);
+	unsigned char* const end = data + n;
 
-	for(i = len = 0; i < n && len < n; i = j)
+	while(data < end && len < n)
 	{
-		curr_char = data[i];
-		for(j = i + 1, count = 0; j < n && curr_char == data[j] && count <= UCHAR_MAX; j++, count++);
+		curr_char = *data++;
+		for(count = 0; data < end && curr_char == *data && count <= UCHAR_MAX; count++, data++);
 
-		result[len++] = curr_char;
+		*result++ = curr_char;
 		if(count)
 		{
-			result[len++] = curr_char;
-			result[len++] = (unsigned char)(count - 1);
+			*result++ = curr_char;
+			*result++ = (unsigned char)(count - 1);
+			len += 3;
 		}
+		else len++;
 	}
 
-	if(len < n) memcpy(data, result, len);
+	result -= len;
+	if(len < n) memcpy(data - n, result, len);
 	else len = 0;
 
 	free(result);
@@ -122,7 +126,7 @@ static bwt_size_t rle(unsigned char* const restrict data, const bwt_size_t n)
 
 static bwt_size_t rld(unsigned char* restrict data, const bwt_size_t n)
 {
-	if(!n) return 0;
+	if(n < 3) return n;
 
 	unsigned char curr_char;
 	unsigned char* restrict tmp_data = malloc(sizeof(unsigned char) * n + 1);

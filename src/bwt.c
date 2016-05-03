@@ -49,8 +49,8 @@ static char *filename;
 static struct stats_t stats = {0};
 
 
-static void *threaded_compress(void *void_bwt_data);
-static void *threaded_decompress(void *void_bwt_data);
+static void *threaded_compress(void* const void_bwt_data);
+static void *threaded_decompress(void* const void_bwt_data);
 static int bwt_compress(FILE* restrict fp_in, FILE* restrict fp_out, const unsigned short thread_count);
 static int bwt_decompress(FILE* restrict fp_in, FILE* restrict fp_out, const unsigned short thread_count);
 static size_t get_filesize(FILE* restrict fp);
@@ -60,9 +60,9 @@ static void sighandler();
 static void show_help();
 
 
-static void *threaded_compress(void *void_bwt_data)
+static void *threaded_compress(void* const void_bwt_data)
 {
-	struct bwt_data_t *bwt_data = (struct bwt_data_t *)void_bwt_data;
+	struct bwt_data_t* const bwt_data = (struct bwt_data_t *)void_bwt_data;
 	const bwt_size_t tmp_block_size = bwt_data->header.block_size;
 
 	bwt_data->header.index = bwt(bwt_data->data, bwt_data->header.block_size);
@@ -78,9 +78,9 @@ static void *threaded_compress(void *void_bwt_data)
 	pthread_exit(NULL);
 }
 
-static void *threaded_decompress(void *void_bwt_data)
+static void *threaded_decompress(void* const void_bwt_data)
 {
-	struct bwt_data_t *bwt_data = (struct bwt_data_t *)void_bwt_data;
+	struct bwt_data_t* const bwt_data = (struct bwt_data_t *)void_bwt_data;
 
 	if(bwt_data->status) bwt_data->header.block_size = rld(bwt_data->data, bwt_data->header.block_size);
 	ibwt(bwt_data->data, bwt_data->header.block_size, bwt_data->header.index);
@@ -91,7 +91,7 @@ static void *threaded_decompress(void *void_bwt_data)
 static int bwt_compress(FILE* restrict fp_in, FILE* restrict fp_out, const unsigned short thread_count)
 {
 	const size_t fread_size = BLOCK_SIZE * thread_count;
-	unsigned char *data = malloc(sizeof(unsigned char) * fread_size + 1);
+	unsigned char* const data = malloc(sizeof(unsigned char) * fread_size + 1);
 	if(!data)
 	{
 		fprintf(stderr, "%s: Not enough memory.\n", filename);
@@ -158,7 +158,7 @@ static int bwt_decompress(FILE* restrict fp_in, FILE* restrict fp_out, const uns
 	if(stats.curr_fs_in != 1) return EXIT_SUCCESS;
 
 	main_block_size = 1U << main_block_size;
-	unsigned char *data = malloc(sizeof(unsigned char) * main_block_size * thread_count + 1);
+	unsigned char* const data = malloc(sizeof(unsigned char) * main_block_size * thread_count + 1);
 	if(!data)
 	{
 		fprintf(stderr, "%s: Not enough memory.\n", filename);
@@ -295,7 +295,7 @@ static void show_statistics(const unsigned char signal)
 		ratio = stats.curr_fs_in / (float)stats.curr_fs_out;
 	}
 
-	const struct tm* restrict time_info = localtime(&diff_time);
+	const struct tm* const restrict time_info = localtime(&diff_time);
 	strftime(time_buffer, sizeof(time_buffer), "%Mm:%Ss", time_info);
 
 	if(signal && stats.filesize_in)

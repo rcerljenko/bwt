@@ -16,24 +16,24 @@ struct bwt_info_t
 };
 
 
-static inline int bwt_cmp(const void *a, const void *b, void *arg);
-static inline int ibwt_cmp(const void *a, const void *b);
+static inline int bwt_cmp(const void* const a, const void* const b, void* const arg);
+static inline int ibwt_cmp(const void* const a, const void* const b);
 static bwt_size_t bwt(unsigned char* restrict data, const bwt_size_t n);
 static void ibwt(unsigned char* restrict data, const bwt_size_t n, bwt_size_t index);
 static bwt_size_t rle(unsigned char* restrict data, const bwt_size_t n);
 static bwt_size_t rld(unsigned char* restrict data, const bwt_size_t n);
 
 
-static inline int bwt_cmp(const void *a, const void *b, void *arg)
+static inline int bwt_cmp(const void* const a, const void* const b, void* const arg)
 {
 	const bwt_size_t i = *(bwt_size_t *)a;
 	const bwt_size_t j = *(bwt_size_t *)b;
-	const struct bwt_info_t* restrict data_info = (struct bwt_info_t *)arg;
+	const struct bwt_info_t* const restrict data_info = (struct bwt_info_t *)arg;
 
 	return memcmp(data_info->rotations + i, data_info->rotations + j, data_info->len);
 }
 
-static inline int ibwt_cmp(const void *a, const void *b)
+static inline int ibwt_cmp(const void* const a, const void* const b)
 {
 	return *(unsigned char *)a - *(unsigned char *)b;
 }
@@ -71,8 +71,8 @@ static void ibwt(unsigned char* restrict data, const bwt_size_t n, bwt_size_t in
 	if(!n) return;
 
 	bwt_size_t count, pos_cache[UCHAR_MAX + 1] = {0};
-	unsigned char* restrict result = malloc(sizeof(unsigned char) * n * 2 + 1);
-	unsigned char* restrict sorted = result + n;
+	unsigned char* const restrict result = malloc(sizeof(unsigned char) * n * 2 + 1);
+	unsigned char* const restrict sorted = result + n;
 	unsigned char curr_char, *pos, *curr_pos = sorted;
 
 	memcpy(sorted, data, n);
@@ -98,7 +98,7 @@ static bwt_size_t rle(unsigned char* restrict data, const bwt_size_t n)
 	bwt_size_t i, j, len;
 	unsigned char curr_char;
 	unsigned short count;
-	unsigned char* restrict result = malloc(sizeof(unsigned char) * n + 1);
+	unsigned char* const restrict result = malloc(sizeof(unsigned char) * n + 1);
 
 	for(i = len = 0; i < n && len < n; i = j)
 	{
@@ -124,8 +124,10 @@ static bwt_size_t rld(unsigned char* restrict data, const bwt_size_t n)
 {
 	if(!n) return 0;
 
+	unsigned char curr_char;
 	unsigned char* restrict tmp_data = malloc(sizeof(unsigned char) * n + 1);
-	unsigned char curr_char, *start = data, *tmp_end = tmp_data + n - 1;
+	unsigned char* const start = data;
+	unsigned char* const tmp_end = tmp_data + n - 1;
 
 	memcpy(tmp_data, data, n);
 

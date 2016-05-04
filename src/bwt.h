@@ -40,9 +40,9 @@ static inline int ibwt_cmp(const void* const a, const void* const b)
 
 static bwt_size_t bwt(unsigned char* restrict data, const bwt_size_t n)
 {
-	if(!n) return 0;
+	if(n < 2) return 0;
 
-	bwt_size_t i, index;
+	bwt_size_t i, index = n;
 	struct bwt_info_t data_info;
 	data_info.rotations = malloc(sizeof(unsigned char) * n * 2 + 1);
 	bwt_size_t* restrict positions = malloc(sizeof(bwt_size_t) * n);
@@ -51,8 +51,8 @@ static bwt_size_t bwt(unsigned char* restrict data, const bwt_size_t n)
 	memcpy(data_info.rotations + n, data, n);
 	data_info.len = n;
 
-	for(i = 0; i < n; i++) *positions++ = i;
-	positions -= n;
+	positions += n;
+	while(index--) *(--positions) = index;
 	qsort_r(positions, n, sizeof(bwt_size_t), bwt_cmp, &data_info);
 
 	for(i = 0; i < n; i++)
@@ -69,7 +69,7 @@ static bwt_size_t bwt(unsigned char* restrict data, const bwt_size_t n)
 
 static void ibwt(unsigned char* const restrict data, const bwt_size_t n, bwt_size_t index)
 {
-	if(!n) return;
+	if(n < 2) return;
 
 	bwt_size_t count, pos_cache[UCHAR_MAX + 1] = {0};
 	unsigned char* const restrict result = malloc(sizeof(unsigned char) * n * 2 + 1);

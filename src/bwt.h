@@ -74,18 +74,18 @@ static void ibwt(unsigned char* const restrict data, const bwt_size_t n, bwt_siz
 	bwt_size_t count, pos_cache[UCHAR_MAX + 1] = {0};
 	unsigned char* const restrict result = malloc(sizeof(unsigned char) * n * 2 + 1);
 	unsigned char* const restrict sorted = result + n;
-	unsigned char curr_char, *pos, *curr_pos = sorted;
+	unsigned char *pos, *curr_pos = sorted;
 
 	memcpy(sorted, data, n);
 	qsort(sorted, n, sizeof(unsigned char), ibwt_cmp);
 
 	while(curr_pos-- > result)
 	{
-		*curr_pos = curr_char = data[index];
-		for(count = 0, pos = data; (pos = memchr(pos, curr_char, index - (pos - data))); count++, pos++);
+		*curr_pos = data[index];
+		for(count = 0, pos = data; (pos = memchr(pos, *curr_pos, index - (pos - data))); count++, pos++);
 
-		if(!pos_cache[curr_char]) pos_cache[curr_char] = ((unsigned char *) memchr(sorted, curr_char, n)) - sorted + 1;
-		index = pos_cache[curr_char] + count - 1;
+		if(!pos_cache[*curr_pos]) pos_cache[*curr_pos] = ((unsigned char *) memchr(sorted, *curr_pos, n)) - sorted + 1;
+		index = pos_cache[*curr_pos] + count - 1;
 	}
 
 	memcpy(data, result, n);

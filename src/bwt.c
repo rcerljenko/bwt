@@ -75,7 +75,7 @@ static void *threaded_compress(void* const void_bwt_data)
 		bwt_data->status = 0;
 	}
 
-	pthread_exit(NULL);
+	return NULL;
 }
 
 static void *threaded_decompress(void* const void_bwt_data)
@@ -85,7 +85,7 @@ static void *threaded_decompress(void* const void_bwt_data)
 	if(bwt_data->status) bwt_data->header.block_size = rld(bwt_data->data, bwt_data->header.block_size);
 	ibwt(bwt_data->data, bwt_data->header.block_size, bwt_data->header.index);
 
-	pthread_exit(NULL);
+	return NULL;
 }
 
 static int bwt_compress(FILE* restrict fp_in, FILE* restrict fp_out, const unsigned short thread_count)

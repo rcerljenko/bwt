@@ -51,7 +51,8 @@ static bwt_size_t bwt(unsigned char* restrict data, const bwt_size_t n)
 	memcpy(data_info.rotations + n, data, n);
 	data_info.len = n;
 
-	for(i = 0; i < n; i++) positions[i] = i;
+	for(i = 0; i < n; i++) *positions++ = i;
+	positions -= n;
 	qsort_r(positions, n, sizeof(bwt_size_t), bwt_cmp, &data_info);
 
 	for(i = 0; i < n; i++)

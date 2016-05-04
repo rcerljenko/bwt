@@ -394,7 +394,7 @@ int main(const int argc, char **argv)
 			}
 			default:
 			{
-				show_help();
+				fprintf(stderr, "Run %s -%c for help.\n", filename, HELP_FLAG);
 				return EXIT_FAILURE;
 			}
 		}

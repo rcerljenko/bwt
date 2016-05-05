@@ -1,7 +1,10 @@
 #ifndef BWT_H
 #define BWT_H
 
+#ifndef _WIN32
 #define _GNU_SOURCE
+#endif
+
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
@@ -53,7 +56,12 @@ static bwt_size_t bwt(unsigned char* restrict data, const bwt_size_t n)
 
 	positions += n;
 	while((*(--positions) = --index));
+
+	#ifdef _WIN32
+	qsort_s(positions, n, sizeof(bwt_size_t), bwt_cmp, &data_info);
+	#else
 	qsort_r(positions, n, sizeof(bwt_size_t), bwt_cmp, &data_info);
+	#endif
 
 	for(i = 0; i < n; i++)
 	{

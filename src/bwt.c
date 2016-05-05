@@ -51,9 +51,9 @@ static struct stats_t stats = {0};
 
 static void *threaded_compress(void* const void_bwt_data);
 static void *threaded_decompress(void* const void_bwt_data);
-static int bwt_compress(FILE* restrict fp_in, FILE* restrict fp_out, const unsigned short thread_count);
-static int bwt_decompress(FILE* restrict fp_in, FILE* restrict fp_out, const unsigned short thread_count);
-static size_t get_filesize(FILE* restrict fp);
+static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count);
+static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count);
+static size_t get_filesize(FILE* __restrict fp);
 static size_t get_memusage();
 static void show_statistics(const unsigned char signal);
 static void sighandler();
@@ -88,7 +88,7 @@ static void *threaded_decompress(void* const void_bwt_data)
 	return NULL;
 }
 
-static int bwt_compress(FILE* restrict fp_in, FILE* restrict fp_out, const unsigned short thread_count)
+static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count)
 {
 	const size_t fread_size = BLOCK_SIZE * thread_count;
 	unsigned char* const data = malloc(sizeof(unsigned char) * fread_size + 1);
@@ -151,7 +151,7 @@ static int bwt_compress(FILE* restrict fp_in, FILE* restrict fp_out, const unsig
 	else return EXIT_SUCCESS;
 }
 
-static int bwt_decompress(FILE* restrict fp_in, FILE* restrict fp_out, const unsigned short thread_count)
+static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count)
 {
 	bwt_size_t main_block_size;
 	stats.curr_fs_in = fread(&main_block_size, sizeof(unsigned char), 1, fp_in);
@@ -255,7 +255,7 @@ static int bwt_decompress(FILE* restrict fp_in, FILE* restrict fp_out, const uns
 	return EXIT_SUCCESS;
 }
 
-static size_t get_filesize(FILE* restrict fp)
+static size_t get_filesize(FILE* __restrict fp)
 {
 	fseek(fp, 0, SEEK_END);
 	const size_t size = ftell(fp);
@@ -266,7 +266,7 @@ static size_t get_filesize(FILE* restrict fp)
 
 static size_t get_memusage()
 {
-	FILE* restrict fp = fopen("/proc/self/statm", "rb");
+	FILE* __restrict fp = fopen("/proc/self/statm", "rb");
 	if(!fp) return 0;
 
 	unsigned int vm_rss;
@@ -295,7 +295,7 @@ static void show_statistics(const unsigned char signal)
 		ratio = stats.curr_fs_in / (float)stats.curr_fs_out;
 	}
 
-	const struct tm* const restrict time_info = localtime(&diff_time);
+	const struct tm* const __restrict time_info = localtime(&diff_time);
 	strftime(time_buffer, sizeof(time_buffer), "%Mm:%Ss", time_info);
 
 	if(signal && stats.filesize_in)

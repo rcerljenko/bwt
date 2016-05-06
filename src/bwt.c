@@ -3,8 +3,12 @@
 #include <math.h>
 #include <time.h>
 #include <signal.h>
+#ifndef _WIN32
 #include <unistd.h>
 #include <pthread.h>
+#else
+#include <windows.h>
+#endif
 
 #define OUTPUT_FLAG 'o'
 #define DEC_FLAG 'd'
@@ -54,7 +58,9 @@ static void *threaded_decompress(void* const void_bwt_data);
 static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count);
 static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count);
 static size_t get_filesize(FILE* __restrict fp);
+#ifndef _WIN32
 static size_t get_memusage();
+#endif
 static void show_statistics(const unsigned char signal);
 static void sighandler();
 static void show_help();
@@ -264,6 +270,7 @@ static size_t get_filesize(FILE* __restrict fp)
 	return size;
 }
 
+#ifndef _WIN32
 static size_t get_memusage()
 {
 	FILE* __restrict fp = fopen("/proc/self/statm", "rb");
@@ -277,6 +284,7 @@ static size_t get_memusage()
 
 	return vm_rss * page_size;
 }
+#endif
 
 static void show_statistics(const unsigned char signal)
 {
@@ -312,11 +320,13 @@ static void show_statistics(const unsigned char signal)
 	"Speed: %.2f MB/s\n"
 	, stats.curr_fs_in, stats.curr_fs_out, diff_fs, diff_perc, ratio, time_buffer, speed);
 
+	#ifndef _WIN32
 	if(signal)
 	{
 		const float memory = (float) get_memusage() / (1024 * 1024);
 		fprintf(stderr, "Memory (RAM): %.2f MB\n\n", memory);
 	}
+	#endif
 }
 
 static void sighandler()
@@ -455,7 +465,13 @@ int main(const int argc, char **argv)
 	}
 
 	int status;
+	#ifndef _WIN32
 	unsigned short thread_count = sysconf(_SC_NPROCESSORS_ONLN);
+	#else
+	SYSTEM_INFO sysinfo;
+	GetSystemInfo(&sysinfo);
+	unsigned short thread_count = sysinfo.dwNumberOfProcessors;
+	#endif
 	if(jobs && jobs < thread_count) thread_count = jobs;
 
 	signal(SIGTYPE, sighandler);

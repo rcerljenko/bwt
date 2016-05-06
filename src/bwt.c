@@ -55,7 +55,7 @@ static struct stats_t stats = {0};
 
 static void *threaded_compress(void* const void_bwt_data);
 static void *threaded_decompress(void* const void_bwt_data);
-static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned char block_size, const unsigned short thread_count);
+static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count, const unsigned char block_size);
 static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count);
 static size_t get_filesize(FILE* __restrict fp);
 static size_t get_memusage();
@@ -92,7 +92,7 @@ static void *threaded_decompress(void* const void_bwt_data)
 	return NULL;
 }
 
-static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned char block_size, const unsigned short thread_count)
+static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count, const unsigned char block_size)
 {
 	const bwt_size_t main_block_size = 1U << block_size;
 	const size_t fread_size = main_block_size * thread_count;
@@ -475,7 +475,7 @@ int main(const int argc, char **argv)
 	signal(SIGTYPE, sighandler);
 	time(&stats.start_time);
 
-	if(!flags.dec) status = bwt_compress(fp_in, fp_out, block_size, thread_count);
+	if(!flags.dec) status = bwt_compress(fp_in, fp_out, thread_count, block_size);
 	else status = bwt_decompress(fp_in, fp_out, thread_count);
 
 	time(&stats.end_time);

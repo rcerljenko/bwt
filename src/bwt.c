@@ -10,14 +10,18 @@
 #define DEC_FLAG 'd'
 #define STDOUT_FLAG 'c'
 #define REMOVE_FLAG 'r'
+#define PRESET_FLAG 'p'
 #define JOBS_FLAG 'j'
 #define VERBOSE_FLAG 'v'
 #define HELP_FLAG 'h'
 
-#define ARGS "hdcrvj:o:"
+#define ARGS "hdcrvp:j:o:"
 #define FILE_EXT ".bwt"
-#define BLOCK_SIZE 4096U
 #define SIGTYPE SIGUSR1
+#define PRESET_MIN 1U
+#define PRESET_MAX 9U
+#define PRESET_DEF 1U
+#define SIZE_TRESH 11U
 
 #define FOPEN_INPUT_MODE "rb"
 #define FOPEN_OUTPUT_MODE "wb"
@@ -51,7 +55,7 @@ static struct stats_t stats = {0};
 
 static void *threaded_compress(void* const void_bwt_data);
 static void *threaded_decompress(void* const void_bwt_data);
-static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count);
+static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned char block_size, const unsigned short thread_count);
 static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count);
 static size_t get_filesize(FILE* __restrict fp);
 static size_t get_memusage();
@@ -88,9 +92,10 @@ static void *threaded_decompress(void* const void_bwt_data)
 	return NULL;
 }
 
-static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count)
+static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned char block_size, const unsigned short thread_count)
 {
-	const size_t fread_size = BLOCK_SIZE * thread_count;
+	const bwt_size_t main_block_size = 1U << block_size;
+	const size_t fread_size = main_block_size * thread_count;
 	unsigned char* const data = malloc(sizeof(unsigned char) * fread_size + 1);
 	if(!data)
 	{
@@ -104,18 +109,17 @@ static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const u
 	struct bwt_data_t bwt_data[thread_count];
 	pthread_t threads[thread_count];
 
-	const unsigned char main_block_size = (unsigned char) log2(BLOCK_SIZE);
-	stats.curr_fs_out = fwrite(&main_block_size, sizeof(unsigned char), 1, fp_out);
+	stats.curr_fs_out = fwrite(&block_size, sizeof(unsigned char), 1, fp_out);
 
 	while((n = fread(data, sizeof(unsigned char), fread_size, fp_in)))
 	{
 		stats.curr_fs_in += n;
 
-		for(i = j = 0; i < n; i += BLOCK_SIZE, j++)
+		for(i = j = 0; i < n; i += main_block_size, j++)
 		{
 			bwt_data[j].data = data + i;
 
-			if(i + BLOCK_SIZE <= n) bwt_data[j].header.block_size = BLOCK_SIZE;
+			if(i + main_block_size <= n) bwt_data[j].header.block_size = main_block_size;
 			else bwt_data[j].header.block_size = n - i;
 
 			pthread_create(&threads[j], NULL, threaded_compress, &bwt_data[j]);
@@ -338,15 +342,17 @@ static void show_help()
 	"\t-%c - Show help and exit.\n"
 	"\t-%c<jobs_count> - Number of parallel jobs (threads). If less than 1 or greater than available threads, fallback to available threads.\n"
 	"\t-%c <output_file> - Custom output filename (if omitted, output filename is input_file" FILE_EXT ").\n"
+	"\t-%c<%u-%u> - Compression preset level (ignored in decompression mode).\n"
+	"\t\tHigher presets give better compression ratio but decompression is considerably longer (if omitted or wrong value, preset is %u).\n"
 	"\t-%c - Remove input file after successful operation (ignored when input file is STDIN).\n"
 	"\t-%c - Verbose mode - show statistics after successful operation.\n"
-	, filename, OUTPUT_FLAG, STDOUT_FLAG, STDOUT_FLAG, OUTPUT_FLAG, DEC_FLAG, HELP_FLAG, JOBS_FLAG, OUTPUT_FLAG, REMOVE_FLAG, VERBOSE_FLAG);
+	, filename, OUTPUT_FLAG, STDOUT_FLAG, STDOUT_FLAG, OUTPUT_FLAG, DEC_FLAG, HELP_FLAG, JOBS_FLAG, OUTPUT_FLAG, PRESET_FLAG, PRESET_MIN, PRESET_MAX, PRESET_DEF, REMOVE_FLAG, VERBOSE_FLAG);
 }
 
 int main(const int argc, char **argv)
 {
 	int c;
-	unsigned long jobs = 0;
+	unsigned long jobs = 0, block_size = PRESET_DEF;
 	char *input, output[PATH_MAX] = {0};
 	FILE *fp_in = stdin, *fp_out = NULL;
 	struct flags_t flags = {0};
@@ -375,6 +381,11 @@ int main(const int argc, char **argv)
 			case VERBOSE_FLAG:
 			{
 				flags.verbose = 1;
+				break;
+			}
+			case PRESET_FLAG:
+			{
+				block_size = strtoul(optarg, NULL, 10);
 				break;
 			}
 			case JOBS_FLAG:
@@ -458,10 +469,13 @@ int main(const int argc, char **argv)
 	unsigned short thread_count = sysconf(_SC_NPROCESSORS_ONLN);
 	if(jobs && jobs < thread_count) thread_count = jobs;
 
+	if(block_size < PRESET_MIN || block_size > PRESET_MAX) block_size = PRESET_DEF + SIZE_TRESH;
+	else block_size += SIZE_TRESH;
+
 	signal(SIGTYPE, sighandler);
 	time(&stats.start_time);
 
-	if(!flags.dec) status = bwt_compress(fp_in, fp_out, thread_count);
+	if(!flags.dec) status = bwt_compress(fp_in, fp_out, block_size, thread_count);
 	else status = bwt_decompress(fp_in, fp_out, thread_count);
 
 	time(&stats.end_time);

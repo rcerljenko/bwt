@@ -98,9 +98,9 @@ static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const u
 		return EXIT_FAILURE;
 	}
 
-	bwt_size_t tmp_block_size;
 	size_t i, n;
 	unsigned short j;
+	bwt_size_t tmp_block_size;
 	struct bwt_data_t bwt_data[thread_count];
 	pthread_t threads[thread_count];
 
@@ -165,7 +165,7 @@ static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const
 		return EXIT_FAILURE;
 	}
 
-	size_t status, n;
+	size_t n, status;
 	unsigned short i = 0;
 	struct bwt_data_t bwt_data[thread_count];
 	pthread_t threads[thread_count];

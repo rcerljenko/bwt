@@ -31,7 +31,11 @@ static bwt_size_t rle(unsigned char* __restrict data, const bwt_size_t n);
 static bwt_size_t rld(unsigned char* __restrict data, const bwt_size_t n);
 
 
+#ifdef _WIN32
+static inline int bwt_cmp(void* const arg, const void* const a, const void* const b)
+#else
 static inline int bwt_cmp(const void* const a, const void* const b, void* const arg)
+#endif
 {
 	const bwt_size_t i = *(bwt_size_t *)a;
 	const bwt_size_t j = *(bwt_size_t *)b;

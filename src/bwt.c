@@ -1,6 +1,5 @@
 #include "bwt.h"
 #include <stdio.h>
-#include <math.h>
 #include <time.h>
 #include <signal.h>
 #include <unistd.h>
@@ -285,16 +284,24 @@ static size_t get_memusage()
 static void show_statistics(const unsigned char signal)
 {
 	char time_buffer[8];
+	size_t diff_fs = 0;
 	float diff_perc = 0, ratio = 0, speed = 0;
 
-	const size_t diff_fs = labs(stats.curr_fs_in - stats.curr_fs_out);
 	const time_t diff_time = difftime(stats.end_time, stats.start_time);
 	if(diff_time) speed = (float)stats.curr_fs_in / (1024 * 1024 * diff_time);
 
 	if(stats.curr_fs_in && stats.curr_fs_out)
 	{
-		if(stats.curr_fs_in > stats.curr_fs_out) diff_perc = (100 * diff_fs) / (float)stats.curr_fs_in;
-		else diff_perc = (100 * diff_fs) / (float)stats.curr_fs_out;
+		if(stats.curr_fs_in > stats.curr_fs_out)
+		{
+			diff_fs = stats.curr_fs_in - stats.curr_fs_out;
+			diff_perc = (100 * diff_fs) / (float)stats.curr_fs_in;
+		}
+		else
+		{
+			diff_fs = stats.curr_fs_out - stats.curr_fs_in;
+			diff_perc = (100 * diff_fs) / (float)stats.curr_fs_out;
+		}
 
 		ratio = stats.curr_fs_in / (float)stats.curr_fs_out;
 	}

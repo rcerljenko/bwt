@@ -10,7 +10,7 @@
 #include <limits.h>
 
 
-typedef unsigned short bwt_size_t;
+typedef unsigned int bwt_size_t;
 
 struct bwt_info_t
 {
@@ -19,7 +19,11 @@ struct bwt_info_t
 };
 
 
+#ifdef _WIN32
+static inline int bwt_cmp(void* const arg, const void* const a, const void* const b);
+#else
 static inline int bwt_cmp(const void* const a, const void* const b, void* const arg);
+#endif
 static inline int ibwt_cmp(const void* const a, const void* const b);
 static bwt_size_t bwt(unsigned char* __restrict data, const bwt_size_t n);
 static void ibwt(unsigned char* const __restrict data, const bwt_size_t n, bwt_size_t index);

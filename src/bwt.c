@@ -20,7 +20,7 @@
 #define PRESET_MIN 1U
 #define PRESET_MAX 9U
 #define PRESET_DEF 1U
-#define SIZE_TRESH 11U
+#define SIZE_THRESH 11U
 
 #define FOPEN_INPUT_MODE "rb"
 #define FOPEN_OUTPUT_MODE "wb"
@@ -476,8 +476,8 @@ int main(const int argc, char **argv)
 	unsigned short thread_count = sysconf(_SC_NPROCESSORS_ONLN);
 	if(jobs && jobs < thread_count) thread_count = jobs;
 
-	if(block_size < PRESET_MIN || block_size > PRESET_MAX) block_size = PRESET_DEF + SIZE_TRESH;
-	else block_size += SIZE_TRESH;
+	if(block_size < PRESET_MIN || block_size > PRESET_MAX) block_size = PRESET_DEF + SIZE_THRESH;
+	else block_size += SIZE_THRESH;
 
 	signal(SIGTYPE, sighandler);
 	time(&stats.start_time);

@@ -11,5 +11,5 @@ At the begining of file:
 
 Before every block:
 
-2 B - block size of current block (set to zero if rle() failed, then in decompression main_block_size is used for ibwt()).
-2 B - BWT index position of original rotation.
+4 B - block size of current block (set to zero if rle() failed, then in decompression main_block_size is used for ibwt()).
+4 B - BWT index position of original rotation.

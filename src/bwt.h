@@ -65,11 +65,11 @@ static bwt_size_t bwt(unsigned char* __restrict data, const bwt_size_t n)
 	positions += n;
 	while((*(--positions) = --index));
 
-	#ifdef _WIN32
+#ifdef _WIN32
 	qsort_s(positions, n, sizeof(bwt_size_t), bwt_cmp, &data_info);
-	#else
+#else
 	qsort_r(positions, n, sizeof(bwt_size_t), bwt_cmp, &data_info);
-	#endif
+#endif
 
 	for(i = 0; i < n; i++)
 	{

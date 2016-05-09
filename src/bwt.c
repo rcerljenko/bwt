@@ -1,9 +1,16 @@
 #include "bwt.h"
 #include <stdio.h>
 #include <time.h>
-#include <signal.h>
 #include <unistd.h>
 #include <pthread.h>
+
+#ifndef _WIN32
+#include <signal.h>
+#define SIGTYPE SIGUSR1
+#else
+#include <windows.h>
+#define NAME_MAX _MAX_FNAME
+#endif
 
 #define OUTPUT_FLAG 'o'
 #define DEC_FLAG 'd'
@@ -16,7 +23,6 @@
 
 #define ARGS "hdcrvp:j:o:"
 #define FILE_EXT ".bwt"
-#define SIGTYPE SIGUSR1
 #define PRESET_MIN 1U
 #define PRESET_MAX 9U
 #define PRESET_DEF 1U
@@ -48,7 +54,11 @@ struct stats_t
 	time_t start_time, end_time;
 };
 
+#ifdef _WIN32
+static char filename[NAME_MAX + 1];
+#else
 static char *filename;
+#endif
 static struct stats_t stats = {0};
 
 
@@ -57,10 +67,12 @@ static void *threaded_decompress(void* const void_bwt_data);
 static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count, const unsigned char block_size);
 static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count);
 static size_t get_filesize(FILE* __restrict fp);
-static size_t get_memusage();
 static void show_statistics(const unsigned char signal);
-static void sighandler();
 static void show_help();
+#ifndef _WIN32
+static size_t get_memusage();
+static void sighandler();
+#endif
 
 
 static void *threaded_compress(void* const void_bwt_data)
@@ -114,7 +126,7 @@ static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const u
 	{
 		stats.curr_fs_in += n;
 
-		for(i = j = 0; i < n; i += main_block_size, j++)
+		for (i = j = 0; i < n; i += main_block_size, j++)
 		{
 			bwt_data[j].data = data + i;
 
@@ -124,7 +136,7 @@ static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const u
 			pthread_create(&threads[j], NULL, threaded_compress, &bwt_data[j]);
 		}
 
-		for(i = 0; i < j; i++)
+		for (i = 0; i < j; i++)
 		{
 			pthread_join(threads[i], NULL);
 
@@ -214,7 +226,7 @@ static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const
 
 		if(i == thread_count)
 		{
-			for(i = n = 0; i < thread_count; i++)
+			for (i = n = 0; i < thread_count; i++)
 			{
 				pthread_join(threads[i], NULL);
 				n += bwt_data[i].header.block_size;
@@ -238,7 +250,7 @@ static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const
 	if(i)
 	{
 		unsigned short j;
-		for(j = n = 0; j < i; j++)
+		for (j = n = 0; j < i; j++)
 		{
 			pthread_join(threads[j], NULL);
 			n += bwt_data[j].header.block_size;
@@ -267,6 +279,7 @@ static size_t get_filesize(FILE* __restrict fp)
 	return size;
 }
 
+#ifndef _WIN32
 static size_t get_memusage()
 {
 	FILE* __restrict fp = fopen("/proc/self/statm", "rb");
@@ -280,6 +293,13 @@ static size_t get_memusage()
 
 	return vm_rss * page_size;
 }
+
+static void sighandler()
+{
+	time(&stats.end_time);
+	show_statistics(1);
+}
+#endif
 
 static void show_statistics(const unsigned char signal)
 {
@@ -309,51 +329,51 @@ static void show_statistics(const unsigned char signal)
 	const struct tm* const __restrict time_info = localtime(&diff_time);
 	strftime(time_buffer, sizeof(time_buffer), "%Mm:%Ss", time_info);
 
+#ifndef _WIN32
 	if(signal && stats.filesize_in)
 	{
 		const unsigned short progress = (100 * stats.curr_fs_in) / stats.filesize_in;
 		fprintf(stderr, "Progress: %hu%%\n", progress);
 	}
+#endif
 
 	fprintf(stderr, "Bytes read: %lu B\n"
-	"Bytes written: %lu B\n"
-	"Diff: %lu B (%.2f%%)\n"
-	"Ratio: %.2f\n"
-	"Time: %s\n"
-	"Speed: %.2f MB/s\n"
-	, stats.curr_fs_in, stats.curr_fs_out, diff_fs, diff_perc, ratio, time_buffer, speed);
+		"Bytes written: %lu B\n"
+		"Diff: %lu B (%.2f%%)\n"
+		"Ratio: %.2f\n"
+		"Time: %s\n"
+		"Speed: %.2f MB/s\n"
+		, stats.curr_fs_in, stats.curr_fs_out, diff_fs, diff_perc, ratio, time_buffer, speed);
 
+#ifndef _WIN32
 	if(signal)
 	{
-		const float memory = (float) get_memusage() / (1024 * 1024);
+		const float memory = (float)get_memusage() / (1024 * 1024);
 		fprintf(stderr, "Memory (RAM): %.2f MB\n\n", memory);
 	}
-}
-
-static void sighandler()
-{
-	time(&stats.end_time);
-	show_statistics(1);
+#endif
 }
 
 static void show_help()
 {
 	fprintf(stderr, "Usage: %s [<input_file>] [OPTIONS]\n"
-	"Build date: " __DATE__ " @ " __TIME__ "\n\n"
-	"If <input_file> is omitted, input file is STDIN.\n"
-	"If <input_file> is STDIN and output file is omitted (no valid -%c flag), output file is STDOUT (like -%c flag).\n"
-	"Other processes can send signal SIGUSR1 to get progress info.\n\n"
-	"Possible options (can be combined together):\n"
-	"\t-%c - Write output to STDOUT (ignored if valid -%c flag exists).\n"
-	"\t-%c - Decompression mode.\n"
-	"\t-%c - Show help and exit.\n"
-	"\t-%c<jobs_count> - Number of parallel jobs (threads). If less than 1 or greater than available threads, fallback to available threads.\n"
-	"\t-%c <output_file> - Custom output filename (if omitted, output filename is input_file" FILE_EXT ").\n"
-	"\t-%c<%u-%u> - Compression preset level (ignored in decompression mode).\n"
-	"\t\tHigher presets give better compression ratio but decompression is considerably longer (if omitted or wrong value, preset is %u).\n"
-	"\t-%c - Remove input file after successful operation (ignored when input file is STDIN).\n"
-	"\t-%c - Verbose mode - show statistics after successful operation.\n"
-	, filename, OUTPUT_FLAG, STDOUT_FLAG, STDOUT_FLAG, OUTPUT_FLAG, DEC_FLAG, HELP_FLAG, JOBS_FLAG, OUTPUT_FLAG, PRESET_FLAG, PRESET_MIN, PRESET_MAX, PRESET_DEF, REMOVE_FLAG, VERBOSE_FLAG);
+		"Build date: " __DATE__ " @ " __TIME__ "\n\n"
+		"If <input_file> is omitted, input file is STDIN.\n"
+		"If <input_file> is STDIN and output file is omitted (no valid -%c flag), output file is STDOUT (like -%c flag).\n"
+#ifndef _WIN32
+		"Other processes can send signal SIGUSR1 to get progress info.\n"
+#endif
+		"\nPossible options (can be combined together):\n"
+		"\t-%c - Write output to STDOUT (ignored if valid -%c flag exists).\n"
+		"\t-%c - Decompression mode.\n"
+		"\t-%c - Show help and exit.\n"
+		"\t-%c<jobs_count> - Number of parallel jobs (threads). If less than 1 or greater than available threads, fallback to available threads.\n"
+		"\t-%c <output_file> - Custom output filename (if omitted, output filename is input_file" FILE_EXT ").\n"
+		"\t-%c<%u-%u> - Compression preset level (ignored in decompression mode).\n"
+		"\t\tHigher presets give better compression ratio but decompression is considerably longer (if omitted or wrong value, preset is %u).\n"
+		"\t-%c - Remove input file after successful operation (ignored when input file is STDIN).\n"
+		"\t-%c - Verbose mode - show statistics after successful operation.\n"
+		, filename, OUTPUT_FLAG, STDOUT_FLAG, STDOUT_FLAG, OUTPUT_FLAG, DEC_FLAG, HELP_FLAG, JOBS_FLAG, OUTPUT_FLAG, PRESET_FLAG, PRESET_MIN, PRESET_MAX, PRESET_DEF, REMOVE_FLAG, VERBOSE_FLAG);
 }
 
 int main(const int argc, char **argv)
@@ -364,7 +384,11 @@ int main(const int argc, char **argv)
 	FILE *fp_in = stdin, *fp_out = NULL;
 	struct flags_t flags = {0};
 
+#ifndef _WIN32
 	filename = basename(argv[0]);
+#else
+	 _splitpath(argv[0], NULL, NULL, filename, NULL);
+#endif
 
 	while((c = getopt(argc, argv, ARGS)) != -1)
 	{
@@ -425,7 +449,14 @@ int main(const int argc, char **argv)
 		if(input)
 		{
 			const unsigned char ext_len = strlen(FILE_EXT);
+#ifndef _WIN32
 			strncpy(output, basename(input), NAME_MAX - ext_len);
+#else
+			char input_path[NAME_MAX + 1], input_ext[_MAX_EXT + 1];
+	 		_splitpath(input, NULL, NULL, input_path, input_ext);
+	 		strcat(input_path, input_ext);
+	 		strncpy(output, input_path, NAME_MAX - ext_len);
+#endif
 
 			if(flags.dec)
 			{
@@ -473,13 +504,19 @@ int main(const int argc, char **argv)
 	}
 
 	int status;
+#ifndef _WIN32
 	unsigned short thread_count = sysconf(_SC_NPROCESSORS_ONLN);
+	signal(SIGTYPE, sighandler);
+#else
+	SYSTEM_INFO sysinfo;
+	GetSystemInfo(&sysinfo);
+	unsigned short thread_count = sysinfo.dwNumberOfProcessors;
+#endif
 	if(jobs && jobs < thread_count) thread_count = jobs;
 
 	if(block_size < PRESET_MIN || block_size > PRESET_MAX) block_size = PRESET_DEF + SIZE_THRESH;
 	else block_size += SIZE_THRESH;
 
-	signal(SIGTYPE, sighandler);
 	time(&stats.start_time);
 
 	if(!flags.dec) status = bwt_compress(fp_in, fp_out, thread_count, block_size);

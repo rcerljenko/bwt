@@ -387,7 +387,7 @@ int main(const int argc, char **argv)
 #ifndef _WIN32
 	filename = basename(argv[0]);
 #else
-	 _splitpath(argv[0], NULL, NULL, filename, NULL);
+	_splitpath(argv[0], NULL, NULL, filename, NULL);
 #endif
 
 	while((c = getopt(argc, argv, ARGS)) != -1)
@@ -453,9 +453,9 @@ int main(const int argc, char **argv)
 			strncpy(output, basename(input), NAME_MAX - ext_len);
 #else
 			char input_path[NAME_MAX + 1], input_ext[_MAX_EXT + 1];
-	 		_splitpath(input, NULL, NULL, input_path, input_ext);
-	 		strcat(input_path, input_ext);
-	 		strncpy(output, input_path, NAME_MAX - ext_len);
+			_splitpath(input, NULL, NULL, input_path, input_ext);
+			strcat(input_path, input_ext);
+			strncpy(output, input_path, NAME_MAX - ext_len);
 #endif
 
 			if(flags.dec)

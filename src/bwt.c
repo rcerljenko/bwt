@@ -514,13 +514,16 @@ int main(const int argc, char **argv)
 #endif
 	if(jobs && jobs < thread_count) thread_count = jobs;
 
-	if(block_size < PRESET_MIN || block_size > PRESET_MAX) block_size = PRESET_DEF + SIZE_THRESH;
-	else block_size += SIZE_THRESH;
-
 	time(&stats.start_time);
 
-	if(!flags.dec) status = bwt_compress(fp_in, fp_out, thread_count, block_size);
-	else status = bwt_decompress(fp_in, fp_out, thread_count);
+	if(flags.dec) status = bwt_decompress(fp_in, fp_out, thread_count);
+	else
+	{
+		if(block_size < PRESET_MIN || block_size > PRESET_MAX) block_size = PRESET_DEF + SIZE_THRESH;
+		else block_size += SIZE_THRESH;
+
+		status = bwt_compress(fp_in, fp_out, thread_count, block_size);
+	}
 
 	time(&stats.end_time);
 	fclose(fp_in);

@@ -9,7 +9,6 @@
 #define SIGTYPE SIGUSR1
 #else
 #include <windows.h>
-#define NAME_MAX _MAX_FNAME
 #endif
 
 #define OUTPUT_FLAG 'o'
@@ -55,7 +54,7 @@ struct stats_t
 };
 
 #ifdef _WIN32
-static char filename[NAME_MAX + 1];
+static char filename[_MAX_FNAME + 1];
 #else
 static char *filename;
 #endif
@@ -452,10 +451,10 @@ int main(const int argc, char **argv)
 #ifndef _WIN32
 			strncpy(output, basename(input), NAME_MAX - ext_len);
 #else
-			char input_path[NAME_MAX + 1], input_ext[_MAX_EXT + 1];
+			char input_path[_MAX_FNAME + 1], input_ext[_MAX_EXT + 1];
 			_splitpath(input, NULL, NULL, input_path, input_ext);
 			strcat(input_path, input_ext);
-			strncpy(output, input_path, NAME_MAX - ext_len);
+			strncpy(output, input_path, _MAX_FNAME - ext_len);
 #endif
 
 			if(flags.dec)

@@ -1,5 +1,5 @@
 
-Build: gcc -std=gnu11 -Wall -Wextra -Ofast -s -m64 -march=native -mfpmath=sse -pthread bwt.c -o bwt
+Build: gcc -std=gnu11 -Wall -Wextra -Ofast -Wl,-O1 -s -m64 -march=native -mfpmath=sse -pthread bwt.c -o bwt
 
 
 Header format:

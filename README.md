@@ -1,2 +1,2 @@
 # bwt
-Burrows-Wheeler transform + RLE compressor
+Multithreaded Burrows-Wheeler transform + Run Length Encoding compressor

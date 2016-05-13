@@ -1,9 +1,18 @@
 
-Build: gcc -std=gnu11 -Wall -Wextra -Ofast -Wl,-O1 -s -m64 -march=native -mfpmath=sse -pthread bwt.c -o bwt
+Build:
+- On Linux use build.sh script.
+- On Windows set compiler flags to match commands below.
+
+Shared lib:
+
+gcc -Ofast -std=gnu11 -Wall -Wextra -s -m64 -march=native -Wl,-O1 -shared -fPIC -o libbwt.so libbwt.c
+
+App:
+
+gcc -Ofast -std=gnu11 -Wall -Wextra -s -m64 -march=native -Wl,-O1 -mfpmath=sse -pthread -Wl,-rpath=. -L. -o bwt bwt.c -lbwt
 
 
 Header format:
-
 
 At the begining of file:
 

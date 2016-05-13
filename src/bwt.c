@@ -1,15 +1,26 @@
-#include "bwt.h"
-#include <stdio.h>
-#include <time.h>
-#include <unistd.h>
-#include <pthread.h>
-
 #ifndef _WIN32
+
+#ifdef __linux__
+#define _GNU_SOURCE
+#elif defined(__APPLE__)
+#include <libgen.h>
+#endif
+
 #include <signal.h>
 #define SIGTYPE SIGUSR1
+
 #else
 #include <windows.h>
 #endif
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <limits.h>
+#include <time.h>
+#include <unistd.h>
+#include <pthread.h>
+#include "bwt.h"
 
 #define OUTPUT_FLAG 'o'
 #define DEC_FLAG 'd'

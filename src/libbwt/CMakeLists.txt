@@ -2,9 +2,15 @@ cmake_minimum_required(VERSION 3.1)
 
 project(libbwt)
 set(CMAKE_BUILD_TYPE Release)
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Ofast -Wall -Wextra -s -m64 -march=native -Wl,-O1,-s")
+
+if(CMAKE_COMPILER_IS_GNUCXX)
+	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Ofast -Wall -Wextra -s -m64 -march=native -Wl,-O1,-s")
+endif(CMAKE_COMPILER_IS_GNUCXX)
+
 add_library(bwt SHARED libbwt.c)
 set_property(TARGET bwt PROPERTY C_STANDARD 11)
 
-install(TARGETS bwt LIBRARY DESTINATION lib)
-install(FILES bwt.h DESTINATION include)
+if(UNIX)
+	install(TARGETS bwt LIBRARY DESTINATION lib)
+	install(FILES bwt.h DESTINATION include)
+endif(UNIX)

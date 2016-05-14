@@ -8,9 +8,13 @@
 
 #include <signal.h>
 #define SIGTYPE SIGUSR1
+#include <pthread.h>
+typedef pthread_t thread_t;
 
 #else
 #include <windows.h>
+#include <process.h>
+typedef HANDLE thread_t;
 #endif
 
 #include <stdio.h>
@@ -19,7 +23,6 @@
 #include <limits.h>
 #include <time.h>
 #include <unistd.h>
-#include <pthread.h>
 #include "libbwt/bwt.h"
 
 #define OUTPUT_FLAG 'o'
@@ -72,20 +75,27 @@ static char *filename;
 static struct stats_t stats = {0};
 
 
+#ifndef _WIN32
 static void *threaded_compress(void* const void_bwt_data);
 static void *threaded_decompress(void* const void_bwt_data);
+static size_t get_memusage();
+static void sighandler();
+#else
+static unsigned int threaded_compress(void* const void_bwt_data);
+static unsigned int threaded_decompress(void* const void_bwt_data);
+#endif
 static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count, const unsigned char block_size);
 static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count);
 static size_t get_filesize(FILE* __restrict fp);
 static void show_statistics(const unsigned char signal);
 static void show_help();
+
+
 #ifndef _WIN32
-static size_t get_memusage();
-static void sighandler();
-#endif
-
-
 static void *threaded_compress(void* const void_bwt_data)
+#else
+static unsigned int threaded_compress(void* const void_bwt_data)
+#endif
 {
 	struct bwt_data_t* const bwt_data = (struct bwt_data_t *)void_bwt_data;
 	const bwt_size_t tmp_block_size = bwt_data->header.block_size;
@@ -100,17 +110,31 @@ static void *threaded_compress(void* const void_bwt_data)
 		bwt_data->status = 0;
 	}
 
+#ifndef _WIN32
 	return NULL;
+#else
+	_endthreadex(0);
+	return 0;
+#endif
 }
 
+#ifndef _WIN32
 static void *threaded_decompress(void* const void_bwt_data)
+#else
+static unsigned int threaded_decompress(void* const void_bwt_data)
+#endif
 {
 	struct bwt_data_t* const bwt_data = (struct bwt_data_t *)void_bwt_data;
 
 	if(bwt_data->status) bwt_data->header.block_size = rld(bwt_data->data, bwt_data->header.block_size);
 	ibwt(bwt_data->data, bwt_data->header.block_size, bwt_data->header.index);
 
+#ifndef _WIN32
 	return NULL;
+#else
+	_endthreadex(0);
+	return 0;
+#endif
 }
 
 static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count, const unsigned char block_size)
@@ -128,7 +152,7 @@ static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const u
 	unsigned short j;
 	bwt_size_t tmp_block_size;
 	struct bwt_data_t bwt_data[thread_count];
-	pthread_t threads[thread_count];
+	thread_t threads[thread_count];
 
 	stats.curr_fs_out = fwrite(&block_size, sizeof(unsigned char), 1, fp_out);
 
@@ -143,13 +167,21 @@ static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const u
 			if(i + main_block_size <= n) bwt_data[j].header.block_size = main_block_size;
 			else bwt_data[j].header.block_size = n - i;
 
+#ifndef _WIN32
 			pthread_create(&threads[j], NULL, threaded_compress, &bwt_data[j]);
+#else
+			threads[j] = (HANDLE) _beginthreadex(NULL, 0, threaded_compress, &bwt_data[j], 0, NULL);
+#endif
 		}
 
 		for (i = 0; i < j; i++)
 		{
+#ifndef _WIN32
 			pthread_join(threads[i], NULL);
-
+#else
+			WaitForSingleObject(threads[i], INFINITE);
+			CloseHandle(threads[i]);
+#endif
 			tmp_block_size = bwt_data[i].header.block_size;
 			if(!bwt_data[i].status) bwt_data[i].header.block_size = 0;
 
@@ -193,7 +225,7 @@ static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const
 	size_t n, status;
 	unsigned short i = 0;
 	struct bwt_data_t bwt_data[thread_count];
-	pthread_t threads[thread_count];
+	thread_t threads[thread_count];
 
 	while(fread(&bwt_data[i].header, sizeof(struct header_t), 1, fp_in) == 1)
 	{
@@ -231,14 +263,23 @@ static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const
 			}
 		}
 
+#ifndef _WIN32
 		pthread_create(&threads[i], NULL, threaded_decompress, &bwt_data[i]);
+#else
+		threads[i] = (HANDLE) _beginthreadex(NULL, 0, threaded_decompress, &bwt_data[i], 0, NULL);
+#endif
 		i++;
 
 		if(i == thread_count)
 		{
 			for (i = n = 0; i < thread_count; i++)
 			{
+#ifndef _WIN32
 				pthread_join(threads[i], NULL);
+#else
+				WaitForSingleObject(threads[i], INFINITE);
+				CloseHandle(threads[i]);
+#endif
 				n += bwt_data[i].header.block_size;
 			}
 
@@ -262,7 +303,12 @@ static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const
 		unsigned short j;
 		for (j = n = 0; j < i; j++)
 		{
+#ifndef _WIN32
 			pthread_join(threads[j], NULL);
+#else
+			WaitForSingleObject(threads[j], INFINITE);
+			CloseHandle(threads[j]);
+#endif
 			n += bwt_data[j].header.block_size;
 		}
 

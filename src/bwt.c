@@ -20,7 +20,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <pthread.h>
-#include "bwt.h"
+#include "libbwt/bwt.h"
 
 #define OUTPUT_FLAG 'o'
 #define DEC_FLAG 'd'

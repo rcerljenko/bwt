@@ -415,7 +415,7 @@ static short getopt(const int argc, char **argv, const char* const args)
 				return '?';
 			}
 		}
-		else if(argv[i] && argv[i][0] != '-') optind = i;
+		else if(argv[i] && argv[i][0] != '-' && !optind) optind = i;
 		else
 		{
 			if(!optind) optind = argc;

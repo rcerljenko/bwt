@@ -41,7 +41,7 @@ static inline int ibwt_cmp(const void* const a, const void* const b)
 	return *(unsigned char *)a - *(unsigned char *)b;
 }
 
-bwt_size_t __cdecl bwt(unsigned char* __restrict data, const bwt_size_t n)
+__declspec(dllexport) bwt_size_t __cdecl bwt(unsigned char* __restrict data, const bwt_size_t n)
 {
 	if(n < 2) return 0;
 
@@ -77,7 +77,7 @@ bwt_size_t __cdecl bwt(unsigned char* __restrict data, const bwt_size_t n)
 	return index;
 }
 
-void __cdecl ibwt(unsigned char* const __restrict data, const bwt_size_t n, bwt_size_t index)
+__declspec(dllexport) void __cdecl ibwt(unsigned char* const __restrict data, const bwt_size_t n, bwt_size_t index)
 {
 	if(n < 2) return;
 
@@ -102,7 +102,7 @@ void __cdecl ibwt(unsigned char* const __restrict data, const bwt_size_t n, bwt_
 	free(result);
 }
 
-bwt_size_t __cdecl rle(unsigned char* __restrict data, const bwt_size_t n)
+__declspec(dllexport) bwt_size_t __cdecl rle(unsigned char* __restrict data, const bwt_size_t n)
 {
 	if(n < 4) return 0;
 
@@ -135,7 +135,7 @@ bwt_size_t __cdecl rle(unsigned char* __restrict data, const bwt_size_t n)
 	return len;
 }
 
-bwt_size_t __cdecl rld(unsigned char* __restrict data, const bwt_size_t n)
+__declspec(dllexport) bwt_size_t __cdecl rld(unsigned char* __restrict data, const bwt_size_t n)
 {
 	if(n < 3) return n;
 

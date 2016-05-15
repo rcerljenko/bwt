@@ -4,7 +4,7 @@ project(libbwt)
 set(CMAKE_BUILD_TYPE Release)
 
 if(CMAKE_COMPILER_IS_GNUCC)
-	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Ofast -Wall -Wextra -s -m64 -march=native -Wl,-O1,-s")
+	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wall -Wextra -s -m64 -march=native -Ofast -flto")
 endif(CMAKE_COMPILER_IS_GNUCC)
 
 add_library(bwt SHARED libbwt.c)

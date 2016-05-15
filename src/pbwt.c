@@ -379,7 +379,6 @@ static void sighandler(const int signum)
 static short getopt(const int argc, char **argv, const char* const args)
 {
 	optarg = NULL;
-	if(!optind) optind = argc;
 
 	char curr_arg;
 	const char *is_arg;
@@ -416,7 +415,11 @@ static short getopt(const int argc, char **argv, const char* const args)
 			}
 		}
 		else if(argv[i] && argv[i][0] != '-') optind = i;
-		else break;
+		else
+		{
+			if(!optind) optind = argc;
+			break;
+		}
 	}
 	
 	return -1;

@@ -6,10 +6,13 @@
 #include <libgen.h>
 #endif
 
-#include <unistd.h>
 #include <signal.h>
-#define SIGTYPE SIGUSR1
+#include <limits.h>
+#include <unistd.h>
 #include <pthread.h>
+
+#define MAX_PATH PATH_MAX
+#define SIGTYPE SIGUSR1
 typedef pthread_t thread_t;
 
 #else
@@ -21,7 +24,6 @@ typedef HANDLE thread_t;
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <limits.h>
 #include <time.h>
 #include "libbwt/bwt.h"
 
@@ -153,8 +155,9 @@ static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const u
 	unsigned long i, n;
 	unsigned short j;
 	bwt_size_t tmp_block_size;
-	struct bwt_data_t bwt_data[thread_count];
-	thread_t threads[thread_count];
+
+	struct bwt_data_t* const bwt_data = malloc(sizeof(struct bwt_data_t) * thread_count);
+	thread_t* const threads = malloc(sizeof(thread_t) * thread_count);
 
 	stats.curr_fs_out = fwrite(&block_size, sizeof(unsigned char), 1, fp_out);
 
@@ -194,12 +197,16 @@ static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const u
 			else
 			{
 				perror(filename);
+				free(threads);
+				free(bwt_data);
 				free(data);
 				return EXIT_FAILURE;
 			}
 		}
 	}
 
+	free(threads);
+	free(bwt_data);
 	free(data);
 
 	if(ferror(fp_in))
@@ -226,8 +233,9 @@ static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const
 
 	unsigned long n, status;
 	unsigned short i = 0;
-	struct bwt_data_t bwt_data[thread_count];
-	thread_t threads[thread_count];
+
+	struct bwt_data_t* const bwt_data = malloc(sizeof(struct bwt_data_t) * thread_count);
+	thread_t* const threads = malloc(sizeof(thread_t) * thread_count);
 
 	while(fread(&bwt_data[i].header, sizeof(struct header_t), 1, fp_in) == 1)
 	{
@@ -245,6 +253,8 @@ static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const
 				if(ferror(fp_in)) perror(filename);
 				else fprintf(stderr, "%s: Invalid input file format.\n", filename);
 
+				free(threads);
+				free(bwt_data);
 				free(data);
 				return EXIT_FAILURE;
 			}
@@ -255,6 +265,8 @@ static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const
 			if(ferror(fp_in))
 			{
 				perror(filename);
+				free(threads);
+				free(bwt_data);
 				free(data);
 				return EXIT_FAILURE;
 			}
@@ -294,6 +306,8 @@ static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const
 			else
 			{
 				perror(filename);
+				free(threads);
+				free(bwt_data);
 				free(data);
 				return EXIT_FAILURE;
 			}
@@ -319,11 +333,15 @@ static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const
 		else
 		{
 			perror(filename);
+			free(threads);
+			free(bwt_data);
 			free(data);
 			return EXIT_FAILURE;
 		}
 	}
 
+	free(threads);
+	free(bwt_data);
 	free(data);
 	return EXIT_SUCCESS;
 }
@@ -400,7 +418,7 @@ static short getopt(const int argc, char **argv, const char* const args)
 		else if(argv[i] && argv[i][0] != '-') optind = i;
 		else break;
 	}
-	
+
 	return -1;
 }
 #endif
@@ -486,7 +504,7 @@ int main(const int argc, char **argv)
 
 	int c;
 	unsigned long jobs = 0, block_size = PRESET_DEF;
-	char *input, output[PATH_MAX] = {0};
+	char *input, output[MAX_PATH + 1] = {0};
 	FILE *fp_in = stdin, *fp_out = NULL;
 	struct flags_t flags = {0};
 

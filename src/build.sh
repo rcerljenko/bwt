@@ -1,4 +1,4 @@
-CC=gcc-6
+CC=gcc
 CFLAGS="-std=gnu11 -Wall -Wextra -s -m64 -march=native -Ofast -flto"
 LIB_PATH=`pwd`/libbwt
 

@@ -70,10 +70,11 @@ struct stats_t
 };
 
 #ifdef _WIN32
-static char *optarg, filename[_MAX_FNAME + 1];
+static const char *optarg;
+static char filename[_MAX_FNAME + 1];
 static unsigned short optind;
 #else
-static char *filename;
+static const char *filename;
 #endif
 static struct stats_t stats = {0};
 
@@ -156,8 +157,8 @@ static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const u
 	unsigned short j;
 	bwt_size_t tmp_block_size;
 
-	struct bwt_data_t* __restrict const bwt_data = malloc(sizeof(struct bwt_data_t) * thread_count);
-	thread_t* __restrict const threads = malloc(sizeof(thread_t) * thread_count);
+	struct bwt_data_t* const __restrict bwt_data = malloc(sizeof(struct bwt_data_t) * thread_count);
+	thread_t* const __restrict threads = malloc(sizeof(thread_t) * thread_count);
 
 	stats.curr_fs_out = fwrite(&block_size, sizeof(unsigned char), 1, fp_out);
 
@@ -234,8 +235,8 @@ static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const
 	size_t n, status;
 	unsigned short i = 0;
 
-	struct bwt_data_t* __restrict const bwt_data = malloc(sizeof(struct bwt_data_t) * thread_count);
-	thread_t* __restrict const threads = malloc(sizeof(thread_t) * thread_count);
+	struct bwt_data_t* const __restrict bwt_data = malloc(sizeof(struct bwt_data_t) * thread_count);
+	thread_t* const __restrict threads = malloc(sizeof(thread_t) * thread_count);
 
 	while(fread(&bwt_data[i].header, sizeof(struct header_t), 1, fp_in) == 1)
 	{
@@ -421,7 +422,7 @@ static short getopt(const int argc, char **argv, const char* const args)
 			break;
 		}
 	}
-	
+
 	return -1;
 }
 #endif
@@ -507,7 +508,8 @@ int main(const int argc, char **argv)
 
 	int c;
 	unsigned long jobs = 0, block_size = PRESET_DEF;
-	char *input, output[MAX_PATH + 1] = {0};
+	const char *input;
+	char output[MAX_PATH + 1] = {0};
 	FILE *fp_in = stdin, *fp_out = NULL;
 	struct flags_t flags = {0};
 

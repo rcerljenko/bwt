@@ -65,7 +65,7 @@ struct flags_t
 
 struct stats_t
 {
-	unsigned long filesize_in, curr_fs_in, curr_fs_out;
+	size_t filesize_in, curr_fs_in, curr_fs_out;
 	time_t start_time, end_time;
 };
 
@@ -81,7 +81,7 @@ static struct stats_t stats = {0};
 #ifndef _WIN32
 static void *threaded_compress(void* const void_bwt_data);
 static void *threaded_decompress(void* const void_bwt_data);
-static unsigned long get_memusage();
+static size_t get_memusage();
 static void sighandler(const int signum);
 #else
 static unsigned int threaded_compress(void* const void_bwt_data);
@@ -90,7 +90,7 @@ static short getopt(const int argc, char **argv, const char* const args);
 #endif
 static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count, const unsigned char block_size);
 static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count);
-static unsigned long get_filesize(FILE* __restrict fp);
+static size_t get_filesize(FILE* __restrict fp);
 static void show_statistics(const int signum);
 static void show_help();
 
@@ -144,7 +144,7 @@ static unsigned int threaded_decompress(void* const void_bwt_data)
 static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count, const unsigned char block_size)
 {
 	const bwt_size_t main_block_size = 1U << block_size;
-	const unsigned long fread_size = main_block_size * thread_count;
+	const size_t fread_size = main_block_size * thread_count;
 	unsigned char* const data = malloc(sizeof(unsigned char) * fread_size + 1);
 	if(!data)
 	{
@@ -152,12 +152,12 @@ static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const u
 		return EXIT_FAILURE;
 	}
 
-	unsigned long i, n;
+	size_t i, n;
 	unsigned short j;
 	bwt_size_t tmp_block_size;
 
 	struct bwt_data_t* const bwt_data = malloc(sizeof(struct bwt_data_t) * thread_count);
-	thread_t* const threads = malloc(sizeof(thread_t) * thread_count);
+	thread_t* __restrict const threads = malloc(sizeof(thread_t) * thread_count);
 
 	stats.curr_fs_out = fwrite(&block_size, sizeof(unsigned char), 1, fp_out);
 
@@ -231,11 +231,11 @@ static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const
 		return EXIT_FAILURE;
 	}
 
-	unsigned long n, status;
+	size_t n, status;
 	unsigned short i = 0;
 
 	struct bwt_data_t* const bwt_data = malloc(sizeof(struct bwt_data_t) * thread_count);
-	thread_t* const threads = malloc(sizeof(thread_t) * thread_count);
+	thread_t* __restrict const threads = malloc(sizeof(thread_t) * thread_count);
 
 	while(fread(&bwt_data[i].header, sizeof(struct header_t), 1, fp_in) == 1)
 	{
@@ -346,17 +346,17 @@ static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const
 	return EXIT_SUCCESS;
 }
 
-static unsigned long get_filesize(FILE* __restrict fp)
+static size_t get_filesize(FILE* __restrict fp)
 {
 	fseek(fp, 0, SEEK_END);
-	const unsigned long size = ftell(fp);
+	const size_t size = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
 
 	return size;
 }
 
 #ifndef _WIN32
-static unsigned long get_memusage()
+static size_t get_memusage()
 {
 	FILE* __restrict fp = fopen("/proc/self/statm", "rb");
 	if(!fp) return 0;
@@ -426,7 +426,7 @@ static short getopt(const int argc, char **argv, const char* const args)
 static void show_statistics(const int signum)
 {
 	char time_buffer[8];
-	unsigned long diff_fs = 0;
+	size_t diff_fs = 0;
 	float diff_perc = 0, ratio = 0, speed = 0;
 
 	const time_t diff_time = difftime(stats.end_time, stats.start_time);

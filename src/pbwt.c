@@ -70,8 +70,8 @@ struct stats_t
 };
 
 #ifdef _WIN32
-static const char *optarg;
 static char filename[_MAX_FNAME + 1];
+static const char *optarg;
 static unsigned short optind;
 #else
 static const char *filename;

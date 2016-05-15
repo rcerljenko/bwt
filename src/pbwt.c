@@ -156,7 +156,7 @@ static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const u
 	unsigned short j;
 	bwt_size_t tmp_block_size;
 
-	struct bwt_data_t* const bwt_data = malloc(sizeof(struct bwt_data_t) * thread_count);
+	struct bwt_data_t* __restrict const bwt_data = malloc(sizeof(struct bwt_data_t) * thread_count);
 	thread_t* __restrict const threads = malloc(sizeof(thread_t) * thread_count);
 
 	stats.curr_fs_out = fwrite(&block_size, sizeof(unsigned char), 1, fp_out);
@@ -234,7 +234,7 @@ static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const
 	size_t n, status;
 	unsigned short i = 0;
 
-	struct bwt_data_t* const bwt_data = malloc(sizeof(struct bwt_data_t) * thread_count);
+	struct bwt_data_t* __restrict const bwt_data = malloc(sizeof(struct bwt_data_t) * thread_count);
 	thread_t* __restrict const threads = malloc(sizeof(thread_t) * thread_count);
 
 	while(fread(&bwt_data[i].header, sizeof(struct header_t), 1, fp_in) == 1)

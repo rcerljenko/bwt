@@ -6,6 +6,7 @@
 #include <libgen.h>
 #endif
 
+#include <unistd.h>
 #include <signal.h>
 #define SIGTYPE SIGUSR1
 #include <pthread.h>
@@ -22,7 +23,6 @@ typedef HANDLE thread_t;
 #include <string.h>
 #include <limits.h>
 #include <time.h>
-#include <unistd.h>
 #include "libbwt/bwt.h"
 
 #define OUTPUT_FLAG 'o'
@@ -63,12 +63,13 @@ struct flags_t
 
 struct stats_t
 {
-	size_t filesize_in, curr_fs_in, curr_fs_out;
+	unsigned long filesize_in, curr_fs_in, curr_fs_out;
 	time_t start_time, end_time;
 };
 
 #ifdef _WIN32
-static char filename[_MAX_FNAME + 1];
+static char *optarg, filename[_MAX_FNAME + 1];
+static int optind;
 #else
 static char *filename;
 #endif
@@ -78,16 +79,17 @@ static struct stats_t stats = {0};
 #ifndef _WIN32
 static void *threaded_compress(void* const void_bwt_data);
 static void *threaded_decompress(void* const void_bwt_data);
-static size_t get_memusage();
-static void sighandler();
+static unsigned long get_memusage();
+static void sighandler(const int signum);
 #else
 static unsigned int threaded_compress(void* const void_bwt_data);
 static unsigned int threaded_decompress(void* const void_bwt_data);
+static short getopt(const int argc, char **argv, const char* const args);
 #endif
 static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count, const unsigned char block_size);
 static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count);
-static size_t get_filesize(FILE* __restrict fp);
-static void show_statistics(const unsigned char signal);
+static unsigned long get_filesize(FILE* __restrict fp);
+static void show_statistics(const int signum);
 static void show_help();
 
 
@@ -140,7 +142,7 @@ static unsigned int threaded_decompress(void* const void_bwt_data)
 static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count, const unsigned char block_size)
 {
 	const bwt_size_t main_block_size = 1U << block_size;
-	const size_t fread_size = main_block_size * thread_count;
+	const unsigned long fread_size = main_block_size * thread_count;
 	unsigned char* const data = malloc(sizeof(unsigned char) * fread_size + 1);
 	if(!data)
 	{
@@ -148,7 +150,7 @@ static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const u
 		return EXIT_FAILURE;
 	}
 
-	size_t i, n;
+	unsigned long i, n;
 	unsigned short j;
 	bwt_size_t tmp_block_size;
 	struct bwt_data_t bwt_data[thread_count];
@@ -222,7 +224,7 @@ static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const
 		return EXIT_FAILURE;
 	}
 
-	size_t n, status;
+	unsigned long n, status;
 	unsigned short i = 0;
 	struct bwt_data_t bwt_data[thread_count];
 	thread_t threads[thread_count];
@@ -326,17 +328,17 @@ static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const
 	return EXIT_SUCCESS;
 }
 
-static size_t get_filesize(FILE* __restrict fp)
+static unsigned long get_filesize(FILE* __restrict fp)
 {
 	fseek(fp, 0, SEEK_END);
-	const size_t size = ftell(fp);
+	const unsigned long size = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
 
 	return size;
 }
 
 #ifndef _WIN32
-static size_t get_memusage()
+static unsigned long get_memusage()
 {
 	FILE* __restrict fp = fopen("/proc/self/statm", "rb");
 	if(!fp) return 0;
@@ -350,17 +352,63 @@ static size_t get_memusage()
 	return vm_rss * page_size;
 }
 
-static void sighandler()
+static void sighandler(const int signum)
 {
 	time(&stats.end_time);
-	show_statistics(1);
+	show_statistics(signum);
+}
+#else
+static short getopt(const int argc, char **argv, const char* const args)
+{
+	optarg = NULL;
+	if(!optind) optind = argc;
+
+	char curr_arg;
+	const char *is_arg;
+	static unsigned short i = 0;
+
+	while(++i)
+	{
+		if(argv[i] && argv[i][0] == '-' && argv[i][1] != '-')
+		{
+			curr_arg = argv[i][1];
+			is_arg = strchr(args, curr_arg);
+
+			if(is_arg)
+			{
+				if(*(++is_arg) == ':')
+				{
+					if(argv[i + 1] && argv[i + 1][0] != '-')
+					{
+						optarg = argv[i + 1];
+						return curr_arg;
+					}
+					else
+					{
+						fprintf(stderr, "%s: Argument -%c requires a value.\n", filename, curr_arg);
+						return '?';
+					}
+				}
+				else return curr_arg;
+			}
+			else
+			{
+				fprintf(stderr, "%s: Unknown argument -%c.\n", filename, curr_arg);
+				return '?';
+			}
+		}
+		else if(argv[i] && argv[i][0] != '-') optind = i;
+		else break;
+	}
+	
+	return -1;
 }
 #endif
 
-static void show_statistics(const unsigned char signal)
+static void show_statistics(const int signum)
 {
 	char time_buffer[8];
-	size_t diff_fs = 0;
+	unsigned long diff_fs = 0;
 	float diff_perc = 0, ratio = 0, speed = 0;
 
 	const time_t diff_time = difftime(stats.end_time, stats.start_time);
@@ -386,7 +434,7 @@ static void show_statistics(const unsigned char signal)
 	strftime(time_buffer, sizeof(time_buffer), "%Mm:%Ss", time_info);
 
 #ifndef _WIN32
-	if(signal && stats.filesize_in)
+	if(signum && stats.filesize_in)
 	{
 		const unsigned short progress = (100 * stats.curr_fs_in) / stats.filesize_in;
 		fprintf(stderr, "Progress: %hu%%\n", progress);
@@ -402,7 +450,7 @@ static void show_statistics(const unsigned char signal)
 		, stats.curr_fs_in, stats.curr_fs_out, diff_fs, diff_perc, ratio, time_buffer, speed);
 
 #ifndef _WIN32
-	if(signal)
+	if(signum)
 	{
 		const float memory = (float)get_memusage() / (1024 * 1024);
 		fprintf(stderr, "Memory (RAM): %.2f MB\n\n", memory);
@@ -434,6 +482,8 @@ static void show_help()
 
 int main(const int argc, char **argv)
 {
+	time(&stats.start_time);
+
 	int c;
 	unsigned long jobs = 0, block_size = PRESET_DEF;
 	char *input, output[PATH_MAX] = {0};
@@ -570,8 +620,6 @@ int main(const int argc, char **argv)
 #endif
 	if(jobs && jobs < thread_count) thread_count = jobs;
 
-	time(&stats.start_time);
-
 	if(flags.dec) status = bwt_decompress(fp_in, fp_out, thread_count);
 	else
 	{
@@ -581,14 +629,17 @@ int main(const int argc, char **argv)
 		status = bwt_compress(fp_in, fp_out, thread_count, block_size);
 	}
 
-	time(&stats.end_time);
 	fclose(fp_in);
 	fclose(fp_out);
 
 	if(status == EXIT_SUCCESS)
 	{
 		if(flags.remove) remove(input);
-		if(flags.verbose) show_statistics(0);
+		if(flags.verbose)
+		{
+			time(&stats.end_time);
+			show_statistics(0);
+		}
 	}
 	else if(output[0]) remove(output);
 

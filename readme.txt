@@ -2,14 +2,15 @@
 Build:
 - On Linux use build.sh script.
 - On Windows set compiler flags to match commands below.
+- Or use CMake on any platform.
 
 Shared lib:
 
-gcc -Ofast -std=gnu11 -Wall -Wextra -s -m64 -march=native -Wl,-O1,-s -shared -fPIC -o libbwt.so libbwt.c
+gcc -std=gnu11 -Wall -Wextra -s -m64 -march=native -Ofast -flto -shared -fPIC -o libbwt.so libbwt.c
 
 App:
 
-gcc -Ofast -std=gnu11 -Wall -Wextra -s -m64 -march=native -Wl,-O1,-s -mfpmath=sse -pthread -Wl,-rpath=. -L. -o bwt bwt.c -lbwt
+gcc -std=gnu11 -Wall -Wextra -s -m64 -march=native -Ofast -flto -mfpmath=sse -pthread -Wl,-rpath=. -L. -o bwt bwt.c -lbwt
 
 
 Header format:

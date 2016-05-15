@@ -1,2 +1,2 @@
-# bwt
-Multithreaded Burrows-Wheeler transform + Run Length Encoding compressor
+#pbwt
+Portable Multithreaded Burrows-Wheeler transform + Run Length Encoding compressor

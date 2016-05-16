@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 
-project(pbwt)
+project(pbwt C)
 set(CMAKE_BUILD_TYPE Release)
 
 if("${CMAKE_C_COMPILER_ID}" MATCHES "GNU")
@@ -13,16 +13,15 @@ elseif("${CMAKE_C_COMPILER_ID}" MATCHES "MSVC")
 	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /Wall /O2 /Ot /Gd /GL /Gw /Qpar /Tc")
 endif()
 
-set(REQUIRED_LIBS bwt)
-if(UNIX)
-	set(REQUIRED_LIBS "${REQUIRED_LIBS} pthread")
-endif(UNIX)
-
 link_directories(libbwt/build)
 add_executable(pbwt pbwt.c)
 set_property(TARGET pbwt PROPERTY C_STANDARD 11)
-target_link_libraries(pbwt ${REQUIRED_LIBS})
 
-if(UNIX)
+if(UNIX OR APPLE)
+	target_link_libraries(pbwt bwt pthread)
+	#install(TARGETS bwt LIBRARY DESTINATION lib)
+	#install(FILES bwt.h DESTINATION include)
 	install(TARGETS pbwt RUNTIME DESTINATION bin)
-endif(UNIX)
+else()
+	target_link_libraries(pbwt bwt)
+endif()

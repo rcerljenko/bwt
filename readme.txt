@@ -10,7 +10,7 @@ gcc -std=gnu11 -Wall -Wextra -s -m64 -march=native -Ofast -flto -shared -fPIC -o
 
 App:
 
-gcc -std=gnu11 -Wall -Wextra -s -m64 -march=native -Ofast -flto -mfpmath=sse -pthread -Wl,-rpath=. -L. -o bwt bwt.c -lbwt
+gcc -std=gnu11 -Wall -Wextra -s -m64 -march=native -Ofast -flto -Wl,-rpath=. -L. -o bwt bwt.c -pthread -lbwt
 
 
 Header format:

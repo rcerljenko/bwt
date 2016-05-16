@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 
-project(libbwt)
+project(libbwt C)
 set(CMAKE_BUILD_TYPE Release)
 
 if("${CMAKE_C_COMPILER_ID}" MATCHES "GNU")
@@ -16,7 +16,7 @@ endif()
 add_library(bwt SHARED libbwt.c)
 set_property(TARGET bwt PROPERTY C_STANDARD 11)
 
-if(UNIX)
+if(UNIX OR APPLE)
 	install(TARGETS bwt LIBRARY DESTINATION lib)
 	install(FILES bwt.h DESTINATION include)
-endif(UNIX)
+endif()

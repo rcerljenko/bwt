@@ -19,8 +19,6 @@ set_property(TARGET pbwt PROPERTY C_STANDARD 11)
 
 if(UNIX OR APPLE)
 	target_link_libraries(pbwt bwt pthread)
-	#install(TARGETS bwt LIBRARY DESTINATION lib)
-	#install(FILES bwt.h DESTINATION include)
 	install(TARGETS pbwt RUNTIME DESTINATION bin)
 else()
 	target_link_libraries(pbwt bwt)

@@ -87,7 +87,7 @@ static void sighandler(const int signum);
 #else
 static unsigned int threaded_compress(void* const void_bwt_data);
 static unsigned int threaded_decompress(void* const void_bwt_data);
-static short getopt(const int argc, char** const __restrict argv, const char* const __restrict args);
+static short getopt(const unsigned short argc, char** const __restrict argv, const char* const __restrict args);
 #endif
 static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count, const unsigned char block_size);
 static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count);
@@ -377,10 +377,8 @@ static void sighandler(const int signum)
 	show_statistics(signum);
 }
 #else
-static short getopt(const int argc, char** const __restrict argv, const char* const __restrict args)
+static short getopt(const unsigned short argc, char** const __restrict argv, const char* const __restrict args)
 {
-	optarg = NULL;
-
 	char curr_arg;
 	const char *is_arg;
 	static unsigned short i = 0;
@@ -418,6 +416,7 @@ static short getopt(const int argc, char** const __restrict argv, const char* co
 		else if(argv[i] && argv[i][0] != '-' && !optind) optind = i;
 		else
 		{
+			optarg = NULL;
 			if(!optind) optind = argc;
 			break;
 		}

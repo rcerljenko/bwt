@@ -397,33 +397,31 @@ static short getopt(const unsigned short argc, char** const __restrict argv, con
 
 	while(++i)
 	{
-		if(argv[i] && argv[i][0] == '-' && argv[i][1] != '-')
+		if(argv[i] && argv[i][0] == '-')
 		{
-			curr_arg = argv[i][1];
-			is_arg = strchr(args, curr_arg);
-
-			if(is_arg)
+			if(!(curr_arg = argv[i][1]))
 			{
-				if(*(++is_arg) == ':')
-				{
-					if(argv[i + 1] && argv[i + 1][0] != '-')
-					{
-						optarg = argv[i + 1];
-						return curr_arg;
-					}
-					else
-					{
-						fprintf(stderr, "%s: Argument -%c requires a value.\n", filename, curr_arg);
-						return '?';
-					}
-				}
-				else return curr_arg;
+				fprintf(stderr, "%s: Missing argument.\n", filename);
+				return '?';
 			}
-			else
+
+			if(!(is_arg = strchr(args, curr_arg)))
 			{
 				fprintf(stderr, "%s: Unknown argument -%c.\n", filename, curr_arg);
 				return '?';
 			}
+
+			if(*(++is_arg) == ':')
+			{
+				if(argv[i + 1] && argv[i + 1][0] != '-') optarg = argv[i + 1];
+				else
+				{
+					fprintf(stderr, "%s: Argument -%c requires a value.\n", filename, curr_arg);
+					return '?';
+				}
+			}
+
+			return curr_arg;
 		}
 		else if(argv[i] && argv[i][0] != '-' && !optind) optind = i;
 		else

@@ -92,6 +92,7 @@ static short getopt(const unsigned short argc, char** const __restrict argv, con
 static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count, const unsigned char block_size);
 static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count);
 static size_t get_filesize(FILE* __restrict fp);
+static unsigned short get_threadcount();
 static void show_statistics(const int signum);
 static void show_help();
 
@@ -354,6 +355,17 @@ static size_t get_filesize(FILE* __restrict fp)
 	fseek(fp, 0, SEEK_SET);
 
 	return size;
+}
+
+static unsigned short get_threadcount()
+{
+#ifndef _WIN32
+	return sysconf(_SC_NPROCESSORS_ONLN);
+#else
+	SYSTEM_INFO sysinfo;
+	GetSystemInfo(&sysinfo);
+	return sysinfo.dwNumberOfProcessors;
+#endif
 }
 
 #ifndef _WIN32
@@ -632,15 +644,12 @@ int main(const int argc, char **argv)
 	}
 
 	int status;
-#ifndef _WIN32
-	unsigned short thread_count = sysconf(_SC_NPROCESSORS_ONLN);
-	signal(SIGTYPE, sighandler);
-#else
-	SYSTEM_INFO sysinfo;
-	GetSystemInfo(&sysinfo);
-	unsigned short thread_count = sysinfo.dwNumberOfProcessors;
-#endif
+	unsigned short thread_count = get_threadcount();
 	if(jobs && jobs < thread_count) thread_count = jobs;
+
+#ifndef _WIN32
+	signal(SIGTYPE, sighandler);
+#endif
 
 	if(flags.dec) status = bwt_decompress(fp_in, fp_out, thread_count);
 	else

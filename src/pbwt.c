@@ -498,8 +498,10 @@ static void show_help()
 		"If <input_file> is STDIN and output file is omitted (no valid -%c flag), output file is STDOUT (like -%c flag).\n"
 #ifndef _WIN32
 		"Other processes can send signal SIGUSR1 to get progress info.\n"
-#endif
 		"\nPossible options (can be combined together):\n"
+#else
+		"\nPossible options:\n"
+#endif
 		"\t-%c - Write output to STDOUT (ignored if valid -%c flag exists).\n"
 		"\t-%c - Decompression mode.\n"
 		"\t-%c - Show help and exit.\n"

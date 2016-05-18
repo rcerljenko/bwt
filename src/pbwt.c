@@ -600,7 +600,7 @@ int main(const int argc, char **argv)
 #endif
 			if(flags.dec)
 			{
-				char *ext_pos = strstr(output + strlen(output) - ext_len, FILE_EXT);
+				char* const ext_pos = strstr(output + strlen(output) - ext_len, FILE_EXT);
 				if(ext_pos) *ext_pos = 0;
 			}
 			else strcat(output, FILE_EXT);

@@ -397,6 +397,8 @@ static short getopt(const unsigned short argc, char** const __restrict argv, con
 
 	while(++i)
 	{
+		optarg = NULL;
+
 		if(argv[i] && argv[i][0] == '-')
 		{
 			if(!(curr_arg = argv[i][1]))
@@ -414,7 +416,7 @@ static short getopt(const unsigned short argc, char** const __restrict argv, con
 			if(*(++is_arg) == ':')
 			{
 				if(argv[i + 1] && argv[i + 1][0] != '-') optarg = argv[i + 1];
-				else
+				else if(*(++is_arg) != ':')
 				{
 					fprintf(stderr, "%s: Argument -%c requires a value.\n", filename, curr_arg);
 					return '?';
@@ -426,7 +428,6 @@ static short getopt(const unsigned short argc, char** const __restrict argv, con
 		else if(argv[i] && argv[i][0] != '-' && !optind) optind = i;
 		else
 		{
-			optarg = NULL;
 			if(!optind) optind = argc;
 			break;
 		}

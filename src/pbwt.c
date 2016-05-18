@@ -593,12 +593,10 @@ int main(const int argc, char **argv)
 #ifndef _WIN32
 			strncpy(output, basename(input), NAME_MAX - ext_len);
 #else
-			{
-				char input_path[_MAX_FNAME + 1], input_ext[_MAX_EXT + 1];
-				_splitpath(input, NULL, NULL, input_path, input_ext);
-				strcat(input_path, input_ext);
-				strncpy(output, input_path, _MAX_FNAME - ext_len);
-			}
+			char input_path[_MAX_FNAME + 1], input_ext[_MAX_EXT + 1];
+			_splitpath(input, NULL, NULL, input_path, input_ext);
+			strcat(input_path, input_ext);
+			strncpy(output, input_path, _MAX_FNAME - ext_len);
 #endif
 			if(flags.dec)
 			{

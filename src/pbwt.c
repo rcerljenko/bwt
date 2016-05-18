@@ -598,7 +598,6 @@ int main(const int argc, char **argv)
 				strncpy(output, input_path, _MAX_FNAME - ext_len);
 			}
 #endif
-
 			if(flags.dec)
 			{
 				char *ext_pos = strstr(output + strlen(output) - ext_len, FILE_EXT);

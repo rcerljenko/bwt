@@ -425,7 +425,7 @@ static short getopt(const unsigned short argc, char** const __restrict argv, con
 
 			return curr_arg;
 		}
-		else if(argv[i][0] != '-' && !optind) optind = i;
+		else if(!optind) optind = i;
 		else
 		{
 			if(!optind) optind = argc;

@@ -395,11 +395,11 @@ static short getopt(const unsigned short argc, char** const __restrict argv, con
 	const char *is_arg;
 	static unsigned short i = 0;
 
-	while(++i)
+	while(++i < argc)
 	{
 		optarg = NULL;
 
-		if(argv[i] && argv[i][0] == '-')
+		if(argv[i][0] == '-')
 		{
 			if(!(curr_arg = argv[i][1]))
 			{
@@ -425,7 +425,7 @@ static short getopt(const unsigned short argc, char** const __restrict argv, con
 
 			return curr_arg;
 		}
-		else if(argv[i] && argv[i][0] != '-' && !optind) optind = i;
+		else if(argv[i][0] != '-' && !optind) optind = i;
 		else
 		{
 			if(!optind) optind = argc;

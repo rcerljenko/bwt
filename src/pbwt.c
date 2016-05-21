@@ -69,12 +69,12 @@ struct stats_t
 	time_t start_time, end_time;
 };
 
-#ifdef _WIN32
+#ifndef _WIN32
+static const char *filename;
+#else
 static char filename[_MAX_FNAME + 1];
 static const char *optarg;
 static unsigned short optind;
-#else
-static const char *filename;
 #endif
 static struct stats_t stats = {0};
 

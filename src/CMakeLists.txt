@@ -10,7 +10,7 @@ elseif("${CMAKE_C_COMPILER_ID}" MATCHES "Clang")
 elseif("${CMAKE_C_COMPILER_ID}" MATCHES "Intel")
 	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -W5 -m64 -O3 -ipo")
 elseif("${CMAKE_C_COMPILER_ID}" MATCHES "MSVC")
-	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /Wall /O2 /Ot /Gd /GL /Gw /Qpar /Tc")
+	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /Wall /Ox /GF /Gd /GL /Gw /Qpar /Tc")
 endif()
 
 link_directories(libbwt/build)

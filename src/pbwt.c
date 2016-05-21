@@ -488,8 +488,9 @@ static void show_statistics(const int signum)
 
 static void show_help()
 {
-	fprintf(stderr, "Usage: %s [<input_file>] [OPTIONS]\n"
+	fprintf(stderr, "%s - Portable multithreaded Burrows-Wheeler transform + Run Length Encoding compressor/decompressor.\n"
 		"Build date: " __DATE__ " @ " __TIME__ "\n\n"
+		"Usage: %s [<input_file>] [OPTIONS]\n\n"
 		"If <input_file> is omitted, input file is STDIN.\n"
 		"If <input_file> is STDIN and output file is omitted (no valid -%c flag), output file is STDOUT (like -%c flag).\n"
 #ifndef _WIN32
@@ -507,7 +508,7 @@ static void show_help()
 		"\t\tHigher presets give better compression ratio but decompression is considerably longer (if omitted or wrong value, preset is %u).\n"
 		"\t-%c - Remove input file after successful operation (ignored when input file is STDIN).\n"
 		"\t-%c - Verbose mode - show statistics after successful operation.\n"
-		, filename, OUTPUT_FLAG, STDOUT_FLAG, STDOUT_FLAG, OUTPUT_FLAG, DEC_FLAG, HELP_FLAG, JOBS_FLAG, OUTPUT_FLAG, PRESET_FLAG, PRESET_MIN, PRESET_MAX, PRESET_DEF, REMOVE_FLAG, VERBOSE_FLAG);
+		, filename, filename, OUTPUT_FLAG, STDOUT_FLAG, STDOUT_FLAG, OUTPUT_FLAG, DEC_FLAG, HELP_FLAG, JOBS_FLAG, OUTPUT_FLAG, PRESET_FLAG, PRESET_MIN, PRESET_MAX, PRESET_DEF, REMOVE_FLAG, VERBOSE_FLAG);
 }
 
 int main(const int argc, char **argv)

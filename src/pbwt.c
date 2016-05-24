@@ -374,10 +374,10 @@ static size_t get_memusage()
 	FILE* __restrict fp = fopen("/proc/self/statm", "rb");
 	if(!fp) return 0;
 
-	unsigned int vm_rss;
+	unsigned long vm_rss;
 	const unsigned short page_size = sysconf(_SC_PAGESIZE);
 
-	if(fscanf(fp, "%*u %u", &vm_rss) != 1) vm_rss = 0;
+	if(fscanf(fp, "%*u %lu", &vm_rss) != 1) vm_rss = 0;
 	fclose(fp);
 
 	return vm_rss * page_size;

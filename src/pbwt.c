@@ -91,6 +91,7 @@ static short getopt(const unsigned short argc, char** const __restrict argv, con
 #endif
 static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count, const unsigned char block_size);
 static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count);
+static void create_output_path(const char* const __restrict input, char* const output, const unsigned char dec_flag);
 static size_t get_filesize(FILE* __restrict fp);
 static unsigned short get_threadcount();
 static void show_statistics(const int signum);
@@ -348,6 +349,27 @@ static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const
 	return EXIT_SUCCESS;
 }
 
+static void create_output_path(const char* const __restrict input, char* const output, const unsigned char dec_flag)
+{
+	const unsigned char ext_len = strlen(FILE_EXT);
+
+#ifndef _WIN32
+	strncat(output, basename(input), NAME_MAX - ext_len);
+#else
+	char input_path[_MAX_FNAME + 1], input_ext[_MAX_EXT + 1];
+	_splitpath(input, NULL, NULL, input_path, input_ext);
+	strcat(input_path, input_ext);
+	strncat(output, input_path, _MAX_FNAME - ext_len);
+#endif
+
+	if(dec_flag)
+	{
+		char* const ext_pos = strstr(output + strlen(output) - ext_len, FILE_EXT);
+		if(ext_pos) *ext_pos = 0;
+	}
+	else strcat(output, FILE_EXT);
+}
+
 static size_t get_filesize(FILE* __restrict fp)
 {
 	fseek(fp, 0, SEEK_END);
@@ -503,7 +525,8 @@ static void show_help()
 		"\t-%c - Decompression mode.\n"
 		"\t-%c - Show help and exit.\n"
 		"\t-%c<jobs_count> - Number of parallel jobs (threads). If less than 1 or greater than available threads, fallback to available threads.\n"
-		"\t-%c <output_file> - Custom output filename (if omitted, output filename is input_file" FILE_EXT ").\n"
+		"\t-%c <output_name> - Custom output filename (if omitted, output filename is input_file" FILE_EXT " in compression and without " FILE_EXT " in decompression).\n"
+		"\t\tIf given string ends with / (path delimiter), output is then given path + above rule.\n"
 		"\t-%c<%u-%u> - Compression preset level (ignored in decompression mode).\n"
 		"\t\tHigher presets give better compression ratio but decompression is considerably longer (if omitted or wrong value, preset is %u).\n"
 		"\t-%c - Remove input file after successful operation (ignored when input file is STDIN).\n"
@@ -584,24 +607,7 @@ int main(const int argc, char **argv)
 
 	if(!fp_out && !output[0])
 	{
-		if(input)
-		{
-			const unsigned char ext_len = strlen(FILE_EXT);
-#ifndef _WIN32
-			strncpy(output, basename(input), NAME_MAX - ext_len);
-#else
-			char input_path[_MAX_FNAME + 1], input_ext[_MAX_EXT + 1];
-			_splitpath(input, NULL, NULL, input_path, input_ext);
-			strcat(input_path, input_ext);
-			strncpy(output, input_path, _MAX_FNAME - ext_len);
-#endif
-			if(flags.dec)
-			{
-				char* const ext_pos = strstr(output + strlen(output) - ext_len, FILE_EXT);
-				if(ext_pos) *ext_pos = 0;
-			}
-			else strcat(output, FILE_EXT);
-		}
+		if(input) create_output_path(input, output, flags.dec);
 		else fp_out = stdout;
 	}
 
@@ -631,6 +637,13 @@ int main(const int argc, char **argv)
 
 	if(output[0])
 	{
+		const unsigned short output_len = strlen(output);
+#ifndef _WIN32
+		if(output[output_len - 1] == '/') create_output_path(input, output, flags.dec);
+#else
+		if(output[output_len - 1] == '/' || output[output_len - 1] == '\\') create_output_path(input, output, flags.dec);
+#endif
+
 		fp_out = fopen(output, FOPEN_OUTPUT_MODE);
 		if(!fp_out)
 		{

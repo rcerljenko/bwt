@@ -43,7 +43,7 @@ static inline int ibwt_cmp(const void* const a, const void* const b)
 
 __declspec(dllexport) bwt_size_t __cdecl bwt(unsigned char* __restrict data, const bwt_size_t n)
 {
-	if(n < 2) return 0;
+	if(!data || n < 2) return 0;
 
 	bwt_size_t i, index = n;
 	struct bwt_info_t data_info;
@@ -79,7 +79,7 @@ __declspec(dllexport) bwt_size_t __cdecl bwt(unsigned char* __restrict data, con
 
 __declspec(dllexport) void __cdecl ibwt(unsigned char* const __restrict data, const bwt_size_t n, bwt_size_t index)
 {
-	if(n < 2) return;
+	if(!data || n < 2) return;
 
 	bwt_size_t count, pos_cache[UCHAR_MAX + 1] = {0};
 	unsigned char* const __restrict result = malloc(sizeof(unsigned char) * n * 2 + 1);
@@ -104,7 +104,7 @@ __declspec(dllexport) void __cdecl ibwt(unsigned char* const __restrict data, co
 
 __declspec(dllexport) bwt_size_t __cdecl rle(unsigned char* __restrict data, const bwt_size_t n)
 {
-	if(n < 4) return 0;
+	if(!data || n < 4) return 0;
 
 	bwt_size_t len = 0;
 	unsigned short count;
@@ -137,7 +137,7 @@ __declspec(dllexport) bwt_size_t __cdecl rle(unsigned char* __restrict data, con
 
 __declspec(dllexport) bwt_size_t __cdecl rld(unsigned char* __restrict data, const bwt_size_t n)
 {
-	if(n < 3) return n;
+	if(!data || n < 3) return 0;
 
 	unsigned char curr_char;
 	unsigned char* __restrict tmp_data = malloc(sizeof(unsigned char) * n + 1);

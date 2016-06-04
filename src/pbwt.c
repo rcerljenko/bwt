@@ -89,10 +89,10 @@ static unsigned int threaded_compress(void* const void_bwt_data);
 static unsigned int threaded_decompress(void* const void_bwt_data);
 static short getopt(const unsigned short argc, char** const __restrict argv, const char* const __restrict args);
 #endif
-static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count, const unsigned char block_size);
-static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count);
+static int bwt_compress(FILE* const __restrict fp_in, FILE* const __restrict fp_out, const unsigned short thread_count, const unsigned char block_size);
+static int bwt_decompress(FILE* const __restrict fp_in, FILE* const __restrict fp_out, const unsigned short thread_count);
 static void create_output_path(const char* const __restrict input, char* const output, const unsigned char dec_flag);
-static size_t get_filesize(FILE* __restrict fp);
+static size_t get_filesize(FILE* const __restrict fp);
 static unsigned short get_threadcount();
 static void show_statistics(const int signum);
 static void show_help();
@@ -144,7 +144,7 @@ static unsigned int threaded_decompress(void* const void_bwt_data)
 #endif
 }
 
-static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count, const unsigned char block_size)
+static int bwt_compress(FILE* const __restrict fp_in, FILE* const __restrict fp_out, const unsigned short thread_count, const unsigned char block_size)
 {
 	const bwt_size_t main_block_size = 1U << block_size;
 	const size_t fread_size = main_block_size * thread_count;
@@ -220,7 +220,7 @@ static int bwt_compress(FILE* __restrict fp_in, FILE* __restrict fp_out, const u
 	else return EXIT_SUCCESS;
 }
 
-static int bwt_decompress(FILE* __restrict fp_in, FILE* __restrict fp_out, const unsigned short thread_count)
+static int bwt_decompress(FILE* const __restrict fp_in, FILE* const __restrict fp_out, const unsigned short thread_count)
 {
 	bwt_size_t main_block_size;
 	stats.curr_fs_in = fread(&main_block_size, sizeof(unsigned char), 1, fp_in);
@@ -356,10 +356,10 @@ static void create_output_path(const char* const __restrict input, char* const o
 #ifndef _WIN32
 	strncat(output, basename(input), NAME_MAX - ext_len);
 #else
-	char input_path[_MAX_FNAME + 1], input_ext[_MAX_EXT + 1];
-	_splitpath(input, NULL, NULL, input_path, input_ext);
-	strcat(input_path, input_ext);
-	strncat(output, input_path, _MAX_FNAME - ext_len);
+	char input_name[_MAX_FNAME + 1], input_ext[_MAX_EXT + 1];
+	_splitpath(input, NULL, NULL, input_name, input_ext);
+	strcat(input_name, input_ext);
+	strncat(output, input_name, _MAX_FNAME - ext_len);
 #endif
 
 	if(dec_flag)
@@ -370,7 +370,7 @@ static void create_output_path(const char* const __restrict input, char* const o
 	else strcat(output, FILE_EXT);
 }
 
-static size_t get_filesize(FILE* __restrict fp)
+static size_t get_filesize(FILE* const __restrict fp)
 {
 	fseek(fp, 0, SEEK_END);
 	const size_t size = ftell(fp);
@@ -393,7 +393,7 @@ static unsigned short get_threadcount()
 #ifndef _WIN32
 static size_t get_memusage()
 {
-	FILE* __restrict fp = fopen("/proc/self/statm", "rb");
+	FILE* const __restrict fp = fopen("/proc/self/statm", "rb");
 	if(!fp) return 0;
 
 	unsigned long vm_rss;

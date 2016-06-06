@@ -47,11 +47,11 @@ __declspec(dllexport) bwt_size_t __cdecl bwt(unsigned char* __restrict data, con
 
 	bwt_size_t i, index = n;
 	struct bwt_info_t data_info;
-	data_info.rotations = malloc(sizeof(unsigned char) * n * 2 + 1);
+	data_info.rotations = malloc(sizeof(unsigned char) * n * 2);
 	bwt_size_t* __restrict positions = malloc(sizeof(bwt_size_t) * n);
 
 	memcpy(data_info.rotations, data, n);
-	memcpy(data_info.rotations + n, data, n);
+	memcpy(data_info.rotations + n, data, n - 1);
 	data_info.len = n;
 
 	positions += n;

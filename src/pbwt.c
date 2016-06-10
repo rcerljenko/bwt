@@ -82,7 +82,7 @@ static struct stats_t stats = {0};
 #ifndef _WIN32
 static void *threaded_compress(void* const void_bwt_data);
 static void *threaded_decompress(void* const void_bwt_data);
-static size_t get_memusage();
+static size_t get_memusage(void);
 static void sighandler(const int signum);
 #else
 static unsigned int threaded_compress(void* const void_bwt_data);
@@ -93,9 +93,9 @@ static int bwt_compress(FILE* const __restrict fp_in, FILE* const __restrict fp_
 static int bwt_decompress(FILE* const __restrict fp_in, FILE* const __restrict fp_out, const unsigned short thread_count);
 static void create_output_path(const char* const __restrict input, char* const output, const unsigned char dec_flag);
 static size_t get_filesize(FILE* const __restrict fp);
-static unsigned short get_threadcount();
+static unsigned short get_threadcount(void);
 static void show_statistics(const int signum);
-static void show_help();
+static void show_help(void);
 
 
 #ifndef _WIN32
@@ -385,7 +385,7 @@ static size_t get_filesize(FILE* const __restrict fp)
 	return size;
 }
 
-static unsigned short get_threadcount()
+static unsigned short get_threadcount(void)
 {
 #ifndef _WIN32
 	return sysconf(_SC_NPROCESSORS_ONLN);
@@ -397,7 +397,7 @@ static unsigned short get_threadcount()
 }
 
 #ifndef _WIN32
-static size_t get_memusage()
+static size_t get_memusage(void)
 {
 	FILE* const __restrict fp = fopen("/proc/self/statm", "rb");
 	if(!fp) return 0;
@@ -514,7 +514,7 @@ static void show_statistics(const int signum)
 #endif
 }
 
-static void show_help()
+static void show_help(void)
 {
 	fprintf(stderr, "%s - Portable multithreaded Burrows-Wheeler transform + Run Length Encoding compressor/decompressor.\n"
 		"Build date: " __DATE__ " @ " __TIME__ "\n\n"

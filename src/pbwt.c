@@ -351,6 +351,12 @@ static int bwt_decompress(FILE* const __restrict fp_in, FILE* const __restrict f
 
 static void create_output_path(const char* const __restrict input, char* const output, const unsigned char dec_flag)
 {
+	if(!input)
+	{
+		output[0] = 0;
+		return;
+	}
+
 	const unsigned char ext_len = strlen(FILE_EXT);
 
 #ifndef _WIN32
@@ -611,12 +617,6 @@ int main(const int argc, char **argv)
 		else fp_out = stdout;
 	}
 
-	if(input && output[0] && strcmp(input, output) == 0)
-	{
-		fprintf(stderr, "%s: Input and output file must be different.\n", filename);
-		return EXIT_FAILURE;
-	}
-
 	if(input)
 	{
 		fp_in = fopen(input, FOPEN_INPUT_MODE);
@@ -638,18 +638,29 @@ int main(const int argc, char **argv)
 	if(output[0])
 	{
 		const unsigned short output_len = strlen(output);
+
 #ifndef _WIN32
 		if(output[output_len - 1] == '/') create_output_path(input, output, flags.dec);
 #else
 		if(output[output_len - 1] == '/' || output[output_len - 1] == '\\') create_output_path(input, output, flags.dec);
 #endif
 
-		fp_out = fopen(output, FOPEN_OUTPUT_MODE);
-		if(!fp_out)
+		if(!output[0]) fp_out = stdout;
+		else
 		{
-			perror(filename);
-			fclose(fp_in);
-			return EXIT_FAILURE;
+			if(!strcmp(input, output))
+			{
+				fprintf(stderr, "%s: Input and output file must be different.\n", filename);
+				return EXIT_FAILURE;
+			}
+
+			fp_out = fopen(output, FOPEN_OUTPUT_MODE);
+			if(!fp_out)
+			{
+				perror(filename);
+				fclose(fp_in);
+				return EXIT_FAILURE;
+			}
 		}
 	}
 

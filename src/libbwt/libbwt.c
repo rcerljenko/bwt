@@ -43,7 +43,7 @@ static inline int ibwt_cmp(const void* const a, const void* const b)
 	return *(unsigned char *)a - *(unsigned char *)b;
 }
 
-DLL_EXPINP bwt_size_t __cdecl bwt(unsigned char* __restrict data, const bwt_size_t n)
+DLL_EXPINP bwt_size_t CALL_CONV bwt(unsigned char* __restrict data, const bwt_size_t n)
 {
 	if(!data || n < 2) return 0;
 
@@ -79,7 +79,7 @@ DLL_EXPINP bwt_size_t __cdecl bwt(unsigned char* __restrict data, const bwt_size
 	return index;
 }
 
-DLL_EXPINP void __cdecl ibwt(unsigned char* const __restrict data, const bwt_size_t n, bwt_size_t index)
+DLL_EXPINP void CALL_CONV ibwt(unsigned char* const __restrict data, const bwt_size_t n, bwt_size_t index)
 {
 	if(!data || n < 2) return;
 
@@ -104,7 +104,7 @@ DLL_EXPINP void __cdecl ibwt(unsigned char* const __restrict data, const bwt_siz
 	free(result);
 }
 
-DLL_EXPINP bwt_size_t __cdecl rle(unsigned char* __restrict data, const bwt_size_t n)
+DLL_EXPINP bwt_size_t CALL_CONV rle(unsigned char* __restrict data, const bwt_size_t n)
 {
 	if(!data || n < 4) return 0;
 
@@ -137,7 +137,7 @@ DLL_EXPINP bwt_size_t __cdecl rle(unsigned char* __restrict data, const bwt_size
 	return len;
 }
 
-DLL_EXPINP bwt_size_t __cdecl rld(unsigned char* __restrict data, const bwt_size_t n)
+DLL_EXPINP bwt_size_t CALL_CONV rld(unsigned char* __restrict data, const bwt_size_t n)
 {
 	if(!data || n < 3) return 0;
 

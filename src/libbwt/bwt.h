@@ -4,12 +4,10 @@
 #ifndef _WIN32
 #define DLL_EXPINP
 #define __cdecl
-#else
-#ifdef BWT_DLL
+#elif defined(BWT_DLL)
 #define DLL_EXPINP __declspec(dllexport)
 #else
 #define DLL_EXPINP __declspec(dllimport)
-#endif
 #endif
 
 #ifdef __cplusplus

@@ -49,7 +49,7 @@ DLL_EXPINP bwt_size_t CALL_CONV bwt(unsigned char* __restrict data, const bwt_si
 
 	bwt_size_t i, index = n;
 	struct bwt_info_t data_info;
-	data_info.rotations = malloc(sizeof(unsigned char) * n * 2);
+	data_info.rotations = malloc(sizeof(char) * n * 2);
 	bwt_size_t* __restrict positions = malloc(sizeof(bwt_size_t) * n);
 
 	memcpy(data_info.rotations, data, n);
@@ -84,12 +84,12 @@ DLL_EXPINP void CALL_CONV ibwt(unsigned char* const __restrict data, const bwt_s
 	if(!data || n < 2) return;
 
 	bwt_size_t count, pos_cache[UCHAR_MAX + 1] = {0};
-	unsigned char* const __restrict result = malloc(sizeof(unsigned char) * n * 2);
+	unsigned char* const __restrict result = malloc(sizeof(char) * n * 2);
 	unsigned char* const __restrict sorted = result + n;
 	unsigned char *pos, *curr_pos = sorted;
 
 	memcpy(sorted, data, n);
-	qsort(sorted, n, sizeof(unsigned char), ibwt_cmp);
+	qsort(sorted, n, sizeof(char), ibwt_cmp);
 
 	while(curr_pos-- > result)
 	{
@@ -112,7 +112,7 @@ DLL_EXPINP bwt_size_t CALL_CONV rle(unsigned char* __restrict data, const bwt_si
 	unsigned short count;
 	unsigned char curr_char;
 	unsigned char* const end = data + n;
-	unsigned char* __restrict result = malloc(sizeof(unsigned char) * n);
+	unsigned char* __restrict result = malloc(sizeof(char) * n);
 
 	while(data < end && len < n)
 	{
@@ -142,7 +142,7 @@ DLL_EXPINP bwt_size_t CALL_CONV rld(unsigned char* __restrict data, const bwt_si
 	if(!data || n < 3) return 0;
 
 	unsigned char curr_char;
-	unsigned char* __restrict tmp_data = malloc(sizeof(unsigned char) * n);
+	unsigned char* __restrict tmp_data = malloc(sizeof(char) * n);
 	unsigned char* const start = data;
 	unsigned char* const tmp_end = tmp_data + n - 1;
 

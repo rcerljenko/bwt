@@ -84,7 +84,7 @@ DLL_EXPINP void CALL_CONV ibwt(unsigned char* const __restrict data, const bwt_s
 	if(!data || n < 2) return;
 
 	bwt_size_t count, pos_cache[UCHAR_MAX + 1] = {0};
-	unsigned char* const __restrict result = malloc(sizeof(unsigned char) * n * 2 + 1);
+	unsigned char* const __restrict result = malloc(sizeof(unsigned char) * n * 2);
 	unsigned char* const __restrict sorted = result + n;
 	unsigned char *pos, *curr_pos = sorted;
 
@@ -112,7 +112,7 @@ DLL_EXPINP bwt_size_t CALL_CONV rle(unsigned char* __restrict data, const bwt_si
 	unsigned short count;
 	unsigned char curr_char;
 	unsigned char* const end = data + n;
-	unsigned char* __restrict result = malloc(sizeof(unsigned char) * n + 1);
+	unsigned char* __restrict result = malloc(sizeof(unsigned char) * n);
 
 	while(data < end && len < n)
 	{
@@ -142,7 +142,7 @@ DLL_EXPINP bwt_size_t CALL_CONV rld(unsigned char* __restrict data, const bwt_si
 	if(!data || n < 3) return 0;
 
 	unsigned char curr_char;
-	unsigned char* __restrict tmp_data = malloc(sizeof(unsigned char) * n + 1);
+	unsigned char* __restrict tmp_data = malloc(sizeof(unsigned char) * n);
 	unsigned char* const start = data;
 	unsigned char* const tmp_end = tmp_data + n - 1;
 

@@ -13,11 +13,13 @@
 
 #define MAX_PATH PATH_MAX
 #define SIGTYPE SIGUSR1
+#define THREAD_RETURN NULL
 typedef pthread_t thread_t;
 
 #else
 #include <windows.h>
 #include <process.h>
+#define THREAD_RETURN 0U
 typedef HANDLE thread_t;
 #endif
 
@@ -117,12 +119,7 @@ static unsigned int threaded_compress(void* const void_bwt_data)
 		bwt_data->status = 0;
 	}
 
-#ifndef _WIN32
-	return NULL;
-#else
-	_endthreadex(0);
-	return 0;
-#endif
+	return THREAD_RETURN;
 }
 
 #ifndef _WIN32
@@ -136,12 +133,7 @@ static unsigned int threaded_decompress(void* const void_bwt_data)
 	if(bwt_data->status) bwt_data->header.block_size = rld(bwt_data->data, bwt_data->header.block_size);
 	ibwt(bwt_data->data, bwt_data->header.block_size, bwt_data->header.index);
 
-#ifndef _WIN32
-	return NULL;
-#else
-	_endthreadex(0);
-	return 0;
-#endif
+	return THREAD_RETURN;
 }
 
 static int bwt_compress(FILE* const __restrict fp_in, FILE* const __restrict fp_out, const unsigned short thread_count, const unsigned char block_size)

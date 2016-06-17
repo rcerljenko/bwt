@@ -5,7 +5,7 @@
 
 After git clone or downloaded and extracted zip file (assuming cmake is installed):<br />
 
-###On Linux:
+####On Linux:
 
 **Shared lib:**<br /><br />
 
@@ -29,7 +29,7 @@ sudo make install<br /><br />
 Install parts are optional, but if they're done, build dirs can be deleted.<br /><br />
 
 
-###On Windows:
+####On Windows:
 
 It's easier to use CMake gui for Windows to pick the right generator.<br />
 If the generator is "MinGW Makefiles" then all the steps above are valid except install and ldconfig parts.<br />

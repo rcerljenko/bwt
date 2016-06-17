@@ -15,7 +15,7 @@ cd build<br />
 cmake ..<br />
 make<br />
 sudo make install<br />
-sudo ldconfig<br /><br />
+sudo ldconfig<br />
 
 **Main program:**<br />
 
@@ -26,7 +26,7 @@ cmake ..<br />
 make<br />
 sudo make install<br />
 
-Install parts are optional, but if they're done, build dirs can be deleted.<br /><br />
+Install parts are optional, but if they're done, build dirs can be deleted.<br />
 
 
 ####On Windows:

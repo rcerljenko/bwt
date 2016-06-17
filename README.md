@@ -7,7 +7,7 @@ After git clone or downloaded and extracted zip file (assuming cmake is installe
 
 ####On Linux:
 
-**Shared lib:**<br /><br />
+**Shared lib:**<br />
 
 cd bwt/libbwt<br />
 mkdir build<br />
@@ -17,14 +17,14 @@ make<br />
 sudo make install<br />
 sudo ldconfig<br /><br />
 
-**Main program:**<br /><br />
+**Main program:**<br />
 
 cd bwt<br />
 mkdir build<br />
 cd build<br />
 cmake ..<br />
 make<br />
-sudo make install<br /><br />
+sudo make install<br />
 
 Install parts are optional, but if they're done, build dirs can be deleted.<br /><br />
 

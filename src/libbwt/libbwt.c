@@ -94,9 +94,9 @@ DLL_EXPINP void CALL_CONV ibwt(unsigned char* const __restrict data, const bwt_s
 	while(curr_pos-- > result)
 	{
 		*curr_pos = data[index];
-		for(count = 0, pos = data; (pos = memchr(pos, *curr_pos, index - (pos - data))); count++, pos++);
+		for(count = 0, pos = data; (pos = memchr(pos, *curr_pos, sizeof(char) * (index - (pos - data)))); count++, pos++);
 
-		if(!pos_cache[*curr_pos]) pos_cache[*curr_pos] = ((unsigned char *) memchr(sorted, *curr_pos, n)) - sorted + 1;
+		if(!pos_cache[*curr_pos]) pos_cache[*curr_pos] = ((unsigned char *) memchr(sorted, *curr_pos, sizeof(char) * n)) - sorted + 1;
 		index = pos_cache[*curr_pos] + count - 1;
 	}
 

@@ -35,7 +35,7 @@ static inline int bwt_cmp(void* const arg, const void* const a, const void* cons
 	const bwt_size_t j = *(bwt_size_t *)b;
 	const struct bwt_info_t* const __restrict data_info = arg;
 
-	return memcmp(data_info->rotations + i, data_info->rotations + j, data_info->len);
+	return memcmp(data_info->rotations + i, data_info->rotations + j, sizeof(char) * data_info->len);
 }
 
 static inline int ibwt_cmp(const void* const a, const void* const b)
@@ -49,11 +49,11 @@ DLL_EXPINP bwt_size_t CALL_CONV bwt(unsigned char* __restrict data, const bwt_si
 
 	bwt_size_t i, index = n;
 	struct bwt_info_t data_info;
-	data_info.rotations = malloc(sizeof(char) * n * 2);
+	data_info.rotations = malloc(sizeof(char) * n * 2 - 1);
 	bwt_size_t* __restrict positions = malloc(sizeof(bwt_size_t) * n);
 
-	memcpy(data_info.rotations, data, n);
-	memcpy(data_info.rotations + n, data, n - 1);
+	memcpy(data_info.rotations, data, sizeof(char) * n);
+	memcpy(data_info.rotations + n, data, sizeof(char) * n - 1);
 	data_info.len = n;
 
 	positions += n;
@@ -88,7 +88,7 @@ DLL_EXPINP void CALL_CONV ibwt(unsigned char* const __restrict data, const bwt_s
 	unsigned char* const __restrict sorted = result + n;
 	unsigned char *pos, *curr_pos = sorted;
 
-	memcpy(sorted, data, n);
+	memcpy(sorted, data, sizeof(char) * n);
 	qsort(sorted, n, sizeof(char), ibwt_cmp);
 
 	while(curr_pos-- > result)
@@ -100,7 +100,7 @@ DLL_EXPINP void CALL_CONV ibwt(unsigned char* const __restrict data, const bwt_s
 		index = pos_cache[*curr_pos] + count - 1;
 	}
 
-	memcpy(data, result, n);
+	memcpy(data, result, sizeof(char) * n);
 	free(result);
 }
 
@@ -130,7 +130,7 @@ DLL_EXPINP bwt_size_t CALL_CONV rle(unsigned char* __restrict data, const bwt_si
 	}
 
 	result -= len;
-	if(len < n) memcpy(data - n, result, len);
+	if(len < n) memcpy(data - n, result, sizeof(char) * len);
 	else len = 0;
 
 	free(result);
@@ -146,7 +146,7 @@ DLL_EXPINP bwt_size_t CALL_CONV rld(unsigned char* __restrict data, const bwt_si
 	unsigned char* const start = data;
 	unsigned char* const tmp_end = tmp_data + n - 1;
 
-	memcpy(tmp_data, data, n);
+	memcpy(tmp_data, data, sizeof(char) * n);
 
 	while(tmp_data <= tmp_end)
 	{

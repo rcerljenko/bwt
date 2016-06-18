@@ -43,17 +43,18 @@ static inline int ibwt_cmp(const void* const a, const void* const b)
 	return *(unsigned char *)a - *(unsigned char *)b;
 }
 
-DLL_EXPINP bwt_size_t CALL_CONV bwt(unsigned char* __restrict data, const bwt_size_t n)
+DLL_EXPINP bwt_size_t CALL_CONV bwt(void* const void_data, const bwt_size_t n)
 {
-	if(!data || n < 2) return 0;
+	if(!void_data || n < 2) return 0;
 
+	unsigned char* __restrict data = void_data;
 	bwt_size_t i, index = n;
 	struct bwt_info_t data_info;
-	data_info.rotations = malloc(sizeof(char) * n * 2 - 1);
+	data_info.rotations = malloc(n * 2 - 1);
 	bwt_size_t* __restrict positions = malloc(sizeof(bwt_size_t) * n);
 
-	memcpy(data_info.rotations, data, sizeof(char) * n);
-	memcpy(data_info.rotations + n, data, sizeof(char) * n - 1);
+	memcpy(data_info.rotations, data, n);
+	memcpy(data_info.rotations + n, data, n - 1);
 	data_info.len = n;
 
 	positions += n;
@@ -79,40 +80,42 @@ DLL_EXPINP bwt_size_t CALL_CONV bwt(unsigned char* __restrict data, const bwt_si
 	return index;
 }
 
-DLL_EXPINP void CALL_CONV ibwt(unsigned char* const __restrict data, const bwt_size_t n, bwt_size_t index)
+DLL_EXPINP void CALL_CONV ibwt(void* const void_data, const bwt_size_t n, bwt_size_t index)
 {
-	if(!data || n < 2) return;
+	if(!void_data || n < 2) return;
 
+	unsigned char* const __restrict data = void_data;
 	bwt_size_t count, pos_cache[UCHAR_MAX + 1] = {0};
-	unsigned char* const __restrict result = malloc(sizeof(char) * n * 2);
+	unsigned char* const result = malloc(n * 2);
 	unsigned char* const __restrict sorted = result + n;
 	unsigned char *pos, *curr_pos = sorted;
 
-	memcpy(sorted, data, sizeof(char) * n);
+	memcpy(sorted, data, n);
 	qsort(sorted, n, sizeof(char), ibwt_cmp);
 
 	while(curr_pos-- > result)
 	{
 		*curr_pos = data[index];
-		for(count = 0, pos = data; (pos = memchr(pos, *curr_pos, sizeof(char) * (index - (pos - data)))); count++, pos++);
+		for(count = 0, pos = data; (pos = memchr(pos, *curr_pos, index - (pos - data))); count++, pos++);
 
-		if(!pos_cache[*curr_pos]) pos_cache[*curr_pos] = ((unsigned char *) memchr(sorted, *curr_pos, sizeof(char) * n)) - sorted + 1;
+		if(!pos_cache[*curr_pos]) pos_cache[*curr_pos] = ((unsigned char *) memchr(sorted, *curr_pos, n)) - sorted + 1;
 		index = pos_cache[*curr_pos] + count - 1;
 	}
 
-	memcpy(data, result, sizeof(char) * n);
+	memcpy(data, result, n);
 	free(result);
 }
 
-DLL_EXPINP bwt_size_t CALL_CONV rle(unsigned char* __restrict data, const bwt_size_t n)
+DLL_EXPINP bwt_size_t CALL_CONV rle(void* const void_data, const bwt_size_t n)
 {
-	if(!data || n < 4) return 0;
+	if(!void_data || n < 4) return 0;
 
+	unsigned char* __restrict data = void_data;
 	bwt_size_t len = 0;
 	unsigned short count;
 	unsigned char curr_char;
 	unsigned char* const end = data + n;
-	unsigned char* __restrict result = malloc(sizeof(char) * n);
+	unsigned char* __restrict result = malloc(n);
 
 	while(data < end && len < n)
 	{
@@ -130,23 +133,24 @@ DLL_EXPINP bwt_size_t CALL_CONV rle(unsigned char* __restrict data, const bwt_si
 	}
 
 	result -= len;
-	if(len < n) memcpy(data - n, result, sizeof(char) * len);
+	if(len < n) memcpy(data - n, result, len);
 	else len = 0;
 
 	free(result);
 	return len;
 }
 
-DLL_EXPINP bwt_size_t CALL_CONV rld(unsigned char* __restrict data, const bwt_size_t n)
+DLL_EXPINP bwt_size_t CALL_CONV rld(void* const void_data, const bwt_size_t n)
 {
-	if(!data || n < 3) return 0;
+	if(!void_data || n < 3) return 0;
 
+	unsigned char* __restrict data = void_data;
 	unsigned char curr_char;
-	unsigned char* __restrict tmp_data = malloc(sizeof(char) * n);
+	unsigned char* __restrict tmp_data = malloc(n);
 	unsigned char* const start = data;
 	unsigned char* const tmp_end = tmp_data + n - 1;
 
-	memcpy(tmp_data, data, sizeof(char) * n);
+	memcpy(tmp_data, data, n);
 
 	while(tmp_data <= tmp_end)
 	{

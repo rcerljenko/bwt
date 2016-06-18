@@ -20,10 +20,10 @@ extern "C"
 
 typedef unsigned int bwt_size_t;
 
-DLL_EXPINP bwt_size_t CALL_CONV bwt(unsigned char* __restrict data, const bwt_size_t n);
-DLL_EXPINP void CALL_CONV ibwt(unsigned char* const __restrict data, const bwt_size_t n, bwt_size_t index);
-DLL_EXPINP bwt_size_t CALL_CONV rle(unsigned char* __restrict data, const bwt_size_t n);
-DLL_EXPINP bwt_size_t CALL_CONV rld(unsigned char* __restrict data, const bwt_size_t n);
+DLL_EXPINP bwt_size_t CALL_CONV bwt(void* const void_data, const bwt_size_t n);
+DLL_EXPINP void CALL_CONV ibwt(void* const void_data, const bwt_size_t n, bwt_size_t index);
+DLL_EXPINP bwt_size_t CALL_CONV rle(void* const void_data, const bwt_size_t n);
+DLL_EXPINP bwt_size_t CALL_CONV rld(void* const void_data, const bwt_size_t n);
 
 #ifdef __cplusplus
 }

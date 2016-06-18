@@ -644,7 +644,7 @@ int main(const int argc, char **argv)
 		if(!output[0]) fp_out = stdout;
 		else
 		{
-			if(!strcmp(input, output))
+			if(input && !strcmp(input, output))
 			{
 				fprintf(stderr, "%s: Input and output file must be different.\n", filename);
 				return EXIT_FAILURE;

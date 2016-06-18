@@ -35,7 +35,7 @@ static inline int bwt_cmp(void* const arg, const void* const a, const void* cons
 	const bwt_size_t j = *(bwt_size_t *)b;
 	const struct bwt_info_t* const __restrict data_info = arg;
 
-	return memcmp(data_info->rotations + i, data_info->rotations + j, sizeof(char) * data_info->len);
+	return memcmp(data_info->rotations + i, data_info->rotations + j, data_info->len);
 }
 
 static inline int ibwt_cmp(const void* const a, const void* const b)

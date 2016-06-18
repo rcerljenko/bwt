@@ -32,6 +32,6 @@ Install parts are optional, but if they're done, build dirs can be deleted.<br /
 ####On Windows:
 
 It's easier to use CMake GUI for Windows to pick the right generator.<br />
-If the generator is "MinGW Makefiles" then all the steps above are valid except install and ldconfig parts.<br />
-If the genereator is "Visual Stuio \*" then the Soulution file (\*.sln) needs to be built with it.<br />
-Important note: On Windows, shared lib (\*.dll) needs to be copied to the same dir as \*.exe file after build process.
+If generator is "MinGW Makefiles" then all the steps above are valid except install and ldconfig parts.<br />
+If genereator is "Visual Studio \*" then the Soulution file (\*.sln) needs to be built with it.<br /><br />
+**Important note:** On Windows, shared lib (\*.dll) needs to be copied to the same dir as \*.exe file after build process.

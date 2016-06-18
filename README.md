@@ -9,7 +9,7 @@ After git clone or downloaded and extracted zip file (assuming cmake is installe
 
 **Shared lib:**<br />
 
-cd bwt/libbwt<br />
+cd bwt/src/libbwt<br />
 mkdir build<br />
 cd build<br />
 cmake ..<br />
@@ -19,7 +19,7 @@ sudo ldconfig<br />
 
 **Main program:**<br />
 
-cd bwt<br />
+cd bwt/src<br />
 mkdir build<br />
 cd build<br />
 cmake ..<br />

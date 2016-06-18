@@ -109,8 +109,8 @@ static unsigned int threaded_compress(void* const void_bwt_data)
 	struct bwt_data_t* const __restrict bwt_data = void_bwt_data;
 	const bwt_size_t tmp_block_size = bwt_data->header.block_size;
 
-	bwt_data->header.index = bwt(bwt_data->data, sizeof(char) * bwt_data->header.block_size);
-	bwt_data->header.block_size = rle(bwt_data->data, sizeof(char) * bwt_data->header.block_size);
+	bwt_data->header.index = bwt(bwt_data->data, bwt_data->header.block_size);
+	bwt_data->header.block_size = rle(bwt_data->data, bwt_data->header.block_size);
 
 	if(bwt_data->header.block_size) bwt_data->status = 1;
 	else
@@ -130,8 +130,8 @@ static unsigned int threaded_decompress(void* const void_bwt_data)
 {
 	struct bwt_data_t* const __restrict bwt_data = void_bwt_data;
 
-	if(bwt_data->status) bwt_data->header.block_size = rld(bwt_data->data, sizeof(char) * bwt_data->header.block_size);
-	ibwt(bwt_data->data, sizeof(char) * bwt_data->header.block_size, bwt_data->header.index);
+	if(bwt_data->status) bwt_data->header.block_size = rld(bwt_data->data, bwt_data->header.block_size);
+	ibwt(bwt_data->data, bwt_data->header.block_size, bwt_data->header.index);
 
 	return THREAD_RETURN;
 }

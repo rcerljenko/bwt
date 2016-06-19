@@ -516,7 +516,7 @@ static void show_help(void)
 	const unsigned short arch = sizeof(void *) * 8;
 	const unsigned short thread_count = get_threadcount();
 
-	fprintf(stderr, "%s - Portable multithreaded Burrows-Wheeler transform + Run Length Encoding compressor/decompressor.\n"
+	fprintf(stderr, "%s - Portable Multithreaded Burrows-Wheeler Transform + Run Length Encoding Compressor/Decompressor.\n"
 		"Build date: " __DATE__ " @ " __TIME__ "\n"
 		"Architecture: %hu-bit\n\n"
 		"Usage: %s [<input_file>] [OPTIONS]\n\n"

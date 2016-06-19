@@ -85,24 +85,43 @@ DLL_EXPINP void CALL_CONV ibwt(void* const void_data, const bwt_size_t n, bwt_si
 	if(!void_data || n < 2) return;
 
 	unsigned char* const __restrict data = void_data;
-	bwt_size_t count, pos_cache[UCHAR_MAX + 1] = {0};
-	unsigned char* const result = malloc(n * 2);
-	unsigned char* const __restrict sorted = result + n;
-	unsigned char *pos, *curr_pos = sorted;
+	bwt_size_t i;
+	unsigned char curr_char, last_char, *pos = data;
+	unsigned char* __restrict result = malloc(n);
+	bwt_size_t* __restrict transform = malloc(sizeof(bwt_size_t) * n);
 
-	memcpy(sorted, data, n);
-	qsort(sorted, n, sizeof(char), ibwt_cmp);
+	memcpy(result, data, n);
+	qsort(result, n, sizeof(char), ibwt_cmp);
 
-	while(curr_pos-- > result)
+	last_char = result[0];
+
+	for(i = 0; i < n; i++)
 	{
-		*curr_pos = data[index];
-		for(count = 0, pos = data; (pos = memchr(pos, *curr_pos, index - (pos - data))); count++, pos++);
+		curr_char = *result++;
+		if(last_char != curr_char)
+		{
+			last_char = curr_char;
+			pos = data;
+		}
 
-		if(!pos_cache[*curr_pos]) pos_cache[*curr_pos] = ((unsigned char *) memchr(sorted, *curr_pos, n)) - sorted + 1;
-		index = pos_cache[*curr_pos] + count - 1;
+		pos = memchr(pos, curr_char, n - (pos - data));
+		*transform++ = pos - data;
+		pos++;
 	}
 
+	result -= n;
+	transform -= n;
+
+	for(i = 0; i < n; i++)
+	{
+		index = transform[index];
+		*result++ = data[index];
+	}
+
+	result -= n;
 	memcpy(data, result, n);
+
+	free(transform);
 	free(result);
 }
 

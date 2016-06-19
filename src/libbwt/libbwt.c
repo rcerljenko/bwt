@@ -126,7 +126,7 @@ DLL_EXPINP bwt_size_t CALL_CONV rle(void* const void_data, const bwt_size_t n)
 		if(count)
 		{
 			*result++ = curr_char;
-			*result++ = (unsigned char)(count - 1);
+			*result++ = count - 1;
 			len += 3;
 		}
 		else len++;

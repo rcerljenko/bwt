@@ -87,8 +87,8 @@ static void *threaded_decompress(void* const void_bwt_data);
 static size_t get_memusage(void);
 static void sighandler(const int signum);
 #else
-static unsigned int threaded_compress(void* const void_bwt_data);
-static unsigned int threaded_decompress(void* const void_bwt_data);
+static unsigned int __stdcall threaded_compress(void* const void_bwt_data);
+static unsigned int __stdcall threaded_decompress(void* const void_bwt_data);
 static short getopt(const unsigned short argc, char** const __restrict argv, const char* const __restrict args);
 #endif
 static int bwt_compress(FILE* const __restrict fp_in, FILE* const __restrict fp_out, const unsigned short thread_count, const unsigned char block_size);
@@ -103,7 +103,7 @@ static void show_help(void);
 #ifndef _WIN32
 static void *threaded_compress(void* const void_bwt_data)
 #else
-static unsigned int threaded_compress(void* const void_bwt_data)
+static unsigned int __stdcall threaded_compress(void* const void_bwt_data)
 #endif
 {
 	struct bwt_data_t* const __restrict bwt_data = void_bwt_data;
@@ -125,7 +125,7 @@ static unsigned int threaded_compress(void* const void_bwt_data)
 #ifndef _WIN32
 static void *threaded_decompress(void* const void_bwt_data)
 #else
-static unsigned int threaded_decompress(void* const void_bwt_data)
+static unsigned int __stdcall threaded_decompress(void* const void_bwt_data)
 #endif
 {
 	struct bwt_data_t* const __restrict bwt_data = void_bwt_data;
@@ -513,10 +513,12 @@ static void show_statistics(const int signum)
 
 static void show_help(void)
 {
+	const unsigned short arch = sizeof(void *) * 8;
 	const unsigned short thread_count = get_threadcount();
 
 	fprintf(stderr, "%s - Portable multithreaded Burrows-Wheeler transform + Run Length Encoding compressor/decompressor.\n"
-		"Build date: " __DATE__ " @ " __TIME__ "\n\n"
+		"Build date: " __DATE__ " @ " __TIME__ "\n"
+		"Architecture: %hu-bit\n\n"
 		"Usage: %s [<input_file>] [OPTIONS]\n\n"
 		"If <input_file> is omitted, input file is STDIN.\n"
 		"If <input_file> is STDIN and output file is omitted (no valid -%c flag), output file is STDOUT (like -%c flag).\n"
@@ -536,7 +538,7 @@ static void show_help(void)
 		"\t\tHigher presets give better compression ratio but decompression is considerably longer (if omitted or wrong value, preset is %u).\n"
 		"\t-%c - Remove input file after successful operation (ignored when input file is STDIN).\n"
 		"\t-%c - Verbose mode - show statistics after successful operation.\n"
-		, filename, filename, OUTPUT_FLAG, STDOUT_FLAG, STDOUT_FLAG, OUTPUT_FLAG, DEC_FLAG, HELP_FLAG, JOBS_FLAG, thread_count, OUTPUT_FLAG, PRESET_FLAG, PRESET_MIN, PRESET_MAX, PRESET_DEF, REMOVE_FLAG, VERBOSE_FLAG);
+		, filename, arch, filename, OUTPUT_FLAG, STDOUT_FLAG, STDOUT_FLAG, OUTPUT_FLAG, DEC_FLAG, HELP_FLAG, JOBS_FLAG, thread_count, OUTPUT_FLAG, PRESET_FLAG, PRESET_MIN, PRESET_MAX, PRESET_DEF, REMOVE_FLAG, VERBOSE_FLAG);
 }
 
 int main(const int argc, char **argv)

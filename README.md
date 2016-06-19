@@ -9,7 +9,7 @@ After git clone or downloaded and extracted zip file (assuming cmake is installe
 
 **Shared lib:**<br />
 
-```Makefile
+```makefile
 cd bwt/src/libbwt
 mkdir build
 cd build
@@ -21,7 +21,7 @@ sudo ldconfig
 
 **Main program:**<br />
 
-```Makefile
+```makefile
 cd bwt/src
 mkdir build
 cd build

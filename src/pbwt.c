@@ -543,6 +543,9 @@ int main(const int argc, char **argv)
 {
 	time(&stats.start_time);
 
+	freopen(NULL, FOPEN_INPUT_MODE, stdin);
+	freopen(NULL, FOPEN_OUTPUT_MODE, stdout);
+
 	int c;
 	unsigned long jobs = 0, block_size = PRESET_DEF;
 	const char *input;
@@ -674,8 +677,8 @@ int main(const int argc, char **argv)
 	if(flags.dec) status = bwt_decompress(fp_in, fp_out, thread_count);
 	else
 	{
-		if(block_size < PRESET_MIN || block_size > PRESET_MAX) block_size = PRESET_DEF + SIZE_THRESH;
-		else block_size += SIZE_THRESH;
+		if(block_size < PRESET_MIN || block_size > PRESET_MAX) block_size = PRESET_DEF;
+		block_size += SIZE_THRESH;
 
 		status = bwt_compress(fp_in, fp_out, thread_count, block_size);
 	}

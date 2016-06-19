@@ -9,22 +9,26 @@ After git clone or downloaded and extracted zip file (assuming cmake is installe
 
 **Shared lib:**<br />
 
-cd bwt/src/libbwt<br />
-mkdir build<br />
-cd build<br />
-cmake ..<br />
-make<br />
-sudo make install<br />
-sudo ldconfig<br />
+```Makefile
+cd bwt/src/libbwt
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+```
 
 **Main program:**<br />
 
-cd bwt/src<br />
-mkdir build<br />
-cd build<br />
-cmake ..<br />
-make<br />
-sudo make install<br />
+```Makefile
+cd bwt/src
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+```
 
 Install parts are optional, but if they're done, build dirs can be deleted.<br />
 

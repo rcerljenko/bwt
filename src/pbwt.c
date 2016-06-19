@@ -457,12 +457,18 @@ static short getopt(const unsigned short argc, char** const __restrict argv, con
 
 static void show_statistics(const int signum)
 {
-	char time_buffer[8];
+	char time_buffer[] = "00m:00s";
 	size_t diff_fs = 0;
 	float diff_perc = 0, ratio = 0, speed = 0;
 
 	const time_t diff_time = difftime(stats.end_time, stats.start_time);
-	if(diff_time) speed = (float)stats.curr_fs_in / (1024 * 1024 * diff_time);
+	if(diff_time)
+	{
+		const struct tm* const __restrict time_info = localtime(&diff_time);
+		strftime(time_buffer, sizeof(time_buffer), "%Mm:%Ss", time_info);
+
+		speed = (float)stats.curr_fs_in / (1024 * 1024 * diff_time);
+	}
 
 	if(stats.curr_fs_in && stats.curr_fs_out)
 	{
@@ -479,9 +485,6 @@ static void show_statistics(const int signum)
 
 		ratio = stats.curr_fs_in / (float)stats.curr_fs_out;
 	}
-
-	const struct tm* const __restrict time_info = localtime(&diff_time);
-	strftime(time_buffer, sizeof(time_buffer), "%Mm:%Ss", time_info);
 
 #ifndef _WIN32
 	if(signum && stats.filesize_in)

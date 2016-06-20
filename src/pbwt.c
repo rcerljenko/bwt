@@ -545,7 +545,8 @@ int main(const int argc, char **argv)
 {
 	time(&stats.start_time);
 
-	FILE *fp_in = freopen(NULL, FOPEN_INPUT_MODE, stdin);
+	FILE *fp_in, *fp_out = NULL;
+	fp_in = freopen(NULL, FOPEN_INPUT_MODE, stdin);
 	fp_in = freopen(NULL, FOPEN_OUTPUT_MODE, stdout);
 	fp_in = stdin;
 
@@ -553,7 +554,6 @@ int main(const int argc, char **argv)
 	unsigned long jobs = 0, block_size = PRESET_DEF;
 	const char *input;
 	char output[MAX_PATH + 1] = {0};
-	FILE *fp_out = NULL;
 	struct flags_t flags = {0};
 
 #ifndef _WIN32

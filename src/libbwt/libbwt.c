@@ -86,7 +86,8 @@ DLL_EXPINP void CALL_CONV ibwt(void* const void_data, const bwt_size_t n, bwt_si
 
 	unsigned char* const __restrict data = void_data;
 	bwt_size_t i;
-	unsigned char curr_char, last_char, *pos;
+	unsigned char curr_char, last_char;
+	const unsigned char *pos;
 	unsigned char* __restrict result = malloc(n);
 	bwt_size_t* __restrict transform = malloc(sizeof(bwt_size_t) * n);
 
@@ -132,7 +133,7 @@ DLL_EXPINP bwt_size_t CALL_CONV rle(void* const void_data, const bwt_size_t n)
 	bwt_size_t len = 0;
 	unsigned short count;
 	unsigned char curr_char;
-	unsigned char* const end = data + n;
+	const unsigned char* const end = data + n;
 	unsigned char* __restrict result = malloc(n);
 
 	while(data < end && len < n)
@@ -165,8 +166,8 @@ DLL_EXPINP bwt_size_t CALL_CONV rld(void* const void_data, const bwt_size_t n)
 	unsigned char* __restrict data = void_data;
 	unsigned char curr_char;
 	unsigned char* __restrict tmp_data = malloc(n);
-	unsigned char* const start = data;
-	unsigned char* const tmp_end = tmp_data + n - 1;
+	const unsigned char* const start = data;
+	const unsigned char* const tmp_end = tmp_data + n - 1;
 
 	memcpy(tmp_data, data, n);
 

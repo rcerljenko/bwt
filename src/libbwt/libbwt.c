@@ -94,7 +94,7 @@ DLL_EXPINP void CALL_CONV ibwt(void* const void_data, const bwt_size_t n, bwt_si
 	memcpy(result, data, n);
 	qsort(result, n, sizeof(char), ibwt_cmp);
 
-	for(i = 0, pos = data, curr_char = *result; i < n; i++, result++, pos++)
+	for(i = 0, curr_char = *result, pos = data; i < n; i++, result++, pos++)
 	{
 		if(curr_char != *result)
 		{

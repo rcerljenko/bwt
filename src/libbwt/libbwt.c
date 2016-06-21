@@ -92,7 +92,7 @@ DLL_EXPINP void CALL_CONV ibwt(void* const void_data, const bwt_size_t n, bwt_si
 	bwt_size_t* __restrict transform = malloc(sizeof(bwt_size_t) * n);
 
 	memcpy(result, data, n);
-	qsort(result, n, sizeof(char), ibwt_cmp);
+	qsort(result, n, 1, ibwt_cmp);
 
 	for(i = 0, curr_char = *result, pos = data; i < n; i++, result++, pos++)
 	{

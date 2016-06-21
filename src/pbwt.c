@@ -141,7 +141,7 @@ static int bwt_compress(FILE* const __restrict fp_in, FILE* const __restrict fp_
 	const bwt_size_t main_block_size = 1U << block_size;
 	const size_t fread_size = main_block_size * thread_count;
 
-	unsigned char* const data = malloc(sizeof(char) * fread_size);
+	unsigned char* const data = malloc(fread_size);
 	if(!data)
 	{
 		fprintf(stderr, "%s: Not enough memory.\n", filename);
@@ -155,9 +155,9 @@ static int bwt_compress(FILE* const __restrict fp_in, FILE* const __restrict fp_
 	struct bwt_data_t* const __restrict bwt_data = malloc(sizeof(struct bwt_data_t) * thread_count);
 	thread_t* const __restrict threads = malloc(sizeof(thread_t) * thread_count);
 
-	stats.curr_fs_out = fwrite(&block_size, sizeof(char), 1, fp_out);
+	stats.curr_fs_out = fwrite(&block_size, 1, 1, fp_out);
 
-	while((n = fread(data, sizeof(char), fread_size, fp_in)))
+	while((n = fread(data, 1, fread_size, fp_in)))
 	{
 		stats.curr_fs_in += n;
 
@@ -187,7 +187,7 @@ static int bwt_compress(FILE* const __restrict fp_in, FILE* const __restrict fp_
 			if(!bwt_data[i].status) bwt_data[i].header.block_size = 0;
 
 			fwrite(&bwt_data[i].header, sizeof(struct header_t), 1, fp_out);
-			n = fwrite(bwt_data[i].data, sizeof(char), tmp_block_size, fp_out);
+			n = fwrite(bwt_data[i].data, 1, tmp_block_size, fp_out);
 
 			if(n == tmp_block_size) stats.curr_fs_out += n + sizeof(struct header_t);
 			else
@@ -216,12 +216,12 @@ static int bwt_compress(FILE* const __restrict fp_in, FILE* const __restrict fp_
 static int bwt_decompress(FILE* const __restrict fp_in, FILE* const __restrict fp_out, const unsigned short thread_count)
 {
 	bwt_size_t main_block_size;
-	stats.curr_fs_in = fread(&main_block_size, sizeof(char), 1, fp_in);
+	stats.curr_fs_in = fread(&main_block_size, 1, 1, fp_in);
 	if(stats.curr_fs_in != 1) return EXIT_SUCCESS;
 
 	main_block_size = 1U << main_block_size;
 
-	unsigned char* const data = malloc(sizeof(char) * main_block_size * thread_count);
+	unsigned char* const data = malloc(main_block_size * thread_count);
 	if(!data)
 	{
 		fprintf(stderr, "%s: Not enough memory.\n", filename);
@@ -239,7 +239,7 @@ static int bwt_decompress(FILE* const __restrict fp_in, FILE* const __restrict f
 		bwt_data[i].data = data + main_block_size * i;
 		if(bwt_data[i].header.block_size)
 		{
-			status = fread(bwt_data[i].data, sizeof(char), bwt_data[i].header.block_size, fp_in);
+			status = fread(bwt_data[i].data, 1, bwt_data[i].header.block_size, fp_in);
 			if(status == bwt_data[i].header.block_size)
 			{
 				stats.curr_fs_in += status + sizeof(struct header_t);
@@ -258,7 +258,7 @@ static int bwt_decompress(FILE* const __restrict fp_in, FILE* const __restrict f
 		}
 		else
 		{
-			bwt_data[i].header.block_size = fread(bwt_data[i].data, sizeof(char), main_block_size, fp_in);
+			bwt_data[i].header.block_size = fread(bwt_data[i].data, 1, main_block_size, fp_in);
 			if(ferror(fp_in))
 			{
 				perror(filename);
@@ -294,7 +294,7 @@ static int bwt_decompress(FILE* const __restrict fp_in, FILE* const __restrict f
 				n += bwt_data[i].header.block_size;
 			}
 
-			status = fwrite(data, sizeof(char), n, fp_out);
+			status = fwrite(data, 1, n, fp_out);
 			if(status == n)
 			{
 				stats.curr_fs_out += n;
@@ -325,7 +325,7 @@ static int bwt_decompress(FILE* const __restrict fp_in, FILE* const __restrict f
 			n += bwt_data[j].header.block_size;
 		}
 
-		status = fwrite(data, sizeof(char), n, fp_out);
+		status = fwrite(data, 1, n, fp_out);
 		if(status == n) stats.curr_fs_out += n;
 		else
 		{

@@ -82,7 +82,7 @@ DLL_EXPINP bwt_size_t CALL_CONV bwt(void* const void_data, const bwt_size_t n)
 
 DLL_EXPINP void CALL_CONV ibwt(void* const void_data, const bwt_size_t n, bwt_size_t index)
 {
-	if(!void_data || n < 2) return;
+	if(!void_data || n < 2 || index >= n) return;
 
 	unsigned char* const __restrict data = void_data;
 	bwt_size_t i;

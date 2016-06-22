@@ -84,42 +84,39 @@ DLL_EXPINP void CALL_CONV ibwt(void* const void_data, const bwt_size_t n, bwt_si
 {
 	if(!void_data || n < 2 || index >= n) return;
 
-	unsigned char* const __restrict data = void_data;
+	unsigned char* __restrict data = void_data;
 	bwt_size_t i;
 	unsigned char curr_char;
 	const unsigned char *pos;
-	unsigned char* __restrict result = malloc(n);
+	unsigned char* const __restrict tmp_data = malloc(n);
 	bwt_size_t* __restrict transform = malloc(sizeof(bwt_size_t) * n);
 
-	memcpy(result, data, n);
-	qsort(result, n, 1, ibwt_cmp);
+	memcpy(tmp_data, data, n);
+	qsort(data, n, 1, ibwt_cmp);
 
-	for(i = 0, curr_char = *result, pos = data; i < n; i++, result++, pos++)
+	for(i = 0, curr_char = *data, pos = tmp_data; i < n; i++, data++, pos++)
 	{
-		if(curr_char != *result)
+		if(curr_char != *data)
 		{
-			curr_char = *result;
-			pos = data;
+			curr_char = *data;
+			pos = tmp_data;
 		}
 
-		pos = memchr(pos, curr_char, n - (pos - data));
-		*transform++ = pos - data;
+		pos = memchr(pos, curr_char, n - (pos - tmp_data));
+		*transform++ = pos - tmp_data;
 	}
 
-	result -= n;
+	data -= n;
 	transform -= n;
 
 	for(i = 0; i < n; i++)
 	{
 		index = transform[index];
-		*result++ = data[index];
+		*data++ = tmp_data[index];
 	}
 
-	result -= n;
-	memcpy(data, result, n);
-
 	free(transform);
-	free(result);
+	free(tmp_data);
 }
 
 DLL_EXPINP bwt_size_t CALL_CONV rle(void* const void_data, const bwt_size_t n)

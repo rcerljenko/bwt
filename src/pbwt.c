@@ -467,7 +467,7 @@ static void show_statistics(const int signum)
 		const struct tm* const __restrict time_info = localtime(&diff_time);
 		strftime(time_buffer, sizeof(time_buffer), "%Mm:%Ss", time_info);
 
-		speed = stats.curr_fs_in / (double) (1024 * 1024 * diff_time);
+		speed = stats.curr_fs_in / (1024.0 * 1024.0 * diff_time);
 	}
 
 	if(stats.curr_fs_in && stats.curr_fs_out)
@@ -475,12 +475,12 @@ static void show_statistics(const int signum)
 		if(stats.curr_fs_in > stats.curr_fs_out)
 		{
 			diff_fs = stats.curr_fs_in - stats.curr_fs_out;
-			diff_perc = (100 * diff_fs) / (double) stats.curr_fs_in;
+			diff_perc = (100.0 * diff_fs) / stats.curr_fs_in;
 		}
 		else
 		{
 			diff_fs = stats.curr_fs_out - stats.curr_fs_in;
-			diff_perc = (100 * diff_fs) / (double) stats.curr_fs_out;
+			diff_perc = (100.0 * diff_fs) / stats.curr_fs_out;
 		}
 
 		ratio = (double) stats.curr_fs_in / stats.curr_fs_out;
@@ -505,7 +505,7 @@ static void show_statistics(const int signum)
 #ifndef _WIN32
 	if(signum)
 	{
-		const float memory = get_memusage() / (double) (1024 * 1024);
+		const float memory = get_memusage() / (1024.0 * 1024.0);
 		fprintf(stderr, "Memory (RAM): %.2f MB\n\n", memory);
 	}
 #endif

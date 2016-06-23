@@ -505,7 +505,7 @@ static void show_statistics(const int signum)
 #ifndef _WIN32
 	if(signum)
 	{
-		const float memory = (float)get_memusage() / (1024 * 1024);
+		const float memory = get_memusage() / (float)(1024 * 1024);
 		fprintf(stderr, "Memory (RAM): %.2f MB\n\n", memory);
 	}
 #endif

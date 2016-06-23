@@ -151,6 +151,7 @@ static int bwt_compress(FILE* const __restrict fp_in, FILE* const __restrict fp_
 	size_t i, n;
 	unsigned short j;
 	bwt_size_t tmp_block_size;
+	unsigned char status = 1;
 
 	struct bwt_data_t* const __restrict bwt_data = malloc(sizeof(struct bwt_data_t) * thread_count);
 	thread_t* const __restrict threads = malloc(sizeof(thread_t) * thread_count);
@@ -193,24 +194,26 @@ static int bwt_compress(FILE* const __restrict fp_in, FILE* const __restrict fp_
 			else
 			{
 				perror(filename);
-				free(threads);
-				free(bwt_data);
-				free(data);
-				return EXIT_FAILURE;
+				status = 0;
+				break;
 			}
 		}
+
+		if(!status) break;
+	}
+
+	if(ferror(fp_in))
+	{
+		perror(filename);
+		status = 0;
 	}
 
 	free(threads);
 	free(bwt_data);
 	free(data);
 
-	if(ferror(fp_in))
-	{
-		perror(filename);
-		return EXIT_FAILURE;
-	}
-	else return EXIT_SUCCESS;
+	if(status) return EXIT_SUCCESS;
+	else return EXIT_FAILURE;
 }
 
 static int bwt_decompress(FILE* const __restrict fp_in, FILE* const __restrict fp_out, const unsigned short thread_count)
@@ -228,7 +231,7 @@ static int bwt_decompress(FILE* const __restrict fp_in, FILE* const __restrict f
 		return EXIT_FAILURE;
 	}
 
-	size_t n, status;
+	size_t n, status = 1;
 	unsigned short i = 0;
 
 	struct bwt_data_t* const __restrict bwt_data = malloc(sizeof(struct bwt_data_t) * thread_count);
@@ -250,10 +253,8 @@ static int bwt_decompress(FILE* const __restrict fp_in, FILE* const __restrict f
 				if(ferror(fp_in)) perror(filename);
 				else fprintf(stderr, "%s: Invalid input file format.\n", filename);
 
-				free(threads);
-				free(bwt_data);
-				free(data);
-				return EXIT_FAILURE;
+				status = 0;
+				break;
 			}
 		}
 		else
@@ -262,10 +263,8 @@ static int bwt_decompress(FILE* const __restrict fp_in, FILE* const __restrict f
 			if(ferror(fp_in))
 			{
 				perror(filename);
-				free(threads);
-				free(bwt_data);
-				free(data);
-				return EXIT_FAILURE;
+				status = 0;
+				break;
 			}
 			else
 			{
@@ -303,15 +302,18 @@ static int bwt_decompress(FILE* const __restrict fp_in, FILE* const __restrict f
 			else
 			{
 				perror(filename);
-				free(threads);
-				free(bwt_data);
-				free(data);
-				return EXIT_FAILURE;
+				status = 0;
+				break;
 			}
 		}
 	}
 
-	if(i)
+	if(ferror(fp_in))
+	{
+		perror(filename);
+		status = 0;
+	}
+	else if(status && i)
 	{
 		unsigned short j;
 		for (j = n = 0; j < i; j++)
@@ -330,17 +332,16 @@ static int bwt_decompress(FILE* const __restrict fp_in, FILE* const __restrict f
 		else
 		{
 			perror(filename);
-			free(threads);
-			free(bwt_data);
-			free(data);
-			return EXIT_FAILURE;
+			status = 0;
 		}
 	}
 
 	free(threads);
 	free(bwt_data);
 	free(data);
-	return EXIT_SUCCESS;
+
+	if(status) return EXIT_SUCCESS;
+	else return EXIT_FAILURE;
 }
 
 static void create_output_path(const char* const __restrict input, char* const output, const unsigned char dec_flag)

@@ -109,7 +109,7 @@ DLL_EXPINP void CALL_CONV ibwt(void* const void_data, const bwt_size_t n, bwt_si
 	data -= n;
 	transform -= n;
 
-	for(i = 0; i < n; i++)
+	while(i--)
 	{
 		index = transform[index];
 		*data++ = tmp_data[index];

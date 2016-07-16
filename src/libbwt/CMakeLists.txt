@@ -20,7 +20,7 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /Wall /Ox /GF /Gd /GL /Gw /Qpar /Tc")
 endif()
 
-add_library(bwt SHARED libbwt.c)
+add_library(bwt SHARED bwt.c)
 set_property(TARGET bwt PROPERTY C_STANDARD 11)
 
 if(UNIX OR APPLE)

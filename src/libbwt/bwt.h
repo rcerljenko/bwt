@@ -13,12 +13,12 @@
 #endif
 #endif
 
+typedef unsigned int bwt_size_t;
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
-typedef unsigned int bwt_size_t;
 
 DLL_EXPINP bwt_size_t CALL_CONV bwt(void* const void_data, const bwt_size_t n);
 DLL_EXPINP void CALL_CONV ibwt(void* const void_data, const bwt_size_t n, bwt_size_t index);

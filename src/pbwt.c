@@ -42,7 +42,7 @@ typedef HANDLE thread_t;
 #define FILE_EXT ".bwt"
 #define PRESET_MIN 1U
 #define PRESET_MAX 9U
-#define PRESET_DEF 1U
+#define PRESET_DEF 5U
 #define SIZE_THRESH 11U
 
 #define FOPEN_INPUT_MODE "rb"

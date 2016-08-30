@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.1)
 
 project(libbwt C)
 set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_C_STANDARD 11)
 
 if(CMAKE_C_COMPILER_ID MATCHES "GNU")
 	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wall -Wextra -march=native -Ofast -flto")
@@ -21,7 +22,6 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 endif()
 
 add_library(bwt SHARED bwt.c)
-set_property(TARGET bwt PROPERTY C_STANDARD 11)
 
 if(UNIX OR APPLE)
 	install(TARGETS bwt LIBRARY DESTINATION lib)

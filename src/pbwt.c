@@ -533,7 +533,7 @@ static void show_help(void)
 		"\t-%c - Decompression mode.\n"
 		"\t-%c - Show help and exit.\n"
 		"\t-%c <1-%hu> - Number of parallel jobs (threads). If omitted or wrong value, fallback to available threads.\n"
-		"\t-%c <output_name> - Custom output filename (if omitted, output filename is input_file" FILE_EXT " in compression and without " FILE_EXT " in decompression).\n"
+		"\t-%c <output_name> - Custom output filename (if omitted, output filename is input_file" FILE_EXT " in compression and without " FILE_EXT " in decompression mode).\n"
 		"\t\tIf given string ends with '/' (path delimiter), output is then given path + above rule.\n"
 		"\t-%c <%u-%u> - Compression preset level (ignored in decompression mode).\n"
 		"\t\tHigher presets may give better compression ratio (if omitted or wrong value, preset is %u).\n"

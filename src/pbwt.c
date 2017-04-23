@@ -162,7 +162,7 @@ static int bwt_compress(FILE* const __restrict fp_in, FILE* const __restrict fp_
 	{
 		stats.curr_fs_in += n;
 
-		for (i = j = 0; i < n; i += main_block_size, j++)
+		for(i = j = 0; i < n; i += main_block_size, j++)
 		{
 			bwt_data[j].data = data + i;
 
@@ -176,7 +176,7 @@ static int bwt_compress(FILE* const __restrict fp_in, FILE* const __restrict fp_
 #endif
 		}
 
-		for (i = 0; i < j; i++)
+		for(i = 0; i < j; i++)
 		{
 #ifndef _WIN32
 			pthread_join(threads[i], NULL);
@@ -282,7 +282,7 @@ static int bwt_decompress(FILE* const __restrict fp_in, FILE* const __restrict f
 
 		if(i == thread_count)
 		{
-			for (i = n = 0; i < thread_count; i++)
+			for(i = n = 0; i < thread_count; i++)
 			{
 #ifndef _WIN32
 				pthread_join(threads[i], NULL);
@@ -316,7 +316,7 @@ static int bwt_decompress(FILE* const __restrict fp_in, FILE* const __restrict f
 	else if(status && i)
 	{
 		unsigned short j;
-		for (j = n = 0; j < i; j++)
+		for(j = n = 0; j < i; j++)
 		{
 #ifndef _WIN32
 			pthread_join(threads[j], NULL);

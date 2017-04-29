@@ -502,8 +502,8 @@ static void show_statistics(const int signum)
 		"Diff: %lu B (%.2f%%)\n"
 		"Ratio: %.2f\n"
 		"Time: %s\n"
-		"Speed: %.2f MB/s\n"
-		, stats.curr_fs_in, stats.curr_fs_out, diff_fs, diff_perc, ratio, time_buffer, speed);
+		"Speed: %.2f MB/s\n",
+		stats.curr_fs_in, stats.curr_fs_out, diff_fs, diff_perc, ratio, time_buffer, speed);
 
 #ifndef _WIN32
 	if(signum)

@@ -172,7 +172,7 @@ static int bwt_compress(FILE* const __restrict fp_in, FILE* const __restrict fp_
 #ifndef _WIN32
 			pthread_create(&threads[j], NULL, threaded_compress, &bwt_data[j]);
 #else
-			threads[j] = (HANDLE) _beginthreadex(NULL, 0, threaded_compress, &bwt_data[j], 0, NULL);
+			threads[j] = (thread_t) _beginthreadex(NULL, 0, threaded_compress, &bwt_data[j], 0, NULL);
 #endif
 		}
 
@@ -276,7 +276,7 @@ static int bwt_decompress(FILE* const __restrict fp_in, FILE* const __restrict f
 #ifndef _WIN32
 		pthread_create(&threads[i], NULL, threaded_decompress, &bwt_data[i]);
 #else
-		threads[i] = (HANDLE) _beginthreadex(NULL, 0, threaded_decompress, &bwt_data[i], 0, NULL);
+		threads[i] = (thread_t) _beginthreadex(NULL, 0, threaded_decompress, &bwt_data[i], 0, NULL);
 #endif
 		i++;
 

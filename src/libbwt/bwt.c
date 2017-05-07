@@ -1,7 +1,7 @@
 #ifdef __linux__
-#define _GNU_SOURCE
+	#define _GNU_SOURCE
 #elif defined(_WIN32)
-#define BWT_DLL
+	#define BWT_DLL
 #endif
 
 #include <stdlib.h>
@@ -43,7 +43,7 @@ static inline int ibwt_cmp(const void* const a, const void* const b)
 	return *(unsigned char *)a - *(unsigned char *)b;
 }
 
-DLL_EXPINP bwt_size_t CALL_CONV bwt(void* const void_data, const bwt_size_t n)
+DLL_EXPIMP bwt_size_t CALL_CONV bwt(void* const void_data, const bwt_size_t n)
 {
 	if(!void_data || n < 2) return 0;
 
@@ -80,7 +80,7 @@ DLL_EXPINP bwt_size_t CALL_CONV bwt(void* const void_data, const bwt_size_t n)
 	return index;
 }
 
-DLL_EXPINP void CALL_CONV ibwt(void* const void_data, const bwt_size_t n, bwt_size_t index)
+DLL_EXPIMP void CALL_CONV ibwt(void* const void_data, const bwt_size_t n, bwt_size_t index)
 {
 	if(!void_data || n < 2 || index >= n) return;
 
@@ -119,7 +119,7 @@ DLL_EXPINP void CALL_CONV ibwt(void* const void_data, const bwt_size_t n, bwt_si
 	free(tmp_data);
 }
 
-DLL_EXPINP bwt_size_t CALL_CONV rle(void* const void_data, const bwt_size_t n)
+DLL_EXPIMP bwt_size_t CALL_CONV rle(void* const void_data, const bwt_size_t n)
 {
 	if(!void_data || n < 4) return 0;
 
@@ -153,7 +153,7 @@ DLL_EXPINP bwt_size_t CALL_CONV rle(void* const void_data, const bwt_size_t n)
 	return len;
 }
 
-DLL_EXPINP bwt_size_t CALL_CONV rld(void* const void_data, const bwt_size_t n)
+DLL_EXPIMP bwt_size_t CALL_CONV rld(void* const void_data, const bwt_size_t n)
 {
 	if(!void_data || n < 3) return 0;
 

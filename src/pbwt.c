@@ -1,26 +1,24 @@
 #ifndef _WIN32
+	#ifdef __linux__
+		#define _GNU_SOURCE
+	#elif defined(__APPLE__)
+		#include <libgen.h>
+	#endif
 
-#ifdef __linux__
-#define _GNU_SOURCE
-#elif defined(__APPLE__)
-#include <libgen.h>
-#endif
+	#include <signal.h>
+	#include <limits.h>
+	#include <unistd.h>
+	#include <pthread.h>
 
-#include <signal.h>
-#include <limits.h>
-#include <unistd.h>
-#include <pthread.h>
-
-#define MAX_PATH PATH_MAX
-#define SIGTYPE SIGUSR1
-#define THREAD_RETURN NULL
-typedef pthread_t thread_t;
-
+	#define MAX_PATH PATH_MAX
+	#define SIGTYPE SIGUSR1
+	#define THREAD_RETURN NULL
+	typedef pthread_t thread_t;
 #else
-#include <windows.h>
-#include <process.h>
-#define THREAD_RETURN 0U
-typedef HANDLE thread_t;
+	#include <windows.h>
+	#include <process.h>
+	#define THREAD_RETURN 0U
+	typedef HANDLE thread_t;
 #endif
 
 #include <stdio.h>

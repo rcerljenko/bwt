@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.21)
 
 project(libbwt C)
 set(CMAKE_BUILD_TYPE Release)
-set(CMAKE_C_STANDARD 17)
+set(CMAKE_C_STANDARD 23)
 
 if(CMAKE_C_COMPILER_ID MATCHES "GNU")
 	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wall -Wextra -march=native -Ofast -flto")

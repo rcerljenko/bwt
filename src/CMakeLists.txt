@@ -31,9 +31,9 @@ endif()
 add_executable(pbwt pbwt.c)
 
 if(UNIX OR APPLE)
-	include(GNUInstallDirs)
 	target_link_libraries(pbwt bwt pthread)
-	install(TARGETS pbwt RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 else()
 	target_link_libraries(pbwt bwt)
 endif()
+
+install(TARGETS pbwt RUNTIME)

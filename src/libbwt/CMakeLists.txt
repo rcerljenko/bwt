@@ -22,9 +22,7 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 endif()
 
 add_library(bwt SHARED bwt.c)
+set_target_properties(bwt PROPERTIES PUBLIC_HEADER bwt.h)
 
-if(UNIX OR APPLE)
-	include(GNUInstallDirs)
-	install(TARGETS bwt LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
-	install(FILES bwt.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-endif()
+install(TARGETS bwt LIBRARY)
+install(TARGETS bwt PUBLIC_HEADER)

@@ -495,9 +495,9 @@ static void show_statistics(const int signum)
 	}
 #endif
 
-	fprintf(stderr, "Bytes read: %lu B\n"
-		"Bytes written: %lu B\n"
-		"Diff: %lu B (%.2f%%)\n"
+	fprintf(stderr, "Bytes read: %llu B\n"
+		"Bytes written: %llu B\n"
+		"Diff: %llu B (%.2f%%)\n"
 		"Ratio: %.2f\n"
 		"Time: %s\n"
 		"Speed: %.2f MB/s\n",
@@ -534,9 +534,9 @@ static void show_help(void)
 		"\t-%c - Show help and exit.\n"
 		"\t-%c <1-%hu> - Number of parallel jobs (threads). If omitted or wrong value, fallback to available threads (%hu).\n"
 		"\t-%c <output_name> - Custom output filename (if omitted, output filename is input_file" FILE_EXT " in compression and without " FILE_EXT " in decompression mode).\n"
-		"\t\tIf given string ends with '/' (path delimiter), output is then given path + above rule.\n"
+		"\t\t- If given string ends with '/' (path delimiter), output is then given path + above rule.\n"
 		"\t-%c <%u-%u> - Compression preset level (ignored in decompression mode).\n"
-		"\t\tHigher presets may give better compression ratio (if omitted or wrong value, preset is %u).\n"
+		"\t\t- Higher presets may give better compression ratio (if omitted or wrong value, preset is %u).\n"
 		"\t-%c - Remove input file after successful operation (ignored when input file is STDIN).\n"
 		"\t-%c - Verbose mode - show statistics after successful operation.\n",
 		filename, arch, filename, OUTPUT_FLAG, STDOUT_FLAG, STDOUT_FLAG, OUTPUT_FLAG, DEC_FLAG, HELP_FLAG, JOBS_FLAG, thread_count, thread_count, OUTPUT_FLAG, PRESET_FLAG, PRESET_MIN, PRESET_MAX, PRESET_DEF, REMOVE_FLAG, VERBOSE_FLAG);

@@ -1,0 +1,37 @@
+name: CMake CI
+
+on:
+ pull_request:
+  types: [opened, synchronize, reopened, ready_for_review]
+
+concurrency:
+ group: ${{ github.ref }}
+ cancel-in-progress: true
+
+jobs:
+ build:
+  if: github.event.pull_request.draft == false
+
+  runs-on: ubuntu-latest
+
+  name: Build & Run
+
+  steps:
+   - name: Pulling project
+     uses: actions/checkout@v4
+
+   - name: Setup CMake
+     id: cmake
+     uses: threeal/cmake-action@v2
+     with:
+      source-dir: src
+
+   - name: Run make
+     run: make -C ${{ steps.cmake.outputs.build-dir }}
+
+   - name: Run make install
+     working-directory: ${{ steps.cmake.outputs.build-dir }}
+     run: sudo make install && sudo ldconfig
+
+   - name: Run program
+     run: pbwt -h

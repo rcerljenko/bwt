@@ -21,12 +21,13 @@ jobs:
      uses: actions/checkout@v4
 
    - name: Setup CMake
+     id: cmake
      uses: threeal/cmake-action@v2
      with:
       source-dir: src
 
    - name: Run make
-     run: make
+     run: make -C ${{ steps.cmake.outputs.build-dir }}
 
    - name: Run program
      run: pbwt -h

@@ -30,7 +30,7 @@ endif()
 
 add_executable(pbwt pbwt.c)
 
-if(UNIX OR APPLE)
+if(UNIX)
 	target_link_libraries(pbwt bwt pthread)
 else()
 	target_link_libraries(pbwt bwt)

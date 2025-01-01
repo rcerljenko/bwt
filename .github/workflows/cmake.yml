@@ -31,7 +31,7 @@ jobs:
 
    - name: Run make install
      working-directory: ${{ steps.cmake.outputs.build-dir }}
-     run: make install
+     run: sudo make install && sudo ldconfig
 
    - name: Run program
      run: pbwt -h

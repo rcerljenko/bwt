@@ -6,7 +6,7 @@
 
 After git clone or downloaded and extracted zip file (assuming cmake is installed):
 
-#### On Linux
+#### On Linux or MacOS
 
 ```sh
 cd bwt/src
@@ -14,10 +14,9 @@ cmake -B build
 cd build
 make
 sudo make install
-sudo ldconfig
 ```
 
-Install parts are optional, but if they're done, build dirs can be deleted.
+Install part is optional, but if it's done, build dir can be deleted.
 
 #### On Windows
 

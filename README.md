@@ -22,7 +22,7 @@ Install part is optional, but if it's done, build dir can be deleted.
 
 It's easier to use [CMake GUI](https://cmake.org/download/) for Windows to pick the right generator
 
-- If generator is "MinGW Makefiles" then all the steps above are valid except `ldconfig` part.
+- If generator is "MinGW Makefiles" then all the steps above are valid.
 - If genereator is "Visual Studio \*" then the Solution file (\*.sln) needs to be built with it.
 
 **Important note:** On Windows, shared lib (\*.dll) needs to be copied to the same dir as \*.exe file after build process.

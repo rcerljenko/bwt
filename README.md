@@ -9,8 +9,9 @@ After git clone or downloaded and extracted zip file (assuming cmake is installe
 #### On Linux
 
 ```sh
-cmake -B bwt/src/build
-cd bwt/src/build
+cd bwt/src
+cmake -B build
+cd build
 make
 sudo make install
 sudo ldconfig

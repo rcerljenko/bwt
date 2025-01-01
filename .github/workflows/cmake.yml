@@ -29,6 +29,9 @@ jobs:
    - name: Run make
      run: make -C ${{ steps.cmake.outputs.build-dir }}
 
-   - name: Run program
+   - name: Run make install
      working-directory: ${{ steps.cmake.outputs.build-dir }}
-     run: ./pbwt -h
+     run: make install
+
+   - name: Run program
+     run: pbwt -h

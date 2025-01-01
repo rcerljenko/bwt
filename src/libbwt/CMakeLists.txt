@@ -26,3 +26,9 @@ set_target_properties(bwt PROPERTIES PUBLIC_HEADER bwt.h)
 
 install(TARGETS bwt LIBRARY)
 install(TARGETS bwt PUBLIC_HEADER)
+
+if(UNIX)
+	install(CODE "execute_process(COMMAND ldconfig)")
+elseif(APPLE)
+	install(CODE "execute_process(COMMAND update_dyld_shared_cache)")
+endif()

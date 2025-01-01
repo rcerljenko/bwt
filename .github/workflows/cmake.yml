@@ -26,12 +26,12 @@ jobs:
      with:
       source-dir: src
 
-   - name: Run make
+   - name: Build
      run: make -C ${{ steps.cmake.outputs.build-dir }}
 
-   - name: Run make install
+   - name: Install
      working-directory: ${{ steps.cmake.outputs.build-dir }}
-     run: sudo make install && sudo ldconfig
+     run: sudo make install
 
    - name: Run program
      run: pbwt -h

@@ -11,9 +11,8 @@ After git clone or downloaded and extracted zip file (assuming cmake is installe
 ```sh
 cd bwt/src
 cmake -B build
-cd build
-make
-sudo make install
+cmake --build build
+sudo cmake --install build
 ```
 
 Install part is optional, but if it's done, build dir can be deleted.

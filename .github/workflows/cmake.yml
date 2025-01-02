@@ -38,24 +38,24 @@ jobs:
      run: pbwt -h
 
    - name: Prepare for test
-     run: tar -c -f ~/bwt.tar .
+     run: tar -c -f ${{ runner.temp }}/bwt.tar .
 
    - name: Compression test
-     working-directory: ~/
+     working-directory: ${{ runner.temp }}
      run: pbwt -p 9 bwt.tar
 
    - name: Compression test using STDIN
-     working-directory: ~/
+     working-directory: ${{ runner.temp }}
      run: cat bwt.tar | pbwt -p 9 -o bwt2.tar.bwt
 
    - name: Decompression test
-     working-directory: ~/
+     working-directory: ${{ runner.temp }}
      run: pbwt -d bwt.tar.bwt -o bwt2.tar
 
    - name: Compare compressed files
-     working-directory: ~/
+     working-directory: ${{ runner.temp }}
      run: cmp -s bwt.tar.bwt bwt2.tar.bwt
 
    - name: Compare decompressed files
-     working-directory: ~/
+     working-directory: ${{ runner.temp }}
      run: cmp -s bwt.tar bwt2.tar

@@ -27,7 +27,8 @@ jobs:
       source-dir: src
 
    - name: Build
-     run: make -C ${{ steps.cmake.outputs.build-dir }}
+     working-directory: ${{ steps.cmake.outputs.build-dir }}
+     run: make
 
    - name: Install
      working-directory: ${{ steps.cmake.outputs.build-dir }}
@@ -35,3 +36,26 @@ jobs:
 
    - name: Run program
      run: pbwt -h
+
+   - name: Prepare for test
+     run: tar -c -f ~/bwt.tar .
+
+   - name: Compression test
+     working-directory: ~/
+     run: pbwt -p 9 bwt.tar
+
+   - name: Compression test using STDIN
+     working-directory: ~/
+     run: cat bwt.tar | pbwt -p 9 -o bwt2.tar.bwt
+
+   - name: Decompression test
+     working-directory: ~/
+     run: pbwt -d bwt.tar.bwt -o bwt2.tar
+
+   - name: Compare compressed files
+     working-directory: ~/
+     run: cmp -s bwt.tar.bwt bwt2.tar.bwt
+
+   - name: Compare decompressed files
+     working-directory: ~/
+     run: cmp -s bwt.tar bwt2.tar

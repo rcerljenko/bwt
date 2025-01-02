@@ -54,7 +54,7 @@ jobs:
 
    - name: Decompression test
      working-directory: ${{ runner.temp }}
-     run: pbwt -d bwt.tar.bwt -o bwt2.tar
+     run: pbwt -d bwt-file.tar.bwt -o bwt2.tar
 
    - name: Compare compressed files 1/2
      working-directory: ${{ runner.temp }}

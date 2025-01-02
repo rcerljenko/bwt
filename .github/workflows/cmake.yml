@@ -46,7 +46,7 @@ jobs:
 
    - name: Compression test using STDIN
      working-directory: ${{ runner.temp }}
-     run: cat bwt.tar | pbwt -p 9 -o bwt2.tar.bwt
+     run: cat bwt.tar | pbwt -p 6 -o bwt2.tar.bwt
 
    - name: Decompression test
      working-directory: ${{ runner.temp }}

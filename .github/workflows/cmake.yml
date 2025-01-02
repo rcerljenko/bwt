@@ -26,10 +26,6 @@ jobs:
      with:
       source-dir: src
 
-   - name: Build
-     working-directory: ${{ steps.cmake.outputs.build-dir }}
-     run: make
-
    - name: Install
      working-directory: ${{ steps.cmake.outputs.build-dir }}
      run: sudo make install

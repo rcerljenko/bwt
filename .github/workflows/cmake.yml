@@ -20,6 +20,13 @@ jobs:
    - name: Pulling project
      uses: actions/checkout@v4
 
+   - name: Setup cache
+     uses: actions/cache@v4
+     with:
+      path: ./src/build
+      key: ${{ runner.os }}-cmake-${{ hashFiles('./src/CMakeLists.txt', './src/libbwt/CMakeLists.txt') }}
+      restore-keys: ${{ runner.os }}-cmake-
+
    - name: Setup CMake
      id: cmake
      uses: threeal/cmake-action@v2
@@ -73,6 +80,13 @@ jobs:
   steps:
    - name: Pulling project
      uses: actions/checkout@v4
+
+   - name: Setup cache
+     uses: actions/cache@v4
+     with:
+      path: ./src/build
+      key: ${{ runner.os }}-cmake-${{ hashFiles('./src/CMakeLists.txt', './src/libbwt/CMakeLists.txt') }}
+      restore-keys: ${{ runner.os }}-cmake-
 
    - name: Setup CMake
      id: cmake

@@ -84,7 +84,6 @@ jobs:
      uses: threeal/cmake-action@v2
      with:
       source-dir: src
-      generator: Visual Studio 17 2022
       build-args: --config Release
 
    - name: Install

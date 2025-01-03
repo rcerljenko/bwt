@@ -107,7 +107,7 @@ jobs:
       source-dir: src
 
    - name: Install
-     run: cmake --install ${{ steps.cmake.outputs.build-dir }}
+     run: sudo cmake --install ${{ steps.cmake.outputs.build-dir }}
 
    - name: Run program
      run: pbwt -h

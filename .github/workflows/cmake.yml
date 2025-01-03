@@ -12,9 +12,11 @@ jobs:
  build-linux:
   if: github.event.pull_request.draft == false
 
-  runs-on: ubuntu-latest
+  strategy:
+   matrix:
+    os: [ubuntu-latest, macos-latest]
 
-  name: Linux
+  name: Linux - ${{ matrix.os }}
 
   steps:
    - name: Pulling project
@@ -88,57 +90,3 @@ jobs:
    - name: Run program
      working-directory: 'C:/Program Files (x86)/libbwt/bin'
      run: ./pbwt -h
-
- build-macos:
-  if: github.event.pull_request.draft == false
-
-  runs-on: macos-latest
-
-  name: MacOS
-
-  steps:
-   - name: Pulling project
-     uses: actions/checkout@v4
-
-   - name: Setup CMake
-     id: cmake
-     uses: threeal/cmake-action@v2
-     with:
-      source-dir: src
-
-   - name: Install
-     run: sudo cmake --install ${{ steps.cmake.outputs.build-dir }}
-
-   - name: Run program
-     run: pbwt -h
-
-   - name: Prepare for tests
-     run: tar -c -f ${{ runner.temp }}/bwt.tar .
-
-   - name: Compression test
-     working-directory: ${{ runner.temp }}
-     run: pbwt -p 9 bwt.tar -o bwt-file.tar.bwt
-
-   - name: Compression test using STDIN
-     working-directory: ${{ runner.temp }}
-     run: cat bwt.tar | pbwt -p 9 -o bwt-stdin.tar.bwt
-
-   - name: Compression test using STDOUT
-     working-directory: ${{ runner.temp }}
-     run: pbwt -p 9 -c bwt.tar > bwt-stdout.tar.bwt
-
-   - name: Decompression test
-     working-directory: ${{ runner.temp }}
-     run: pbwt -d bwt-file.tar.bwt -o bwt2.tar
-
-   - name: Compare compressed files 1/2
-     working-directory: ${{ runner.temp }}
-     run: cmp -s bwt-file.tar.bwt bwt-stdin.tar.bwt
-
-   - name: Compare compressed files 2/2
-     working-directory: ${{ runner.temp }}
-     run: cmp -s bwt-file.tar.bwt bwt-stdout.tar.bwt
-
-   - name: Compare decompressed files
-     working-directory: ${{ runner.temp }}
-     run: cmp -s bwt.tar bwt2.tar

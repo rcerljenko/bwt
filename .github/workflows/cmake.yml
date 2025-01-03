@@ -87,4 +87,4 @@ jobs:
 
    - name: Run program
      working-directory: 'C:/Program Files (x86)/libbwt/bin'
-     run: pbwt.exe -h
+     run: ./pbwt -h

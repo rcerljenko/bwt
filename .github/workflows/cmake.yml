@@ -120,11 +120,19 @@ jobs:
 
    - name: Compression test using STDIN
      working-directory: 'C:/Program Files (x86)/libbwt/bin'
-     run: type ${{ runner.temp }}\bwt.tar | ./pbwt -p 9 -o ${{ runner.temp }}\bwt-stdin.tar.bwt
+     run: cmd /c "type ${{ runner.temp }}\bwt.tar | ./pbwt -p 9 -o ${{ runner.temp }}\bwt-stdin.tar.bwt"
 
    - name: Compression test using STDOUT
      working-directory: 'C:/Program Files (x86)/libbwt/bin'
-     run: ./pbwt -p 9 -c ${{ runner.temp }}\bwt.tar > ${{ runner.temp }}\bwt-stdout.tar.bwt
+     run: cmd /c "./pbwt -p 9 -c ${{ runner.temp }}\bwt.tar > ${{ runner.temp }}\bwt-stdout.tar.bwt"
+
+   - name: Compare compressed files 1/2
+     working-directory: ${{ runner.temp }}
+     run: fc.exe /b bwt-file.tar.bwt bwt-stdin.tar.bwt
+
+   - name: Compare compressed files 2/2
+     working-directory: ${{ runner.temp }}
+     run: fc.exe /b bwt-file.tar.bwt bwt-stdout.tar.bwt
 
    - name: Decompression test
      working-directory: 'C:/Program Files (x86)/libbwt/bin'

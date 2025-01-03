@@ -9,12 +9,12 @@ concurrency:
  cancel-in-progress: true
 
 jobs:
- build:
+ build-linux:
   if: github.event.pull_request.draft == false
 
   runs-on: ubuntu-latest
 
-  name: Build & Test
+  name: Linux
 
   steps:
    - name: Pulling project
@@ -62,3 +62,24 @@ jobs:
    - name: Compare decompressed files
      working-directory: ${{ runner.temp }}
      run: cmp -s bwt.tar bwt2.tar
+
+build-windows:
+  if: github.event.pull_request.draft == false
+
+  runs-on: windows-latest
+
+  name: Windows
+
+  steps:
+   - name: Pulling project
+     uses: actions/checkout@v4
+
+   - name: Setup CMake
+     id: cmake
+     uses: threeal/cmake-action@v2
+     with:
+      source-dir: src
+      generator: Visual Studio 17 2022
+
+   - name: Run program
+     run: pbwt -h

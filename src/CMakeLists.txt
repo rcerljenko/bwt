@@ -23,11 +23,11 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	add_compile_options(/Wall /O2 /Ob3 /Gd /GL /Gw /Qpar /Tc)
 endif()
 
-add_executable(pbwt pbwt.c)
-
 if(APPLE)
-	set(CMAKE_INSTALL_RPATH_USE_LINK_PATH ON)
+	set(CMAKE_INSTALL_RPATH_USE_LINK_PATH True)
 endif()
+
+add_executable(pbwt pbwt.c)
 
 if(UNIX)
 	target_link_libraries(pbwt bwt pthread)

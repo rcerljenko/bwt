@@ -112,11 +112,7 @@ jobs:
      working-directory: 'C:/Program Files (x86)/libbwt/bin'
      run: ./pbwt -d ${{ runner.temp }}\bwt-file.tar.bwt -o ${{ runner.temp }}\bwt2.tar
 
-   - name: Compare compressed files 1/2
-     working-directory: ${{ runner.temp }}
-     run: fc.exe /b bwt-file.tar.bwt bwt-stdin.tar.bwt
-
-   - name: Compare compressed files 2/2
+   - name: Compare compressed files
      working-directory: ${{ runner.temp }}
      run: fc.exe /b bwt-file.tar.bwt bwt-stdout.tar.bwt
 

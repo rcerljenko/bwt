@@ -86,5 +86,5 @@ jobs:
      run: cmake --install ${{ steps.cmake.outputs.build-dir }} --config Release
 
    - name: Run program
-     working-directory: ${{ steps.cmake.outputs.build-dir }}\Release
+     working-directory: 'C:/Program Files (x86)/libbwt/bin'
      run: pbwt -h

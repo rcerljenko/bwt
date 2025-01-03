@@ -120,19 +120,19 @@ jobs:
 
    - name: Compression test using STDIN
      working-directory: 'C:/Program Files (x86)/libbwt/bin'
-     run: cmd /c "type ${{ runner.temp }}\bwt.tar | pbwt -p 9 -o ${{ runner.temp }}\bwt-stdin.tar.bwt"
+     run: Get-Content -Path ${{ runner.temp }}\bwt.tar | ./pbwt -p 9 -o ${{ runner.temp }}\bwt-stdin.tar.bwt
 
    - name: Compression test using STDOUT
      working-directory: 'C:/Program Files (x86)/libbwt/bin'
-     run: cmd /c "pbwt -p 9 -c ${{ runner.temp }}\bwt.tar > ${{ runner.temp }}\bwt-stdout.tar.bwt"
+     run: ./pbwt -p 9 -c ${{ runner.temp }}\bwt.tar > ${{ runner.temp }}\bwt-stdout.tar.bwt
 
    - name: Compare compressed files 1/2
      working-directory: ${{ runner.temp }}
-     run: fc.exe /b bwt-file.tar.bwt bwt-stdin.tar.bwt
+     run: fc.exe bwt-file.tar.bwt bwt-stdin.tar.bwt
 
    - name: Compare compressed files 2/2
      working-directory: ${{ runner.temp }}
-     run: fc.exe /b bwt-file.tar.bwt bwt-stdout.tar.bwt
+     run: fc.exe bwt-file.tar.bwt bwt-stdout.tar.bwt
 
    - name: Decompression test
      working-directory: 'C:/Program Files (x86)/libbwt/bin'
@@ -140,4 +140,4 @@ jobs:
 
    - name: Compare decompressed files
      working-directory: ${{ runner.temp }}
-     run: fc.exe /b bwt.tar bwt2.tar
+     run: fc.exe bwt.tar bwt2.tar

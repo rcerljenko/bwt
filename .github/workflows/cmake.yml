@@ -42,7 +42,7 @@ jobs:
    - name: Prepare for tests
      run: tar -c -f ${{ runner.temp }}/bwt.tar .
 
-   - name: Compression test
+   - name: Compression test using FILE
      working-directory: ${{ runner.temp }}
      run: pbwt -p 9 bwt.tar -o bwt-file.tar.bwt
 
@@ -54,21 +54,29 @@ jobs:
      working-directory: ${{ runner.temp }}
      run: pbwt -p 9 -c bwt.tar > bwt-stdout.tar.bwt
 
-   - name: Decompression test
+   - name: Decompression test using FILE
      working-directory: ${{ runner.temp }}
-     run: pbwt -d bwt-file.tar.bwt -o bwt2.tar
+     run: pbwt -d bwt-file.tar.bwt -o bwt-file.tar
 
-   - name: Compare compressed files 1/2
+   - name: Decompression test using STDIN file
      working-directory: ${{ runner.temp }}
-     run: cmp -s bwt-file.tar.bwt bwt-stdin.tar.bwt
+     run: pbwt -d bwt-stdin.tar.bwt -o bwt-stdin.tar
 
-   - name: Compare compressed files 2/2
+   - name: Decompression test using STDOUT file
      working-directory: ${{ runner.temp }}
-     run: cmp -s bwt-file.tar.bwt bwt-stdout.tar.bwt
+     run: pbwt -d bwt-stdout.tar.bwt -o bwt-stdout.tar
 
-   - name: Compare decompressed files
+   - name: Compare decompressed files 1/3
      working-directory: ${{ runner.temp }}
-     run: cmp -s bwt.tar bwt2.tar
+     run: cmp -s bwt.tar bwt-file.tar
+
+   - name: Compare decompressed files 2/3
+     working-directory: ${{ runner.temp }}
+     run: cmp -s bwt.tar bwt-stdin.tar
+
+   - name: Compare decompressed files 3/3
+     working-directory: ${{ runner.temp }}
+     run: cmp -s bwt.tar bwt-stdout.tar
 
  macos:
   if: github.event.pull_request.draft == false
@@ -135,7 +143,7 @@ jobs:
    - name: Prepare for tests
      run: 7z a -ttar -r ${{ runner.temp }}\bwt.tar .
 
-   - name: Compression test
+   - name: Compression test using FILE
      working-directory: 'C:/Program Files (x86)/libbwt/bin'
      run: ./pbwt -p 9 ${{ runner.temp }}\bwt.tar -o ${{ runner.temp }}\bwt-file.tar.bwt
 
@@ -147,10 +155,26 @@ jobs:
      working-directory: 'C:/Program Files (x86)/libbwt/bin'
      run: ./pbwt -p 9 -c ${{ runner.temp }}\bwt.tar > ${{ runner.temp }}\bwt-stdout.tar.bwt
 
-   - name: Decompression test
+   - name: Decompression test using FILE
      working-directory: 'C:/Program Files (x86)/libbwt/bin'
-     run: ./pbwt -d ${{ runner.temp }}\bwt-file.tar.bwt -o ${{ runner.temp }}\bwt2.tar
+     run: ./pbwt -d ${{ runner.temp }}\bwt-file.tar.bwt -o ${{ runner.temp }}\bwt-file.tar
 
-   - name: Compare decompressed files
+   - name: Decompression test using STDIN file
+     working-directory: 'C:/Program Files (x86)/libbwt/bin'
+     run: ./pbwt -d ${{ runner.temp }}\bwt-stdin.tar.bwt -o ${{ runner.temp }}\bwt-stdin.tar
+
+   - name: Decompression test using STDOUT file
+     working-directory: 'C:/Program Files (x86)/libbwt/bin'
+     run: ./pbwt -d ${{ runner.temp }}\bwt-stdout.tar.bwt -o ${{ runner.temp }}\bwt-stdout.tar
+
+   - name: Compare decompressed files 1/3
      working-directory: ${{ runner.temp }}
-     run: fc.exe /b bwt.tar bwt2.tar
+     run: fc.exe /b bwt.tar bwt-file.tar
+
+   - name: Compare decompressed files 2/3
+     working-directory: ${{ runner.temp }}
+     run: fc.exe /b bwt.tar bwt-stdin.tar
+
+   - name: Compare decompressed files 3/3
+     working-directory: ${{ runner.temp }}
+     run: fc.exe /b bwt.tar bwt-stdout.tar

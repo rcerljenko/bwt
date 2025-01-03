@@ -80,6 +80,7 @@ jobs:
      with:
       source-dir: src
       generator: Visual Studio 17 2022
+      build-args: --config Release
 
    - name: Run program
      run: pbwt -h

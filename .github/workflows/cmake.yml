@@ -94,32 +94,32 @@ jobs:
      run: ./pbwt -h
 
    - name: Prepare for tests
-     run: zstd -1 -r . -o ${{ runner.temp }}/bwt.tar
+     run: zstd -1 -q -r . -o ${{ runner.temp }}/bwt.zstd
 
    - name: Compression test
      working-directory: 'C:/Program Files (x86)/libbwt/bin'
-     run: ./pbwt -p 9 ${{ runner.temp }}/bwt.tar -o ${{ runner.temp }}/bwt-file.tar.bwt
+     run: ./pbwt -p 9 ${{ runner.temp }}/bwt.zstd -o ${{ runner.temp }}/bwt-file.zstd.bwt
 
    - name: Compression test using STDIN
      working-directory: 'C:/Program Files (x86)/libbwt/bin'
-     run: type ${{ runner.temp }}/bwt.tar | ./pbwt -p 9 -o ${{ runner.temp }}/bwt-stdin.tar.bwt
+     run: type ${{ runner.temp }}/bwt.zstd | ./pbwt -p 9 -o ${{ runner.temp }}/bwt-stdin.zstd.bwt
 
    - name: Compression test using STDOUT
      working-directory: 'C:/Program Files (x86)/libbwt/bin'
-     run: ./pbwt -p 9 -c ${{ runner.temp }}/bwt.tar > ${{ runner.temp }}/bwt-stdout.tar.bwt
+     run: ./pbwt -p 9 -c ${{ runner.temp }}/bwt.zstd > ${{ runner.temp }}/bwt-stdout.zstd.bwt
 
    - name: Decompression test
      working-directory: 'C:/Program Files (x86)/libbwt/bin'
-     run: ./pbwt -d ${{ runner.temp }}/bwt-file.tar.bwt -o ${{ runner.temp }}/bwt2.tar
+     run: ./pbwt -d ${{ runner.temp }}/bwt-file.zstd.bwt -o ${{ runner.temp }}/bwt2.zstd
 
    - name: Compare compressed files 1/2
      working-directory: 'C:/Program Files (x86)/libbwt/bin'
-     run: comp ${{ runner.temp }}/bwt-file.tar.bwt ${{ runner.temp }}/bwt-stdin.tar.bwt
+     run: comp ${{ runner.temp }}/bwt-file.zstd.bwt ${{ runner.temp }}/bwt-stdin.zstd.bwt
 
    - name: Compare compressed files 2/2
      working-directory: 'C:/Program Files (x86)/libbwt/bin'
-     run: comp ${{ runner.temp }}/bwt-file.tar.bwt ${{ runner.temp }}/bwt-stdout.tar.bwt
+     run: comp ${{ runner.temp }}/bwt-file.zstd.bwt ${{ runner.temp }}/bwt-stdout.zstd.bwt
 
    - name: Compare decompressed files
      working-directory: 'C:/Program Files (x86)/libbwt/bin'
-     run: comp ${{ runner.temp }}/bwt.tar ${{ runner.temp }}/bwt2.tar
+     run: comp ${{ runner.temp }}/bwt.zstd ${{ runner.temp }}/bwt2.zstd

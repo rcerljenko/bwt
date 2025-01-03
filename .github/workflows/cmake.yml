@@ -88,3 +88,26 @@ jobs:
    - name: Run program
      working-directory: 'C:/Program Files (x86)/libbwt/bin'
      run: ./pbwt -h
+
+ build-macos:
+  if: github.event.pull_request.draft == false
+
+  runs-on: macos-latest
+
+  name: MacOS
+
+  steps:
+   - name: Pulling project
+     uses: actions/checkout@v4
+
+   - name: Setup CMake
+     id: cmake
+     uses: threeal/cmake-action@v2
+     with:
+      source-dir: src
+
+   - name: Install
+     run: cmake --install ${{ steps.cmake.outputs.build-dir }}
+
+   - name: Run program
+     run: pbwt -h

@@ -26,7 +26,7 @@ endif()
 add_executable(pbwt pbwt.c)
 
 if(APPLE)
-	set(CMAKE_INSTALL_RPATH_USE_LINK_PATH True)
+	set(CMAKE_INSTALL_RPATH_USE_LINK_PATH ON)
 endif()
 
 if(UNIX)

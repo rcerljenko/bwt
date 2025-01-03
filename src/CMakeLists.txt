@@ -24,7 +24,7 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 endif()
 
 if(APPLE)
-	set(CMAKE_INSTALL_RPATH_USE_LINK_PATH True)
+	set(CMAKE_MACOSX_RPATH OFF)
 endif()
 
 add_executable(pbwt pbwt.c)

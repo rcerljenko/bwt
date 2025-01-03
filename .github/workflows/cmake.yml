@@ -82,5 +82,9 @@ jobs:
       generator: Visual Studio 17 2022
       build-args: --config Release
 
+   - name: Install
+     run: cmake --install ${{ steps.cmake.outputs.build-dir }} --config Release
+
    - name: Run program
+     working-directory: ${{ steps.cmake.outputs.build-dir }}\Release
      run: pbwt -h

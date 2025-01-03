@@ -94,7 +94,7 @@ jobs:
      run: ./pbwt -h
 
    - name: Prepare for tests
-     run: 7z a -t tar {{ runner.temp }}/bwt.tar .
+     run: 7z a -ttar {{ runner.temp }}/bwt.tar .
 
    - name: Compression test
      working-directory: 'C:/Program Files (x86)/libbwt/bin'

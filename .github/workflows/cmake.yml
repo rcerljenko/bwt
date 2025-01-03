@@ -9,12 +9,12 @@ concurrency:
  cancel-in-progress: true
 
 jobs:
- build:
+ linux:
   if: github.event.pull_request.draft == false
 
   runs-on: ubuntu-latest
 
-  name: Build & Test
+  name: Linux
 
   steps:
    - name: Pulling project
@@ -62,3 +62,74 @@ jobs:
    - name: Compare decompressed files
      working-directory: ${{ runner.temp }}
      run: cmp -s bwt.tar bwt2.tar
+
+ macos:
+  if: github.event.pull_request.draft == false
+
+  runs-on: macos-latest
+
+  name: MacOS
+
+  steps:
+   - name: Pulling project
+     uses: actions/checkout@v4
+
+   - name: Setup CMake
+     id: cmake
+     uses: threeal/cmake-action@v2
+     with:
+      source-dir: src
+
+   - name: Install
+     run: sudo cmake --install ${{ steps.cmake.outputs.build-dir }}
+
+   - name: Run program
+     run: pbwt -h
+
+ windows:
+  if: github.event.pull_request.draft == false
+
+  runs-on: windows-latest
+
+  name: Windows
+
+  steps:
+   - name: Pulling project
+     uses: actions/checkout@v4
+
+   - name: Setup CMake
+     id: cmake
+     uses: threeal/cmake-action@v2
+     with:
+      source-dir: src
+      build-args: --config Release
+
+   - name: Install
+     run: cmake --install ${{ steps.cmake.outputs.build-dir }} --config Release
+
+   - name: Run program
+     working-directory: 'C:/Program Files (x86)/libbwt/bin'
+     run: ./pbwt -h
+
+   - name: Prepare for tests
+     run: 7z a -ttar -r ${{ runner.temp }}\bwt.tar .
+
+   - name: Compression test
+     working-directory: 'C:/Program Files (x86)/libbwt/bin'
+     run: ./pbwt -p 9 ${{ runner.temp }}\bwt.tar -o ${{ runner.temp }}\bwt-file.tar.bwt
+
+   - name: Compression test using STDIN
+     working-directory: 'C:/Program Files (x86)/libbwt/bin'
+     run: type ${{ runner.temp }}\bwt.tar | ./pbwt -p 9 -o ${{ runner.temp }}\bwt-stdin.tar.bwt
+
+   - name: Compression test using STDOUT
+     working-directory: 'C:/Program Files (x86)/libbwt/bin'
+     run: ./pbwt -p 9 -c ${{ runner.temp }}\bwt.tar > ${{ runner.temp }}\bwt-stdout.tar.bwt
+
+   - name: Decompression test
+     working-directory: 'C:/Program Files (x86)/libbwt/bin'
+     run: ./pbwt -d ${{ runner.temp }}\bwt-file.tar.bwt -o ${{ runner.temp }}\bwt2.tar
+
+   - name: Compare decompressed files
+     working-directory: ${{ runner.temp }}
+     run: fc.exe /b bwt.tar bwt2.tar

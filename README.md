@@ -19,10 +19,14 @@ Install part is optional, but if it's done, build dir can be deleted.
 
 #### On Windows
 
-It's easier to use [CMake GUI](https://cmake.org/download/) for Windows to pick the right generator
+It's easier to use [CMake GUI](https://cmake.org/download/) for Windows to pick the right generator.
 
-- If generator is "MinGW Makefiles" then all the steps above are valid.
-- If genereator is "Visual Studio \*" then the Solution file (\*.sln) needs to be built with it.
+If genereator is "Visual Studio \*" you need to provide an extra config argument to the build and install commands:
+
+```sh
+cmake --build build --config Release
+cmake --install build --config Release
+```
 
 **Important note:** On Windows, shared lib (\*.dll) needs to be copied to the same dir as \*.exe file after build process.
 

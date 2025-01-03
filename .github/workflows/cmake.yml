@@ -9,7 +9,7 @@ concurrency:
  cancel-in-progress: true
 
 jobs:
- linux-macos:
+ unix:
   if: github.event.pull_request.draft == false
 
   strategy:
@@ -42,7 +42,7 @@ jobs:
 
    - name: Compression test
      working-directory: ${{ runner.temp }}
-     run: pbwt -p 9 bwt.tar -o bwt-file.tar.bwt && cat bwt-file.tar.bwt
+     run: pbwt -p 9 bwt.tar -o bwt-file.tar.bwt
 
    - name: Compression test using STDIN
      working-directory: ${{ runner.temp }}

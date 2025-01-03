@@ -16,7 +16,9 @@ jobs:
    matrix:
     os: [ubuntu-latest, macos-latest]
 
-  name: Linux - ${{ matrix.os }}
+  runs-on: ${{ matrix.os }}
+
+  name: ${{ matrix.os }}
 
   steps:
    - name: Pulling project

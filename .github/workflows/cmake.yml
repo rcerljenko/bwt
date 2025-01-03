@@ -114,12 +114,12 @@ jobs:
 
    - name: Compare compressed files 1/2
      working-directory: ${{ runner.temp }}
-     run: fc /b bwt-file.tar.bwt bwt-stdin.tar.bwt
+     run: fc.exe /b bwt-file.tar.bwt bwt-stdin.tar.bwt
 
    - name: Compare compressed files 2/2
      working-directory: ${{ runner.temp }}
-     run: fc /b bwt-file.tar.bwt bwt-stdout.tar.bwt
+     run: fc.exe /b bwt-file.tar.bwt bwt-stdout.tar.bwt
 
    - name: Compare decompressed files
      working-directory: ${{ runner.temp }}
-     run: fc /b bwt.tar bwt2.tar
+     run: fc.exe /b bwt.tar bwt2.tar

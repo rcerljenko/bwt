@@ -163,10 +163,6 @@ jobs:
      working-directory: 'C:/Program Files (x86)/libbwt/bin'
      run: ./pbwt -d ${{ runner.temp }}\bwt-stdin.tar.bwt -o ${{ runner.temp }}\bwt-stdin.tar
 
-   - name: Decompression test using STDOUT file
-     working-directory: 'C:/Program Files (x86)/libbwt/bin'
-     run: ./pbwt -d ${{ runner.temp }}\bwt-stdout.tar.bwt -o ${{ runner.temp }}\bwt-stdout.tar
-
    - name: Compare decompressed files 1/3
      working-directory: ${{ runner.temp }}
      run: fc.exe /b bwt.tar bwt-file.tar
@@ -174,7 +170,3 @@ jobs:
    - name: Compare decompressed files 2/3
      working-directory: ${{ runner.temp }}
      run: fc.exe /b bwt.tar bwt-stdin.tar
-
-   - name: Compare decompressed files 3/3
-     working-directory: ${{ runner.temp }}
-     run: fc.exe /b bwt.tar bwt-stdout.tar

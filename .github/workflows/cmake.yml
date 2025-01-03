@@ -63,7 +63,7 @@ jobs:
      working-directory: ${{ runner.temp }}
      run: cmp -s bwt.tar bwt2.tar
 
-build-windows:
+ build-windows:
   if: github.event.pull_request.draft == false
 
   runs-on: windows-latest

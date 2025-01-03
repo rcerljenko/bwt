@@ -9,10 +9,11 @@ concurrency:
  cancel-in-progress: true
 
 jobs:
- build-linux:
+ linux-macos:
   if: github.event.pull_request.draft == false
 
   strategy:
+   fail-fast: false
    matrix:
     os: [ubuntu-latest, macos-latest]
 
@@ -67,12 +68,12 @@ jobs:
      working-directory: ${{ runner.temp }}
      run: cmp -s bwt.tar bwt2.tar
 
- build-windows:
+ windows:
   if: github.event.pull_request.draft == false
 
   runs-on: windows-latest
 
-  name: Windows
+  name: windows-latest
 
   steps:
    - name: Pulling project

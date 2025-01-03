@@ -25,6 +25,10 @@ endif()
 
 add_executable(pbwt pbwt.c)
 
+if(APPLE)
+	set(CMAKE_INSTALL_RPATH_USE_LINK_PATH True)
+endif()
+
 if(UNIX)
 	target_link_libraries(pbwt bwt pthread)
 else()

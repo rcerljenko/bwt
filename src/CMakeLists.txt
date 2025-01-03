@@ -23,11 +23,6 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /Wall /Ox /GF /Gd /GL /Gw /Qpar /Tc")
 endif()
 
-find_library(SEARCH bwt)
-if(SEARCH MATCHES "-NOTFOUND")
-	link_directories(libbwt/build)
-endif()
-
 add_executable(pbwt pbwt.c)
 
 if(UNIX)

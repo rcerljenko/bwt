@@ -87,12 +87,12 @@ static void sighandler(const int signum);
 #else
 static unsigned int __stdcall threaded_compress(void* const void_bwt_data);
 static unsigned int __stdcall threaded_decompress(void* const void_bwt_data);
-static short getopt(const unsigned short argc, char** const __restrict argv, const char* const __restrict args);
+static short getopt(const unsigned short argc, char** const restrict argv, const char* const restrict args);
 #endif
-static int bwt_compress(FILE* const __restrict fp_in, FILE* const __restrict fp_out, const unsigned short thread_count, const unsigned char block_size);
-static int bwt_decompress(FILE* const __restrict fp_in, FILE* const __restrict fp_out, const unsigned short thread_count);
-static void create_output_path(const char* const __restrict input, char* const output, const unsigned char dec_flag);
-static size_t get_filesize(FILE* const __restrict fp);
+static int bwt_compress(FILE* const restrict fp_in, FILE* const restrict fp_out, const unsigned short thread_count, const unsigned char block_size);
+static int bwt_decompress(FILE* const restrict fp_in, FILE* const restrict fp_out, const unsigned short thread_count);
+static void create_output_path(const char* const restrict input, char* const output, const unsigned char dec_flag);
+static size_t get_filesize(FILE* const restrict fp);
 static unsigned short get_threadcount(void);
 static void show_statistics(const int signum);
 static void show_help(void);
@@ -104,7 +104,7 @@ static void *threaded_compress(void* const void_bwt_data)
 static unsigned int __stdcall threaded_compress(void* const void_bwt_data)
 #endif
 {
-	struct bwt_data_t* const __restrict bwt_data = void_bwt_data;
+	struct bwt_data_t* const restrict bwt_data = void_bwt_data;
 	const bwt_size_t tmp_block_size = bwt_data->header.block_size;
 
 	bwt_data->header.index = bwt(bwt_data->data, bwt_data->header.block_size);
@@ -126,7 +126,7 @@ static void *threaded_decompress(void* const void_bwt_data)
 static unsigned int __stdcall threaded_decompress(void* const void_bwt_data)
 #endif
 {
-	struct bwt_data_t* const __restrict bwt_data = void_bwt_data;
+	struct bwt_data_t* const restrict bwt_data = void_bwt_data;
 
 	if(bwt_data->status) bwt_data->header.block_size = rld(bwt_data->data, bwt_data->header.block_size);
 	ibwt(bwt_data->data, bwt_data->header.block_size, bwt_data->header.index);
@@ -134,7 +134,7 @@ static unsigned int __stdcall threaded_decompress(void* const void_bwt_data)
 	return THREAD_RETURN;
 }
 
-static int bwt_compress(FILE* const __restrict fp_in, FILE* const __restrict fp_out, const unsigned short thread_count, const unsigned char block_size)
+static int bwt_compress(FILE* const restrict fp_in, FILE* const restrict fp_out, const unsigned short thread_count, const unsigned char block_size)
 {
 	const bwt_size_t main_block_size = 1U << block_size;
 	const size_t fread_size = main_block_size * thread_count;
@@ -151,8 +151,8 @@ static int bwt_compress(FILE* const __restrict fp_in, FILE* const __restrict fp_
 	bwt_size_t tmp_block_size;
 	unsigned char status = 1;
 
-	struct bwt_data_t* const __restrict bwt_data = malloc(sizeof(struct bwt_data_t) * thread_count);
-	thread_t* const __restrict threads = malloc(sizeof(thread_t) * thread_count);
+	struct bwt_data_t* const restrict bwt_data = malloc(sizeof(struct bwt_data_t) * thread_count);
+	thread_t* const restrict threads = malloc(sizeof(thread_t) * thread_count);
 
 	stats.curr_fs_out = fwrite(&block_size, 1, 1, fp_out);
 
@@ -214,7 +214,7 @@ static int bwt_compress(FILE* const __restrict fp_in, FILE* const __restrict fp_
 	else return EXIT_FAILURE;
 }
 
-static int bwt_decompress(FILE* const __restrict fp_in, FILE* const __restrict fp_out, const unsigned short thread_count)
+static int bwt_decompress(FILE* const restrict fp_in, FILE* const restrict fp_out, const unsigned short thread_count)
 {
 	bwt_size_t main_block_size;
 	stats.curr_fs_in = fread(&main_block_size, 1, 1, fp_in);
@@ -232,8 +232,8 @@ static int bwt_decompress(FILE* const __restrict fp_in, FILE* const __restrict f
 	size_t n, status = 1;
 	unsigned short i = 0;
 
-	struct bwt_data_t* const __restrict bwt_data = malloc(sizeof(struct bwt_data_t) * thread_count);
-	thread_t* const __restrict threads = malloc(sizeof(thread_t) * thread_count);
+	struct bwt_data_t* const restrict bwt_data = malloc(sizeof(struct bwt_data_t) * thread_count);
+	thread_t* const restrict threads = malloc(sizeof(thread_t) * thread_count);
 
 	while(fread(&bwt_data[i].header, sizeof(struct header_t), 1, fp_in) == 1)
 	{
@@ -342,7 +342,7 @@ static int bwt_decompress(FILE* const __restrict fp_in, FILE* const __restrict f
 	else return EXIT_FAILURE;
 }
 
-static void create_output_path(const char* const __restrict input, char* const output, const unsigned char dec_flag)
+static void create_output_path(const char* const restrict input, char* const output, const unsigned char dec_flag)
 {
 	if(!input)
 	{
@@ -369,7 +369,7 @@ static void create_output_path(const char* const __restrict input, char* const o
 	else strcat(output, FILE_EXT);
 }
 
-static size_t get_filesize(FILE* const __restrict fp)
+static size_t get_filesize(FILE* const restrict fp)
 {
 	fseek(fp, 0, SEEK_END);
 	const size_t size = ftell(fp);
@@ -392,7 +392,7 @@ static unsigned short get_threadcount(void)
 #ifndef _WIN32
 static size_t get_memusage(void)
 {
-	FILE* const __restrict fp = fopen("/proc/self/statm", "rb");
+	FILE* const restrict fp = fopen("/proc/self/statm", "rb");
 	if(!fp) return 0;
 
 	unsigned long vm_rss;
@@ -410,7 +410,7 @@ static void sighandler(const int signum)
 	show_statistics(signum);
 }
 #else
-static short getopt(const unsigned short argc, char** const __restrict argv, const char* const __restrict args)
+static short getopt(const unsigned short argc, char** const restrict argv, const char* const restrict args)
 {
 	char curr_arg;
 	const char *is_arg;
@@ -465,7 +465,7 @@ static void show_statistics(const int signum)
 	const time_t diff_time = difftime(stats.end_time, stats.start_time);
 	if(diff_time)
 	{
-		const struct tm* const __restrict time_info = localtime(&diff_time);
+		const struct tm* const restrict time_info = localtime(&diff_time);
 		strftime(time_buffer, sizeof(time_buffer), "%Mm:%Ss", time_info);
 
 		speed = stats.curr_fs_in / (1024.0 * 1024.0 * diff_time);
@@ -495,9 +495,9 @@ static void show_statistics(const int signum)
 	}
 #endif
 
-	fprintf(stderr, "Bytes read: %lu B\n"
-		"Bytes written: %lu B\n"
-		"Diff: %lu B (%.2f%%)\n"
+	fprintf(stderr, "Bytes read: %zu B\n"
+		"Bytes written: %zu B\n"
+		"Diff: %zu B (%.2f%%)\n"
 		"Ratio: %.2f\n"
 		"Time: %s\n"
 		"Speed: %.2f MB/s\n",

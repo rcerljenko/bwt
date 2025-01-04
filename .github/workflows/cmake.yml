@@ -12,23 +12,23 @@ jobs:
  linux:
   if: github.event.pull_request.draft == false
 
+  strategy:
+   fail-fast: false
+   matrix:
+    compiler: [gcc, clang]
+
   runs-on: ubuntu-latest
 
-  name: Linux
+  name: Linux - ${{ matrix.compiler }}
 
   steps:
    - name: Pulling project
      uses: actions/checkout@v4
 
-   - name: Setup cache
-     uses: actions/cache@v4
-     with:
-      path: ./src/build
-      key: ${{ runner.os }}-cmake-${{ hashFiles('./src/CMakeLists.txt', './src/libbwt/CMakeLists.txt') }}
-      restore-keys: ${{ runner.os }}-cmake-
-
    - name: Setup CMake
      id: cmake
+     env:
+      CC: ${{ matrix.compiler }}
      uses: threeal/cmake-action@v2
      with:
       source-dir: src
@@ -81,23 +81,23 @@ jobs:
  macos:
   if: github.event.pull_request.draft == false
 
+  strategy:
+   fail-fast: false
+   matrix:
+    compiler: [gcc-14, clang]
+
   runs-on: macos-latest
 
-  name: MacOS
+  name: MacOS - ${{ matrix.compiler }}
 
   steps:
    - name: Pulling project
      uses: actions/checkout@v4
 
-   - name: Setup cache
-     uses: actions/cache@v4
-     with:
-      path: ./src/build
-      key: ${{ runner.os }}-cmake-${{ hashFiles('./src/CMakeLists.txt', './src/libbwt/CMakeLists.txt') }}
-      restore-keys: ${{ runner.os }}-cmake-
-
    - name: Setup CMake
      id: cmake
+     env:
+      CC: ${{ matrix.compiler }}
      uses: threeal/cmake-action@v2
      with:
       source-dir: src
@@ -118,13 +118,6 @@ jobs:
   steps:
    - name: Pulling project
      uses: actions/checkout@v4
-
-   - name: Setup cache
-     uses: actions/cache@v4
-     with:
-      path: ./src/build
-      key: ${{ runner.os }}-cmake-${{ hashFiles('./src/CMakeLists.txt', './src/libbwt/CMakeLists.txt') }}
-      restore-keys: ${{ runner.os }}-cmake-
 
    - name: Setup CMake
      id: cmake

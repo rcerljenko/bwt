@@ -97,7 +97,7 @@ jobs:
       restore-keys: ${{ runner.os }}-cmake-
 
    - name: Set GCC compiler
-     run: export CC=gcc-14
+     run: alias cc=gcc-14
 
    - name: Setup CMake
      id: cmake

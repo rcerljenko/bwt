@@ -96,11 +96,11 @@ jobs:
       key: ${{ runner.os }}-cmake-${{ hashFiles('./src/CMakeLists.txt', './src/libbwt/CMakeLists.txt') }}
       restore-keys: ${{ runner.os }}-cmake-
 
-   - name: Set GCC compiler
-     run: alias cc=gcc-14
-
    - name: Setup CMake
      id: cmake
+     env:
+      CC: gcc-14
+      CXX: g++-14
      uses: threeal/cmake-action@v2
      with:
       source-dir: src

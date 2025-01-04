@@ -29,6 +29,9 @@ jobs:
 
    - name: Setup CMake
      id: cmake
+     env:
+      CC: clang
+      CXX: clang++
      uses: threeal/cmake-action@v2
      with:
       source-dir: src

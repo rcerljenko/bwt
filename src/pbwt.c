@@ -495,9 +495,9 @@ static void show_statistics(const int signum)
 	}
 #endif
 
-	fprintf(stderr, "Bytes read: %lu B\n"
-		"Bytes written: %lu B\n"
-		"Diff: %lu B (%.2f%%)\n"
+	fprintf(stderr, "Bytes read: %zu B\n"
+		"Bytes written: %zu B\n"
+		"Diff: %zu B (%.2f%%)\n"
 		"Ratio: %.2f\n"
 		"Time: %s\n"
 		"Speed: %.2f MB/s\n",

@@ -81,9 +81,14 @@ jobs:
  macos:
   if: github.event.pull_request.draft == false
 
+  strategy:
+   fail-fast: false
+   matrix:
+    compiler: [gcc, clang]
+
   runs-on: macos-latest
 
-  name: MacOS
+  name: MacOS - ${{ matrix.compiler }}
 
   steps:
    - name: Pulling project
@@ -91,6 +96,8 @@ jobs:
 
    - name: Setup CMake
      id: cmake
+     env:
+      CC: ${{ matrix.compiler }}
      uses: threeal/cmake-action@v2
      with:
       source-dir: src

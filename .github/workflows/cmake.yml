@@ -12,9 +12,14 @@ jobs:
  linux:
   if: github.event.pull_request.draft == false
 
+  strategy:
+   fail-fast: false
+   matrix:
+    compiler: [gcc, clang]
+
   runs-on: ubuntu-latest
 
-  name: Linux
+  name: Linux - ${{ matrix.compiler }}
 
   steps:
    - name: Pulling project
@@ -23,8 +28,7 @@ jobs:
    - name: Setup CMake
      id: cmake
      env:
-      CC: clang
-      CXX: clang++
+      CC: ${{ matrix.compiler }}
      uses: threeal/cmake-action@v2
      with:
       source-dir: src
@@ -113,7 +117,6 @@ jobs:
      uses: threeal/cmake-action@v2
      with:
       source-dir: src
-      args: -T clang-cl
       build-args: --config Release
 
    - name: Install

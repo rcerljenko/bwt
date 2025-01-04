@@ -4,6 +4,8 @@ project(libbwt C)
 set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_C_STANDARD 23)
 
+include(CheckIPOSupported)
+
 if(CMAKE_C_COMPILER_ID MATCHES "GNU")
 	add_compile_options(-Wall -Wextra -march=native -Ofast)
 

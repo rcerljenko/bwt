@@ -12,7 +12,7 @@
 
 struct bwt_info_t
 {
-	unsigned char* __restrict rotations;
+	unsigned char* restrict rotations;
 	bwt_size_t len;
 };
 
@@ -33,7 +33,7 @@ static inline int bwt_cmp(void* const arg, const void* const a, const void* cons
 {
 	const bwt_size_t i = *(bwt_size_t *)a;
 	const bwt_size_t j = *(bwt_size_t *)b;
-	const struct bwt_info_t* const __restrict data_info = arg;
+	const struct bwt_info_t* const restrict data_info = arg;
 
 	return memcmp(data_info->rotations + i, data_info->rotations + j, data_info->len);
 }
@@ -47,11 +47,11 @@ DLL_EXPIMP bwt_size_t CALL_CONV bwt(void* const void_data, const bwt_size_t n)
 {
 	if(!void_data || n < 2) return 0;
 
-	unsigned char* __restrict data = void_data;
+	unsigned char* restrict data = void_data;
 	bwt_size_t i, index = n;
 	struct bwt_info_t data_info;
 	data_info.rotations = malloc(n * 2 - 1);
-	bwt_size_t* __restrict positions = malloc(sizeof(bwt_size_t) * n);
+	bwt_size_t* restrict positions = malloc(sizeof(bwt_size_t) * n);
 
 	memcpy(data_info.rotations, data, n);
 	memcpy(data_info.rotations + n, data, n - 1);
@@ -84,12 +84,12 @@ DLL_EXPIMP void CALL_CONV ibwt(void* const void_data, const bwt_size_t n, bwt_si
 {
 	if(!void_data || n < 2 || index >= n) return;
 
-	unsigned char* __restrict data = void_data;
+	unsigned char* restrict data = void_data;
 	bwt_size_t i;
 	unsigned char curr_char;
 	const unsigned char *pos;
-	unsigned char* const __restrict tmp_data = malloc(n);
-	bwt_size_t* __restrict transform = malloc(sizeof(bwt_size_t) * n);
+	unsigned char* const restrict tmp_data = malloc(n);
+	bwt_size_t* restrict transform = malloc(sizeof(bwt_size_t) * n);
 
 	memcpy(tmp_data, data, n);
 	qsort(data, n, 1, ibwt_cmp);
@@ -123,12 +123,12 @@ DLL_EXPIMP bwt_size_t CALL_CONV rle(void* const void_data, const bwt_size_t n)
 {
 	if(!void_data || n < 4) return 0;
 
-	unsigned char* __restrict data = void_data;
+	unsigned char* restrict data = void_data;
 	bwt_size_t len = 0;
 	unsigned short count;
 	unsigned char curr_char;
 	const unsigned char* const end = data + n;
-	unsigned char* __restrict result = malloc(n);
+	unsigned char* restrict result = malloc(n);
 
 	while(data < end && len < n)
 	{
@@ -157,9 +157,9 @@ DLL_EXPIMP bwt_size_t CALL_CONV rld(void* const void_data, const bwt_size_t n)
 {
 	if(!void_data || n < 3) return 0;
 
-	unsigned char* __restrict data = void_data;
+	unsigned char* restrict data = void_data;
 	unsigned char curr_char;
-	unsigned char* __restrict tmp_data = malloc(n);
+	unsigned char* restrict tmp_data = malloc(n);
 	const unsigned char* const start = data;
 	const unsigned char* const tmp_end = tmp_data + n - 1;
 

@@ -8,7 +8,10 @@ set(CMAKE_C_STANDARD 23)
 
 if(CMAKE_C_COMPILER_ID MATCHES "GNU")
 	add_compile_options(-Wall -Wextra -march=native -Ofast -flto)
-	add_link_options(-s)
+
+	if(NOT APPLE)
+		add_link_options(-s)
+	endif()
 elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
 	add_compile_options(-Weverything -O3 -flto)
 

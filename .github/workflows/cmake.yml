@@ -111,9 +111,14 @@ jobs:
  windows:
   if: github.event.pull_request.draft == false
 
+  strategy:
+   fail-fast: false
+   matrix:
+    generator: ['Visual Studio 17 2022', 'MinGW Makefiles']
+
   runs-on: windows-latest
 
-  name: Windows
+  name: Windows - ${{ matrix.generator }}
 
   steps:
    - name: Pulling project
@@ -124,6 +129,7 @@ jobs:
      uses: threeal/cmake-action@v2
      with:
       source-dir: src
+      generator: ${{ matrix.generator }}
       build-args: --config Release
 
    - name: Install

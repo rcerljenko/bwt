@@ -116,7 +116,7 @@ jobs:
 
    - name: Install Intel oneAPI compiler
      if: ${{ matrix.compiler == 'icx' }}
-     run: pipx install dpcpp-cpp-rt==2024.0
+     run: pipx install dpcpp-cpp-rt==2023.2
 
    - name: Setup CMake
      id: cmake

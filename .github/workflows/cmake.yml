@@ -141,7 +141,7 @@ jobs:
 
   runs-on: windows-latest
 
-  name: Windows - ${{ matrix.generator }}
+  name: Windows - ${{ matrix.generator }} - ${{ matrix.compiler || 'Native' }}
 
   steps:
    - name: Pulling project

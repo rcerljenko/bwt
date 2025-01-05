@@ -104,7 +104,7 @@ jobs:
   strategy:
    fail-fast: false
    matrix:
-    compiler: [gcc-14, clang]
+    compiler: [gcc-14, clang, icx]
 
   runs-on: macos-latest
 
@@ -113,6 +113,10 @@ jobs:
   steps:
    - name: Pulling project
      uses: actions/checkout@v4
+
+   - name: Install Intel oneAPI compiler
+     if: ${{ matrix.compiler == 'icx' }}
+     run: python -m pip install dpcpp-cpp-rt
 
    - name: Setup CMake
      id: cmake

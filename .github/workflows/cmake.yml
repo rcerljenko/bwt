@@ -136,10 +136,10 @@ jobs:
    matrix:
     generator: ['Visual Studio 17 2022', 'MinGW Makefiles']
     include:
-     - generator: 'MinGW Makefiles'
-       compiler: gcc
-     - generator: 'MinGW Makefiles'
-       compiler: clang
+     - compiler: gcc
+       generator: 'MinGW Makefiles'
+     - compiler: clang
+       generator: 'MinGW Makefiles'
 
   runs-on: windows-latest
 

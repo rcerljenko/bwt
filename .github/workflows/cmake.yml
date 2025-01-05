@@ -134,11 +134,16 @@ jobs:
   strategy:
    fail-fast: false
    matrix:
-    generator: ['Visual Studio 17 2022', 'MinGW Makefiles']
+    include:
+     - generator: ''
+     - generator: 'MinGW Makefiles'
+       compiler: gcc
+     - generator: 'MinGW Makefiles'
+       compiler: clang
 
   runs-on: windows-latest
 
-  name: Windows - ${{ matrix.generator }}
+  name: Windows - ${{ matrix.generator || 'Visual Studio' }} - ${{ matrix.compiler || 'MSVC' }}
 
   steps:
    - name: Pulling project
@@ -150,6 +155,7 @@ jobs:
      with:
       source-dir: src
       generator: ${{ matrix.generator }}
+      args: ${{ matrix.compiler && format('-DCMAKE_C_COMPILER={0}', matrix.compiler) || '' }}
       build-args: --config Release
 
    - name: Install

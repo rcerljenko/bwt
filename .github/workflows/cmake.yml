@@ -165,3 +165,79 @@ jobs:
    - name: Compare decompressed files
      working-directory: ${{ runner.temp }}
      run: fc.exe /b bwt.tar bwt-file.tar
+
+ linux-intel:
+  if: github.event.pull_request.draft == false
+
+  runs-on: ubuntu-latest
+
+  name: Linux - Intel oneAPI
+
+  steps:
+   - name: Pulling project
+     uses: actions/checkout@v4
+
+   - name: Add Intel APT repository
+     working-directory: ${{ runner.temp }}
+     run: |
+      wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+      sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+      rm GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+      sudo add-apt-repository "deb https://apt.repos.intel.com/oneapi all main"
+      sudo apt-get update
+
+    - name: Install Intel oneAPI compiler
+      run: sudo apt-get install -y -V intel-oneapi-compiler-dpcpp-cpp
+
+   - name: Setup CMake
+     id: cmake
+     env:
+      CC: icx
+     uses: threeal/cmake-action@v2
+     with:
+      source-dir: src
+
+   - name: Install
+     run: sudo cmake --install ${{ steps.cmake.outputs.build-dir }}
+
+   - name: Run program
+     run: pbwt -h
+
+   - name: Prepare for tests
+     run: tar -c -f ${{ runner.temp }}/bwt.tar .
+
+   - name: Compression test using FILE
+     working-directory: ${{ runner.temp }}
+     run: pbwt -p 9 bwt.tar -o bwt-file.tar.bwt
+
+   - name: Compression test using STDIN
+     working-directory: ${{ runner.temp }}
+     run: cat bwt.tar | pbwt -p 9 -o bwt-stdin.tar.bwt
+
+   - name: Compression test using STDOUT
+     working-directory: ${{ runner.temp }}
+     run: pbwt -p 9 -c bwt.tar > bwt-stdout.tar.bwt
+
+   - name: Decompression test using FILE
+     working-directory: ${{ runner.temp }}
+     run: pbwt -d bwt-file.tar.bwt -o bwt-file.tar
+
+   - name: Decompression test using STDIN file
+     working-directory: ${{ runner.temp }}
+     run: pbwt -d bwt-stdin.tar.bwt -o bwt-stdin.tar
+
+   - name: Decompression test using STDOUT file
+     working-directory: ${{ runner.temp }}
+     run: pbwt -d bwt-stdout.tar.bwt -o bwt-stdout.tar
+
+   - name: Compare decompressed files 1/3
+     working-directory: ${{ runner.temp }}
+     run: cmp -s bwt.tar bwt-file.tar
+
+   - name: Compare decompressed files 2/3
+     working-directory: ${{ runner.temp }}
+     run: cmp -s bwt.tar bwt-stdin.tar
+
+   - name: Compare decompressed files 3/3
+     working-directory: ${{ runner.temp }}
+     run: cmp -s bwt.tar bwt-stdout.tar

@@ -137,11 +137,13 @@ jobs:
     generator: ['Visual Studio 17 2022', 'MinGW Makefiles']
     include:
      - generator: 'MinGW Makefiles'
-       compiler: [gcc, clang]
+       compiler: gcc
+     - generator: 'MinGW Makefiles'
+       compiler: clang
 
   runs-on: windows-latest
 
-  name: Windows - ${{ matrix.generator }} - ${{ matrix.compiler || 'Native' }}
+  name: Windows - ${{ matrix.generator }} - ${{ matrix.compiler || 'MSVC' }}
 
   steps:
    - name: Pulling project

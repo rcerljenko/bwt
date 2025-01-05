@@ -189,6 +189,11 @@ jobs:
    - name: Install Intel oneAPI compiler
      run: sudo apt-get install -y -V intel-oneapi-compiler-dpcpp-cpp
 
+   - name: Setup Intel oneAPI environment
+     run: |
+      source /opt/intel/oneapi/setvars.sh
+      printenv >> $GITHUB_ENV
+
    - name: Setup CMake
      id: cmake
      env:

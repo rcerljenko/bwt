@@ -15,7 +15,7 @@ jobs:
   strategy:
    fail-fast: false
    matrix:
-    compiler: [gcc, clang]
+    compiler: [gcc, clang, icx]
 
   runs-on: ubuntu-latest
 
@@ -24,6 +24,26 @@ jobs:
   steps:
    - name: Pulling project
      uses: actions/checkout@v4
+
+   - name: Add Intel APT repository
+     if: ${{ matrix.compiler == 'icx' }}
+     working-directory: ${{ runner.temp }}
+     run: |
+      wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+      sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+      rm GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+      sudo add-apt-repository "deb https://apt.repos.intel.com/oneapi all main"
+      sudo apt-get update
+
+   - name: Install Intel oneAPI compiler
+     if: ${{ matrix.compiler == 'icx' }}
+     run: sudo apt-get install -y -V intel-oneapi-compiler-dpcpp-cpp
+
+   - name: Setup Intel oneAPI environment
+     if: ${{ matrix.compiler == 'icx' }}
+     run: |
+      source /opt/intel/oneapi/setvars.sh
+      printenv >> $GITHUB_ENV
 
    - name: Setup CMake
      id: cmake

@@ -12,7 +12,7 @@ After git clone or downloaded and extracted zip file (assuming cmake is installe
 cd bwt/src
 cmake -B build
 cmake --build build
-sudo cmake --install build --strip -v
+sudo cmake --install build --strip
 ```
 
 Install part is optional, but if it's done, build dir can be deleted.
@@ -25,7 +25,7 @@ If genereator is "Visual Studio \*" you need to provide an extra config argument
 
 ```sh
 cmake --build build --config Release
-cmake --install build --strip -v --config Release
+cmake --install build --strip --config Release
 ```
 
 **Important note:** On Windows, shared lib (\*.dll) needs to be copied to the same dir as \*.exe file after build process.

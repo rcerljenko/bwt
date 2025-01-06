@@ -6,8 +6,11 @@ project(pbwt C)
 
 set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_C_STANDARD 23)
-set(CMAKE_VERBOSE_MAKEFILE TRUE)
 
+set(CPACK_THREADS 0)
+set(CPACK_STRIP_FILES TRUE)
+
+include(CPack)
 include(CheckIPOSupported)
 
 if(CMAKE_C_COMPILER_ID MATCHES "GNU")

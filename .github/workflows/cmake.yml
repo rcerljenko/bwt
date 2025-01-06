@@ -64,7 +64,7 @@ jobs:
    - name: Install with CPack
      if: ${{ matrix.cpack }}
      working-directory: ${{ steps.cmake.outputs.build-dir }}
-     run: sudo dpkg -i pbwt-1.0.0-linux.deb
+     run: sudo dpkg -i pbwt-1.0.0-${{ runner.os }}.deb
 
    - name: Run program
      run: pbwt -h

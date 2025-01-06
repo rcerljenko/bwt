@@ -15,7 +15,12 @@ set(CPACK_THREADS 0)
 set(CPACK_STRIP_FILES TRUE)
 set(CPACK_PACKAGE_CHECKSUM SHA3_512)
 set(CPACK_PACKAGE_VENDOR "Ricardo Cerljenko")
-set(CPACK_GENERATOR ZIP)
+
+if(UNIX AND NOT APPLE)
+	set(CPACK_GENERATOR DEB)
+else()
+	set(CPACK_GENERATOR ZIP)
+endif()
 
 include(CPack)
 include(CheckIPOSupported)

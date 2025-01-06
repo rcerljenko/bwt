@@ -16,10 +16,7 @@ jobs:
    fail-fast: false
    matrix:
     compiler: [gcc, clang, icx]
-    cpack: [false]
-    include:
-     - compiler: gcc
-       cpack: true
+    cpack: [false, true]
 
   runs-on: ubuntu-latest
 

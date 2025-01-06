@@ -2,13 +2,20 @@ cmake_minimum_required(VERSION 3.21)
 
 add_subdirectory(libbwt libbwt)
 
-project(pbwt C)
+project(pbwt
+	VERSION 1.0.0
+	DESCRIPTION "Portable Multithreaded Burrows-Wheeler Transform + Run Length Encoding Compressor/Decompressor"
+	HOMEPAGE_URL "https://github.com/rcerljenko/bwt"
+	LANGUAGES C)
 
 set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_C_STANDARD 23)
 
 set(CPACK_THREADS 0)
 set(CPACK_STRIP_FILES TRUE)
+set(CPACK_PACKAGE_CHECKSUM SHA3_512)
+set(CPACK_PACKAGE_VENDOR "Ricardo Cerljenko")
+set(CPACK_GENERATOR ZIP)
 
 include(CPack)
 include(CheckIPOSupported)

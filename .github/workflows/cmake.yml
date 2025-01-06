@@ -54,7 +54,7 @@ jobs:
       source-dir: src
 
    - name: Install
-     run: sudo cmake --install ${{ steps.cmake.outputs.build-dir }}
+     run: sudo cmake --install ${{ steps.cmake.outputs.build-dir }} --strip -v
 
    - name: Run program
      run: pbwt -h
@@ -123,7 +123,7 @@ jobs:
       source-dir: src
 
    - name: Install
-     run: sudo cmake --install ${{ steps.cmake.outputs.build-dir }}
+     run: sudo cmake --install ${{ steps.cmake.outputs.build-dir }} --strip -v
 
    - name: Run program
      run: pbwt -h
@@ -159,7 +159,7 @@ jobs:
       build-args: --config Release
 
    - name: Install
-     run: cmake --install ${{ steps.cmake.outputs.build-dir }} --config Release
+     run: cmake --install ${{ steps.cmake.outputs.build-dir }} --config Release --strip -v
 
    - name: Run program
      working-directory: 'C:/Program Files (x86)/libbwt/bin'

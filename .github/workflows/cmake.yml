@@ -16,15 +16,14 @@ jobs:
    fail-fast: false
    matrix:
     compiler: [gcc, clang, icx]
+    cpack: [false]
     include:
      - compiler: gcc
        cpack: true
-     - compiler: gcc
-       cpack: false
 
   runs-on: ubuntu-latest
 
-  name: Linux - ${{ matrix.compiler }} ${{ matrix.cpack && '- CPack' }}
+  name: Linux - ${{ matrix.compiler }} ${{ matrix.cpack && '- CPack' || '' }}
 
   steps:
    - name: Pulling project

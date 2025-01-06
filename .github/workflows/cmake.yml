@@ -16,10 +16,11 @@ jobs:
    fail-fast: false
    matrix:
     compiler: [gcc, clang, icx]
+    cpack: [false, true]
 
   runs-on: ubuntu-latest
 
-  name: Linux - ${{ matrix.compiler }}
+  name: Linux - ${{ matrix.compiler }} ${{ matrix.cpack && '- CPack' || '' }}
 
   steps:
    - name: Pulling project
@@ -52,9 +53,16 @@ jobs:
      uses: threeal/cmake-action@v2
      with:
       source-dir: src
+      build-args: ${{ matrix.cpack && '--target package' || '' }}
 
    - name: Install
+     if: ${{ ! matrix.cpack }}
      run: sudo cmake --install ${{ steps.cmake.outputs.build-dir }} --strip
+
+   - name: Install with CPack
+     if: ${{ matrix.cpack }}
+     working-directory: ${{ steps.cmake.outputs.build-dir }}
+     run: sudo dpkg -i pbwt-1.0.0-${{ runner.os }}.deb
 
    - name: Run program
      run: pbwt -h

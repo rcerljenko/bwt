@@ -20,7 +20,7 @@ jobs:
 
   runs-on: ubuntu-latest
 
-  name: ${{ runner.os }} - ${{ matrix.compiler }} ${{ matrix.cpack && '- CPack' || '' }}
+  name: Linux - ${{ matrix.compiler }} ${{ matrix.cpack && '- CPack' || '' }}
 
   steps:
    - name: Pulling project
@@ -117,7 +117,7 @@ jobs:
 
   runs-on: macos-latest
 
-  name: ${{ runner.os }} - ${{ matrix.compiler }} ${{ matrix.cpack && '- CPack' || '' }}
+  name: MacOS - ${{ matrix.compiler }} ${{ matrix.cpack && '- CPack' || '' }}
 
   steps:
    - name: Pulling project
@@ -159,7 +159,7 @@ jobs:
 
   runs-on: windows-latest
 
-  name: ${{ runner.os }} - ${{ matrix.generator || 'Visual Studio' }} - ${{ matrix.compiler || 'MSVC' }}
+  name: Windows - ${{ matrix.generator || 'Visual Studio' }} - ${{ matrix.compiler || 'MSVC' }}
 
   steps:
    - name: Pulling project

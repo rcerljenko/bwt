@@ -38,7 +38,7 @@ jobs:
 
    - name: Install Intel oneAPI compiler
      if: ${{ matrix.compiler == 'icx' }}
-     run: sudo apt-get install -y intel-oneapi-compiler-dpcpp-cpp
+     run: sudo apt-get install -y -q intel-oneapi-compiler-dpcpp-cpp
 
    - name: Setup Intel oneAPI environment
      if: ${{ matrix.compiler == 'icx' }}
@@ -62,7 +62,7 @@ jobs:
    - name: Install with CPack
      if: ${{ matrix.cpack }}
      working-directory: ${{ steps.cmake.outputs.build-dir }}
-     run: sudo apt install -y ./pbwt-1.0.0-${{ runner.os }}.deb
+     run: sudo apt install -y -q ./pbwt-1.0.0-${{ runner.os }}.deb
 
    - name: Run program
      run: pbwt -h

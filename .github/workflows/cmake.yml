@@ -33,12 +33,12 @@ jobs:
       wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
       sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
       rm GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
-      sudo add-apt-repository "deb https://apt.repos.intel.com/oneapi all main"
-      sudo apt-get update
+      sudo add-apt-repository -y "deb https://apt.repos.intel.com/oneapi all main"
+      sudo apt-get update -q
 
    - name: Install Intel oneAPI compiler
      if: ${{ matrix.compiler == 'icx' }}
-     run: sudo apt-get install -y intel-oneapi-compiler-dpcpp-cpp
+     run: sudo apt-get install -y -q intel-oneapi-compiler-dpcpp-cpp
 
    - name: Setup Intel oneAPI environment
      if: ${{ matrix.compiler == 'icx' }}
@@ -62,7 +62,7 @@ jobs:
    - name: Install with CPack
      if: ${{ matrix.cpack }}
      working-directory: ${{ steps.cmake.outputs.build-dir }}
-     run: sudo dpkg -i pbwt-1.0.0-${{ runner.os }}.deb
+     run: sudo apt install -y -q ./pbwt-1.0.0-${{ runner.os }}.deb
 
    - name: Run program
      run: pbwt -h

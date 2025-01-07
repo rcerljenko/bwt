@@ -136,6 +136,45 @@ jobs:
    - name: Run program
      run: pbwt -h
 
+   - name: Prepare for tests
+     run: gtar -c -f ${{ runner.temp }}/bwt.tar .
+
+   - name: Compression test using FILE
+     working-directory: ${{ runner.temp }}
+     run: pbwt -p 9 bwt.tar -o bwt-file.tar.bwt
+
+   - name: Compression test using STDIN
+     working-directory: ${{ runner.temp }}
+     run: cat bwt.tar | pbwt -p 9 -o bwt-stdin.tar.bwt
+
+   - name: Compression test using STDOUT
+     working-directory: ${{ runner.temp }}
+     run: pbwt -p 9 -c bwt.tar > bwt-stdout.tar.bwt
+
+   - name: Decompression test using FILE
+     working-directory: ${{ runner.temp }}
+     run: pbwt -d bwt-file.tar.bwt -o bwt-file.tar
+
+   - name: Decompression test using STDIN file
+     working-directory: ${{ runner.temp }}
+     run: pbwt -d bwt-stdin.tar.bwt -o bwt-stdin.tar
+
+   - name: Decompression test using STDOUT file
+     working-directory: ${{ runner.temp }}
+     run: pbwt -d bwt-stdout.tar.bwt -o bwt-stdout.tar
+
+   - name: Compare decompressed files 1/3
+     working-directory: ${{ runner.temp }}
+     run: cmp -s bwt.tar bwt-file.tar
+
+   - name: Compare decompressed files 2/3
+     working-directory: ${{ runner.temp }}
+     run: cmp -s bwt.tar bwt-stdin.tar
+
+   - name: Compare decompressed files 3/3
+     working-directory: ${{ runner.temp }}
+     run: cmp -s bwt.tar bwt-stdout.tar
+
  windows:
   if: github.event.pull_request.draft == false
 

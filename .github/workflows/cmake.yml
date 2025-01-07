@@ -20,7 +20,7 @@ jobs:
 
   runs-on: ubuntu-latest
 
-  name: Linux - ${{ matrix.compiler }} ${{ matrix.cpack && '- CPack' || '' }}
+  name: ${{ runner.os }} - ${{ matrix.compiler }} ${{ matrix.cpack && '- CPack' || '' }}
 
   steps:
    - name: Pulling project
@@ -38,7 +38,7 @@ jobs:
 
    - name: Install Intel oneAPI compiler
      if: ${{ matrix.compiler == 'icx' }}
-     run: sudo apt-get install -y -V intel-oneapi-compiler-dpcpp-cpp
+     run: sudo apt-get install -y intel-oneapi-compiler-dpcpp-cpp
 
    - name: Setup Intel oneAPI environment
      if: ${{ matrix.compiler == 'icx' }}
@@ -113,10 +113,11 @@ jobs:
    fail-fast: false
    matrix:
     compiler: [gcc-14, clang]
+    cpack: [false, true]
 
   runs-on: macos-latest
 
-  name: MacOS - ${{ matrix.compiler }}
+  name: ${{ runner.os }} - ${{ matrix.compiler }} ${{ matrix.cpack && '- CPack' || '' }}
 
   steps:
    - name: Pulling project
@@ -129,9 +130,16 @@ jobs:
      uses: threeal/cmake-action@v2
      with:
       source-dir: src
+      build-args: ${{ matrix.cpack && '--target package' || '' }}
 
    - name: Install
+     if: ${{ ! matrix.cpack }}
      run: sudo cmake --install ${{ steps.cmake.outputs.build-dir }} --strip
+
+   - name: Install with CPack
+     if: ${{ matrix.cpack }}
+     working-directory: ${{ steps.cmake.outputs.build-dir }}
+     run: sudo installer -store -package pbwt-1.0.0-${{ runner.os }}.pkg
 
    - name: Run program
      run: pbwt -h
@@ -151,7 +159,7 @@ jobs:
 
   runs-on: windows-latest
 
-  name: Windows - ${{ matrix.generator || 'Visual Studio' }} - ${{ matrix.compiler || 'MSVC' }}
+  name: ${{ runner.os }} - ${{ matrix.generator || 'Visual Studio' }} - ${{ matrix.compiler || 'MSVC' }}
 
   steps:
    - name: Pulling project

@@ -139,7 +139,7 @@ jobs:
    - name: Install with CPack
      if: ${{ matrix.cpack }}
      working-directory: ${{ steps.cmake.outputs.build-dir }}
-     run: sudo installer -store -pkg pbwt-1.0.0-Darwin.pkg -target /
+     run: sudo installer -pkg pbwt-1.0.0-Darwin.pkg -target /
 
    - name: Run program
      run: pbwt -h

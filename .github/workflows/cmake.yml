@@ -164,6 +164,7 @@ jobs:
      working-directory: ${{ runner.temp }}
      run: |
       Set-Item -Path WSMan:localhost\Shell\MaxMemoryPerShellMB -Value 4096
+      Restart-Service winrm
       Invoke-WebRequest https://registrationcenter-download.intel.com/akdlm/IRC_NAS/7b5cc40c-1058-4f50-9622-70385106e3dd/intel-cpp-essentials-2025.0.1.28_offline.exe
 
    - name: Install Intel oneAPI compiler

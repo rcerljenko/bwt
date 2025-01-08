@@ -159,14 +159,12 @@ jobs:
    - name: Pulling project
      uses: actions/checkout@v4
 
-   - name: Configure PowerShell memory limit
-     if: ${{ matrix.compiler == 'icx' }}
-     run: Set-Item -Path WSMan:localhost\Shell\MaxMemoryPerShellMB -Value 4096
-
    - name: Download Intel oneAPI compiler
      if: ${{ matrix.compiler == 'icx' }}
      working-directory: ${{ runner.temp }}
-     run: Invoke-WebRequest https://registrationcenter-download.intel.com/akdlm/IRC_NAS/7b5cc40c-1058-4f50-9622-70385106e3dd/intel-cpp-essentials-2025.0.1.28_offline.exe
+     run: |
+      Set-Item -Path WSMan:localhost\Shell\MaxMemoryPerShellMB -Value 4096
+      Invoke-WebRequest https://registrationcenter-download.intel.com/akdlm/IRC_NAS/7b5cc40c-1058-4f50-9622-70385106e3dd/intel-cpp-essentials-2025.0.1.28_offline.exe
 
    - name: Install Intel oneAPI compiler
      if: ${{ matrix.compiler == 'icx' }}

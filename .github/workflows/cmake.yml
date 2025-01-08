@@ -159,6 +159,10 @@ jobs:
    - name: Pulling project
      uses: actions/checkout@v4
 
+   - name: Configure PowerShell memory limit
+     if: ${{ matrix.compiler == 'icx' }}
+     run: Set-Item -Path WSMan:localhost\Shell\MaxMemoryPerShellMB -Value 4096
+
    - name: Download Intel oneAPI compiler
      if: ${{ matrix.compiler == 'icx' }}
      working-directory: ${{ runner.temp }}

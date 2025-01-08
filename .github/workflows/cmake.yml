@@ -144,8 +144,7 @@ jobs:
    matrix:
     include:
      - generator: ''
-     - generator: 'Visual Studio 2022'
-       compiler: icx
+     - generator: 'NMake Makefiles'
      - generator: 'MinGW Makefiles'
        compiler: gcc
      - generator: 'MinGW Makefiles'
@@ -158,19 +157,6 @@ jobs:
   steps:
    - name: Pulling project
      uses: actions/checkout@v4
-
-   - name: Download Intel oneAPI compiler
-     if: ${{ matrix.compiler == 'icx' }}
-     working-directory: ${{ runner.temp }}
-     run: |
-      Set-Item -Path WSMan:localhost\Shell\MaxMemoryPerShellMB -Value 4096
-      Restart-Service winrm
-      Invoke-WebRequest https://registrationcenter-download.intel.com/akdlm/IRC_NAS/7b5cc40c-1058-4f50-9622-70385106e3dd/intel-cpp-essentials-2025.0.1.28_offline.exe
-
-   - name: Install Intel oneAPI compiler
-     if: ${{ matrix.compiler == 'icx' }}
-     working-directory: ${{ runner.temp }}
-     run: ./intel-cpp-essentials-2025.0.1.28_offline.exe -r -a -s --eula accept
 
    - name: Setup CMake
      id: cmake

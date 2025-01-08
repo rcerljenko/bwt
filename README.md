@@ -28,7 +28,7 @@ cmake --build build --config Release
 cmake --install build --strip --config Release
 ```
 
-**Important note:** On Windows, shared lib (\*.dll) needs to be copied to the same dir as \*.exe file after build process.
+**Important note:** On Windows, without install part, shared lib (\*.dll) needs to be copied to the same dir as \*.exe file after build process.
 
 ### Usage
 

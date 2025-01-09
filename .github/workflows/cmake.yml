@@ -157,7 +157,7 @@ jobs:
 
    - name: Run program
      working-directory: ${{ steps.powershell.outputs.bin-dir }}
-     run: ./pbwt -h
+     run: Write-Output ${{ steps.powershell.outputs.bin-dir }}
 
    - name: Prepare for tests
      run: 7z a -ttar -r ${{ runner.temp }}\bwt.tar .

@@ -9,7 +9,7 @@ concurrency:
  cancel-in-progress: true
 
 jobs:
- linux:
+ unix:
   if: github.event.pull_request.draft == false
 
   strategy:

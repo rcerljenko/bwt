@@ -33,7 +33,7 @@ cmake --install build --strip --config Release
 ### Usage
 
 ```sh
-pbwt [<input_file>] [OPTIONS]
+pbwt [OPTIONS] [<input_file>]
 ```
 
 For detailed help run `pbwt -h`.

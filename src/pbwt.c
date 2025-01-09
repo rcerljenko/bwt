@@ -520,7 +520,7 @@ static void show_help(void)
 	fprintf(stderr, "%s - Portable Multithreaded Burrows-Wheeler Transform + Run Length Encoding Compressor/Decompressor.\n"
 		"Build date: " __DATE__ " @ " __TIME__ "\n"
 		"Architecture: %hu-bit\n\n"
-		"Usage: %s [<input_file>] [OPTIONS]\n\n"
+		"Usage: %s [OPTIONS] [<input_file>]\n\n"
 		"If <input_file> is omitted, input file is STDIN.\n"
 		"If <input_file> is STDIN and output file is omitted (no valid -%c flag), output file is STDOUT (like -%c flag).\n"
 #ifndef _WIN32

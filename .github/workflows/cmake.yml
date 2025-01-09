@@ -153,11 +153,11 @@ jobs:
 
    - name: Get bin dir
      id: powershell
-     run: Write-Output 'bin-dir="${env:ProgramFiles${{ matrix.arch == 'x64' && '' || '(x86)'}}}\libbwt\bin"' >> $GITHUB_OUTPUT
+     run: Write-Output 'bin-dir="${env:ProgramFiles${{ matrix.arch == 'x64' && '' || '(x86)'}}}\libbwt\bin"' >> $env:GITHUB_OUTPUT
 
    - name: Run program
      working-directory: ${{ steps.powershell.outputs.bin-dir }}
-     run: Write-Output ${{ steps.powershell.outputs.bin-dir }}
+     run: ./pbwt -h
 
    - name: Prepare for tests
      run: 7z a -ttar -r ${{ runner.temp }}\bwt.tar .

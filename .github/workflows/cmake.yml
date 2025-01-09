@@ -151,31 +151,35 @@ jobs:
    - name: Install
      run: cmake --install ${{ steps.cmake.outputs.build-dir }} --config Release --strip
 
+   - name: Get bin dir
+     id: powershell
+     run: Write-Output "bin-dir=${env:ProgramFiles${{ matrix.arch == 'x64' && '' || '(x86)'}}}\libbwt\bin" >> $GITHUB_OUTPUT
+
    - name: Run program
-     working-directory: 'C:/Program Files (x86)/libbwt/bin'
+     working-directory: ${{ steps.powershell.outputs.bin-dir }}
      run: ./pbwt -h
 
    - name: Prepare for tests
      run: 7z a -ttar -r ${{ runner.temp }}\bwt.tar .
 
    - name: Compression test using FILE
-     working-directory: 'C:/Program Files (x86)/libbwt/bin'
+     working-directory: ${{ steps.powershell.outputs.bin-dir }}
      run: ./pbwt -p 9 -o ${{ runner.temp }}\bwt-file.tar.bwt ${{ runner.temp }}\bwt.tar
 
    - name: Compression test using STDIN
-     working-directory: 'C:/Program Files (x86)/libbwt/bin'
+     working-directory: ${{ steps.powershell.outputs.bin-dir }}
      run: type ${{ runner.temp }}\bwt.tar | ./pbwt -p 9 -o ${{ runner.temp }}\bwt-stdin.tar.bwt
 
    - name: Compression test using STDOUT
-     working-directory: 'C:/Program Files (x86)/libbwt/bin'
+     working-directory: ${{ steps.powershell.outputs.bin-dir }}
      run: ./pbwt -p 9 -c ${{ runner.temp }}\bwt.tar > ${{ runner.temp }}\bwt-stdout.tar.bwt
 
    - name: Decompression test using FILE
-     working-directory: 'C:/Program Files (x86)/libbwt/bin'
+     working-directory: ${{ steps.powershell.outputs.bin-dir }}
      run: ./pbwt -d -o ${{ runner.temp }}\bwt-file.tar ${{ runner.temp }}\bwt-file.tar.bwt
 
    - name: Decompression test using STDIN file
-     working-directory: 'C:/Program Files (x86)/libbwt/bin'
+     working-directory: ${{ steps.powershell.outputs.bin-dir }}
      run: ./pbwt -d -o ${{ runner.temp }}\bwt-stdin.tar ${{ runner.temp }}\bwt-stdin.tar.bwt
 
    - name: Compare decompressed files

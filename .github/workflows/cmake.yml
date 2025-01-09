@@ -153,7 +153,7 @@ jobs:
 
    - name: Get bin dir
      id: powershell
-     run: Write-Output "bin-dir=${env:ProgramFiles${{ matrix.arch == 'x64' && '' || '(x86)'}}}\libbwt\bin" >> $env:GITHUB_OUTPUT
+     run: Write-Output "bin-dir=${env:${{ matrix.arch == 'x64' && 'ProgramFiles' || 'ProgramFiles(x86)'}}}\libbwt\bin" >> $env:GITHUB_OUTPUT
 
    - name: Run program
      working-directory: ${{ steps.powershell.outputs.bin-dir }}

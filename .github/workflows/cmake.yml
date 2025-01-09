@@ -15,12 +15,21 @@ jobs:
   strategy:
    fail-fast: false
    matrix:
-    compiler: [gcc, clang, icx]
-    cpack: [false, true]
+    os: [ubuntu-latest, macos-latest]
+    compiler: [clang]
+    cpack: [false]
+    include:
+     - os: ubuntu-latest
+       compiler: gcc
+       cpack: true
+     - os: ubuntu-latest
+       compiler: icx
+     - os: macos-latest
+       compiler: gcc-14
 
-  runs-on: ubuntu-latest
+  runs-on: ${{ matrix.os }}
 
-  name: Linux - ${{ matrix.compiler }} ${{ matrix.cpack && '- CPack' || '' }}
+  name: ${{ matrix.os }} - ${{ matrix.compiler }} ${{ matrix.cpack && '- CPack' || '' }}
 
   steps:
    - name: Pulling project
@@ -63,75 +72,6 @@ jobs:
      if: ${{ matrix.cpack }}
      working-directory: ${{ steps.cmake.outputs.build-dir }}
      run: sudo apt install -y -q ./pbwt-1.0.0-${{ runner.os }}.deb
-
-   - name: Run program
-     run: pbwt -h
-
-   - name: Prepare for tests
-     run: tar -c -f ${{ runner.temp }}/bwt.tar .
-
-   - name: Compression test using FILE
-     working-directory: ${{ runner.temp }}
-     run: pbwt -p 9 -o bwt-file.tar.bwt bwt.tar
-
-   - name: Compression test using STDIN
-     working-directory: ${{ runner.temp }}
-     run: cat bwt.tar | pbwt -p 9 -o bwt-stdin.tar.bwt
-
-   - name: Compression test using STDOUT
-     working-directory: ${{ runner.temp }}
-     run: pbwt -p 9 -c bwt.tar > bwt-stdout.tar.bwt
-
-   - name: Decompression test using FILE
-     working-directory: ${{ runner.temp }}
-     run: pbwt -d -o bwt-file.tar bwt-file.tar.bwt
-
-   - name: Decompression test using STDIN file
-     working-directory: ${{ runner.temp }}
-     run: pbwt -d -o bwt-stdin.tar bwt-stdin.tar.bwt
-
-   - name: Decompression test using STDOUT file
-     working-directory: ${{ runner.temp }}
-     run: pbwt -d -o bwt-stdout.tar bwt-stdout.tar.bwt
-
-   - name: Compare decompressed files 1/3
-     working-directory: ${{ runner.temp }}
-     run: cmp -s bwt.tar bwt-file.tar
-
-   - name: Compare decompressed files 2/3
-     working-directory: ${{ runner.temp }}
-     run: cmp -s bwt.tar bwt-stdin.tar
-
-   - name: Compare decompressed files 3/3
-     working-directory: ${{ runner.temp }}
-     run: cmp -s bwt.tar bwt-stdout.tar
-
- macos:
-  if: github.event.pull_request.draft == false
-
-  strategy:
-   fail-fast: false
-   matrix:
-    compiler: [gcc-14, clang]
-
-  runs-on: macos-latest
-
-  name: MacOS - ${{ matrix.compiler }}
-
-  steps:
-   - name: Pulling project
-     uses: actions/checkout@v4
-
-   - name: Setup CMake
-     id: cmake
-     env:
-      CC: ${{ matrix.compiler }}
-     uses: threeal/cmake-action@v2
-     with:
-      source-dir: src
-
-   - name: Install
-     run: sudo cmake --install ${{ steps.cmake.outputs.build-dir }} --strip
 
    - name: Run program
      run: pbwt -h

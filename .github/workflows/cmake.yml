@@ -133,7 +133,7 @@ jobs:
 
   runs-on: windows-latest
 
-  name: Windows - ${{ matrix.generator || 'Visual Studio' }} - ${{ matrix.compiler || 'MSVC' }}
+  name: Windows - ${{ matrix.generator || 'Visual Studio' }} - ${{ matrix.compiler || matrix.arch }}
 
   steps:
    - name: Pulling project

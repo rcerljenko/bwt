@@ -123,6 +123,9 @@ jobs:
    matrix:
     include:
      - generator: ''
+       arch: Win32
+     - generator: ''
+       arch: x64
      - generator: 'MinGW Makefiles'
        compiler: gcc
      - generator: 'MinGW Makefiles'
@@ -142,7 +145,7 @@ jobs:
      with:
       source-dir: src
       generator: ${{ matrix.generator }}
-      args: ${{ matrix.compiler && format('-DCMAKE_C_COMPILER={0}', matrix.compiler) || format('-A {0}', runner.arch) }}
+      args: ${{ matrix.compiler && format('-DCMAKE_C_COMPILER={0}', matrix.compiler) || format('-A {0}', matrix.arch) }}
       build-args: --config Release
 
    - name: Install

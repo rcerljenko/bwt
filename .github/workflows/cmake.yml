@@ -123,6 +123,9 @@ jobs:
    matrix:
     include:
      - generator: ''
+       arch: Win32
+     - generator: ''
+       arch: x64
      - generator: 'MinGW Makefiles'
        compiler: gcc
      - generator: 'MinGW Makefiles'
@@ -130,7 +133,7 @@ jobs:
 
   runs-on: windows-latest
 
-  name: Windows - ${{ matrix.generator || 'Visual Studio' }} - ${{ matrix.compiler || 'MSVC' }}
+  name: Windows - ${{ matrix.generator || 'Visual Studio' }} - ${{ matrix.compiler || matrix.arch }}
 
   steps:
    - name: Pulling project
@@ -142,37 +145,41 @@ jobs:
      with:
       source-dir: src
       generator: ${{ matrix.generator }}
-      args: ${{ matrix.compiler && format('-DCMAKE_C_COMPILER={0}', matrix.compiler) || '' }}
+      args: ${{ matrix.compiler && format('-DCMAKE_C_COMPILER={0}', matrix.compiler) || format('-A {0}', matrix.arch) }}
       build-args: --config Release
 
    - name: Install
      run: cmake --install ${{ steps.cmake.outputs.build-dir }} --config Release --strip
 
+   - name: Get bin dir
+     id: powershell
+     run: Write-Output "bin-dir=${env:${{ matrix.arch == 'x64' && 'ProgramFiles' || 'ProgramFiles(x86)'}}}\libbwt\bin" >> $env:GITHUB_OUTPUT
+
    - name: Run program
-     working-directory: 'C:/Program Files (x86)/libbwt/bin'
+     working-directory: ${{ steps.powershell.outputs.bin-dir }}
      run: ./pbwt -h
 
    - name: Prepare for tests
      run: 7z a -ttar -r ${{ runner.temp }}\bwt.tar .
 
    - name: Compression test using FILE
-     working-directory: 'C:/Program Files (x86)/libbwt/bin'
+     working-directory: ${{ steps.powershell.outputs.bin-dir }}
      run: ./pbwt -p 9 -o ${{ runner.temp }}\bwt-file.tar.bwt ${{ runner.temp }}\bwt.tar
 
    - name: Compression test using STDIN
-     working-directory: 'C:/Program Files (x86)/libbwt/bin'
+     working-directory: ${{ steps.powershell.outputs.bin-dir }}
      run: type ${{ runner.temp }}\bwt.tar | ./pbwt -p 9 -o ${{ runner.temp }}\bwt-stdin.tar.bwt
 
    - name: Compression test using STDOUT
-     working-directory: 'C:/Program Files (x86)/libbwt/bin'
+     working-directory: ${{ steps.powershell.outputs.bin-dir }}
      run: ./pbwt -p 9 -c ${{ runner.temp }}\bwt.tar > ${{ runner.temp }}\bwt-stdout.tar.bwt
 
    - name: Decompression test using FILE
-     working-directory: 'C:/Program Files (x86)/libbwt/bin'
+     working-directory: ${{ steps.powershell.outputs.bin-dir }}
      run: ./pbwt -d -o ${{ runner.temp }}\bwt-file.tar ${{ runner.temp }}\bwt-file.tar.bwt
 
    - name: Decompression test using STDIN file
-     working-directory: 'C:/Program Files (x86)/libbwt/bin'
+     working-directory: ${{ steps.powershell.outputs.bin-dir }}
      run: ./pbwt -d -o ${{ runner.temp }}\bwt-stdin.tar ${{ runner.temp }}\bwt-stdin.tar.bwt
 
    - name: Compare decompressed files

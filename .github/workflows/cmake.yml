@@ -138,7 +138,7 @@ jobs:
 
   runs-on: windows-latest
 
-  name: Windows - ${{ matrix.generator || 'Visual Studio' }} - ${{ matrix.compiler || matrix.toolset }} ${{ matrix.arch && format('- {0}', matrix.arch) || '' }}
+  name: Windows - ${{ matrix.generator || 'Visual Studio' }} - ${{ matrix.compiler || matrix.arch }} ${{ matrix.toolset && format('- {0}', matrix.toolset) || '' }}
 
   steps:
    - name: Pulling project

@@ -125,6 +125,12 @@ jobs:
        arch: Win32
      - generator: ''
        arch: x64
+     - generator: ''
+       arch: Win32
+       toolset: ClangCL
+     - generator: ''
+       arch: x64
+       toolset: ClangCL
      - generator: 'MinGW Makefiles'
        compiler: gcc
      - generator: 'MinGW Makefiles'
@@ -132,7 +138,7 @@ jobs:
 
   runs-on: windows-latest
 
-  name: Windows - ${{ matrix.generator || 'Visual Studio' }} - ${{ matrix.compiler || matrix.arch }}
+  name: Windows - ${{ matrix.generator || 'Visual Studio' }} - ${{ matrix.compiler || matrix.arch }} ${{ matrix.toolset && format('- {0}', matrix.toolset) || '' }}
 
   steps:
    - name: Pulling project
@@ -145,7 +151,7 @@ jobs:
       source-dir: src
       generator: ${{ matrix.generator }}
       c-compiler: ${{ matrix.compiler }}
-      args: ${{ matrix.arch && format('-A {0}', matrix.arch) || '' }}
+      args: ${{ matrix.arch && format('-A {0}', matrix.arch) || '' }} ${{ matrix.toolset && format('-T {0}', matrix.toolset) || '' }}
       build-args: --config Release
 
    - name: Install

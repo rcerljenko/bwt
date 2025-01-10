@@ -120,11 +120,9 @@ jobs:
   strategy:
    fail-fast: false
    matrix:
+    arch: [Win32, x64]
     include:
      - generator: ''
-       arch: Win32
-     - generator: ''
-       arch: x64
      - generator: ''
        toolset: ClangCL
      - generator: 'MinGW Makefiles'
@@ -134,7 +132,7 @@ jobs:
 
   runs-on: windows-latest
 
-  name: Windows - ${{ matrix.generator || 'Visual Studio' }} - ${{ matrix.compiler || matrix.arch || matrix.toolset }}
+  name: Windows - ${{ matrix.generator || 'Visual Studio' }} - ${{ matrix.compiler || matrix.toolset }} - ${{ matrix.arch }}
 
   steps:
    - name: Pulling project

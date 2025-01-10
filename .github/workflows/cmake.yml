@@ -88,7 +88,7 @@ jobs:
 
    - name: Compression test using STDOUT
      working-directory: ${{ runner.temp }}
-     run: pbwt -p 9 -c bwt.tar > bwt-stdout.tar.bwt
+     run: pbwt -p 9 -v -c bwt.tar > bwt-stdout.tar.bwt
 
    - name: Decompression test using FILE
      working-directory: ${{ runner.temp }}
@@ -178,7 +178,7 @@ jobs:
 
    - name: Compression test using STDOUT
      working-directory: ${{ steps.powershell.outputs.bin-dir }}
-     run: ./pbwt -p 9 -c ${{ runner.temp }}\bwt.tar > ${{ runner.temp }}\bwt-stdout.tar.bwt
+     run: ./pbwt -p 9 -v -c ${{ runner.temp }}\bwt.tar > ${{ runner.temp }}\bwt-stdout.tar.bwt
 
    - name: Decompression test using FILE
      working-directory: ${{ steps.powershell.outputs.bin-dir }}

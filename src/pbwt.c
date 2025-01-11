@@ -69,7 +69,7 @@ struct stats_t
 };
 
 #ifndef _WIN32
-static const char *filename;
+static char *filename;
 #else
 static char filename[_MAX_FNAME + 1];
 static const char *optarg;
@@ -90,7 +90,7 @@ static short getopt(const unsigned short argc, char** const restrict argv, const
 #endif
 static int bwt_compress(FILE* const restrict fp_in, FILE* const restrict fp_out, const unsigned short thread_count, const unsigned char block_size);
 static int bwt_decompress(FILE* const restrict fp_in, FILE* const restrict fp_out, const unsigned short thread_count);
-static void create_output_path(const char* const restrict input, char* const output, const unsigned char dec_flag);
+static void create_output_path(char* const restrict input, char* const output, const unsigned char dec_flag);
 static size_t get_filesize(FILE* const restrict fp);
 static unsigned short get_threadcount(void);
 static void show_statistics(const int signum);
@@ -341,7 +341,7 @@ static int bwt_decompress(FILE* const restrict fp_in, FILE* const restrict fp_ou
 	else return EXIT_FAILURE;
 }
 
-static void create_output_path(const char* const restrict input, char* const output, const unsigned char dec_flag)
+static void create_output_path(char* const restrict input, char* const output, const unsigned char dec_flag)
 {
 	if(!input)
 	{

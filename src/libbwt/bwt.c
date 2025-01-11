@@ -1,4 +1,4 @@
-#ifdef __linux__
+#if defined(__linux__) && defined(__GLIBC__)
 	#define _GNU_SOURCE
 #elif defined(_WIN32)
 	#define BWT_DLL

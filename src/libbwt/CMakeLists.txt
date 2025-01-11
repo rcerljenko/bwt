@@ -31,7 +31,7 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	add_compile_options(/Wall /O2 /Ob3 /Gd /Qpar /Tc)
 endif()
 
-if(CMAKE_C_COMPILER STREQUAL "musl-gcc")
+if(CMAKE_C_COMPILER MATCHES "musl")
 	add_library(bwt STATIC bwt.c)
 else()
 	add_library(bwt SHARED bwt.c)

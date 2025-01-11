@@ -24,6 +24,8 @@ jobs:
        cpack: true
      - os: ubuntu-latest
        compiler: icx
+     - os: ubuntu-latest
+       compiler: musl-gcc
      - os: macos-latest
        compiler: gcc-14
 
@@ -54,6 +56,12 @@ jobs:
      run: |
       source /opt/intel/oneapi/setvars.sh
       printenv >> $GITHUB_ENV
+
+   - name: Install musl libc
+     if: ${{ matrix.compiler == 'musl-gcc' }}
+     run: |
+      sudo apt-get update -q
+      sudo apt-get install -y -q musl-tools
 
    - name: Setup CMake
      id: cmake

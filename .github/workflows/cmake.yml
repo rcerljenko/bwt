@@ -120,17 +120,10 @@ jobs:
   strategy:
    fail-fast: false
    matrix:
+    generator: ['']
+    arch: [Win32, x64]
+    toolset: ['', ClangCL]
     include:
-     - generator: ''
-       arch: Win32
-     - generator: ''
-       arch: x64
-     - generator: ''
-       arch: Win32
-       toolset: ClangCL
-     - generator: ''
-       arch: x64
-       toolset: ClangCL
      - generator: 'MinGW Makefiles'
        compiler: gcc
      - generator: 'MinGW Makefiles'

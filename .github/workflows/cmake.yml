@@ -120,7 +120,6 @@ jobs:
   strategy:
    fail-fast: false
    matrix:
-    generator: ['']
     arch: [Win32, x64]
     toolset: ['', ClangCL]
     include:

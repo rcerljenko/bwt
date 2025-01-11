@@ -31,7 +31,12 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	add_compile_options(/Wall /O2 /Ob3 /Gd /Qpar /Tc)
 endif()
 
-add_library(bwt STATIC bwt.c)
+if(CMAKE_C_COMPILER STREQUAL "musl-gcc")
+	add_library(bwt STATIC bwt.c)
+else()
+	add_library(bwt SHARED bwt.c)
+endif()
+
 set_target_properties(bwt PROPERTIES PUBLIC_HEADER bwt.h)
 
 check_ipo_supported(RESULT IPO_SUPPORTED OUTPUT IPO_OUTPUT)

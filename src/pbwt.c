@@ -1,12 +1,11 @@
 #ifndef _WIN32
 	#ifdef __linux__
 		#define _GNU_SOURCE
-	#elif defined(__APPLE__)
-		#include <libgen.h>
 	#endif
 
 	#include <signal.h>
 	#include <limits.h>
+	#include <libgen.h>
 	#include <unistd.h>
 	#include <pthread.h>
 

@@ -1,5 +1,5 @@
 #ifndef _WIN32
-	#ifdef __linux__
+	#if defined(__linux__) && defined(__GLIBC__)
 		#define _GNU_SOURCE
 	#endif
 

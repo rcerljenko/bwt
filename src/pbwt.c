@@ -1,12 +1,11 @@
 #ifndef _WIN32
-	#ifdef __linux__
+	#if defined(__linux__) && defined(__GLIBC__)
 		#define _GNU_SOURCE
-	#elif defined(__APPLE__)
-		#include <libgen.h>
 	#endif
 
 	#include <signal.h>
 	#include <limits.h>
+	#include <libgen.h>
 	#include <unistd.h>
 	#include <pthread.h>
 
@@ -70,7 +69,7 @@ struct stats_t
 };
 
 #ifndef _WIN32
-static const char *filename;
+static char *filename;
 #else
 static char filename[_MAX_FNAME + 1];
 static const char *optarg;
@@ -91,7 +90,7 @@ static short getopt(const unsigned short argc, char** const restrict argv, const
 #endif
 static int bwt_compress(FILE* const restrict fp_in, FILE* const restrict fp_out, const unsigned short thread_count, const unsigned char block_size);
 static int bwt_decompress(FILE* const restrict fp_in, FILE* const restrict fp_out, const unsigned short thread_count);
-static void create_output_path(const char* const restrict input, char* const output, const unsigned char dec_flag);
+static void create_output_path(char* restrict input, char* const output, const unsigned char dec_flag);
 static size_t get_filesize(FILE* const restrict fp);
 static unsigned short get_threadcount(void);
 static void show_statistics(const int signum);
@@ -342,7 +341,7 @@ static int bwt_decompress(FILE* const restrict fp_in, FILE* const restrict fp_ou
 	else return EXIT_FAILURE;
 }
 
-static void create_output_path(const char* const restrict input, char* const output, const unsigned char dec_flag)
+static void create_output_path(char* restrict input, char* const output, const unsigned char dec_flag)
 {
 	if(!input)
 	{
@@ -548,8 +547,7 @@ int main(const int argc, char **argv)
 
 	int c;
 	unsigned long jobs = 0, block_size = PRESET_DEF;
-	const char *input;
-	char output[MAX_PATH + 1] = {0};
+	char *input, output[MAX_PATH + 1] = {0};
 	struct flags_t flags = {0};
 	FILE *fp_in, *fp_out = NULL;
 

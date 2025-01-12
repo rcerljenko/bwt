@@ -39,7 +39,7 @@ endif()
 
 set_target_properties(bwt PROPERTIES PUBLIC_HEADER bwt.h)
 
-check_ipo_supported(RESULT IPO_SUPPORTED OUTPUT)
+check_ipo_supported(RESULT IPO_SUPPORTED)
 
 if(IPO_SUPPORTED)
 	set_target_properties(bwt PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)

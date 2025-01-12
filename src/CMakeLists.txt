@@ -52,7 +52,7 @@ endif()
 
 add_executable(pbwt pbwt.c)
 
-check_ipo_supported(RESULT IPO_SUPPORTED OUTPUT)
+check_ipo_supported(RESULT IPO_SUPPORTED)
 
 if(IPO_SUPPORTED)
 	set_target_properties(pbwt PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)

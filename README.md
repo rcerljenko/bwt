@@ -2,11 +2,9 @@
 
 ## Portable Multithreaded Burrows-Wheeler Transform + Run Length Encoding Compressor/Decompressor
 
-### Instalation
+### Build & Install
 
-After git clone or downloaded and extracted zip file (assuming cmake is installed):
-
-#### On Linux or MacOS
+After git clone or downloaded and extracted zip file (assuming [CMake](https://cmake.org/download/) is installed):
 
 ```sh
 cd bwt/src
@@ -17,15 +15,11 @@ sudo cmake --install build --strip
 
 Install part is optional, but if it's done, build dir can be deleted.
 
-#### On Windows
-
-It's easier to use [CMake GUI](https://cmake.org/download/) for Windows to pick the right generator.
-
-If genereator is "Visual Studio \*" you need to provide an extra config argument to the build and install commands:
+When using multi-config genereators such as "Xcode" or "Visual Studio \*" you need to provide an extra config argument to the build and install commands:
 
 ```sh
 cmake --build build --config Release
-cmake --install build --strip --config Release
+sudo cmake --install build --strip --config Release
 ```
 
 **Important note:** On Windows, without install part, shared lib (\*.dll) needs to be copied to the same dir as \*.exe file after build process.

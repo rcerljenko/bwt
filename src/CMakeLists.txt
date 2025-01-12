@@ -52,11 +52,12 @@ endif()
 
 add_executable(pbwt pbwt.c)
 
-check_ipo_supported(RESULT IPO_SUPPORTED OUTPUT IPO_OUTPUT)
+check_ipo_supported(RESULT IPO_SUPPORTED OUTPUT)
+
 if(IPO_SUPPORTED)
 	set_target_properties(pbwt PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
 else()
-	message(WARNING "IPO is not supported: ${IPO_OUTPUT}")
+	message(WARNING "IPO is not supported.")
 endif()
 
 if(UNIX)

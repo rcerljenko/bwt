@@ -39,11 +39,12 @@ endif()
 
 set_target_properties(bwt PROPERTIES PUBLIC_HEADER bwt.h)
 
-check_ipo_supported(RESULT IPO_SUPPORTED OUTPUT IPO_OUTPUT)
+check_ipo_supported(RESULT IPO_SUPPORTED OUTPUT)
+
 if(IPO_SUPPORTED)
 	set_target_properties(bwt PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
 else()
-	message(WARNING "IPO is not supported: ${IPO_OUTPUT}")
+	message(WARNING "IPO is not supported.")
 endif()
 
 install(TARGETS bwt LIBRARY)

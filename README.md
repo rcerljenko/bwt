@@ -15,7 +15,7 @@ sudo cmake --install build --strip
 
 Install part is optional, but if it's done, build dir can be deleted.
 
-When using multi-config genereators such as "Xcode" or "Visual Studio \*" you need to provide an extra config argument to the build and install commands:
+When using multi-config generators such as "Xcode" or "Visual Studio \*" you need to provide an extra config argument to the build and install commands:
 
 ```sh
 cmake --build build --config Release

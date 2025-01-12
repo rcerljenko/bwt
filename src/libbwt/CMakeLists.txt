@@ -4,6 +4,7 @@ project(libbwt C)
 
 set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_C_STANDARD 23)
+set(CMAKE_BUILD_PARALLEL_LEVEL "")
 
 include(CheckIPOSupported)
 

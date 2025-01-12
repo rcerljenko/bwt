@@ -16,6 +16,7 @@ jobs:
    fail-fast: false
    matrix:
     os: [ubuntu-latest, macos-latest]
+    generator: ['']
     compiler: [clang]
     cpack: [false]
     include:
@@ -28,10 +29,12 @@ jobs:
        compiler: musl-gcc
      - os: macos-latest
        compiler: gcc-14
+     - os: macos-latest
+       generator: Xcode
 
   runs-on: ${{ matrix.os }}
 
-  name: ${{ matrix.os }} - ${{ matrix.compiler }} ${{ matrix.cpack && '- CPack' || '' }}
+  name: ${{ matrix.os }} - ${{ matrix.compiler || matrix.generator }} ${{ matrix.cpack && '- CPack' || '' }}
 
   steps:
    - name: Pulling project
@@ -68,12 +71,13 @@ jobs:
      uses: threeal/cmake-action@v2
      with:
       source-dir: src
+      generator: ${{ matrix.generator }}
       c-compiler: ${{ matrix.compiler }}
-      build-args: ${{ matrix.cpack && '--target package' || '' }}
+      build-args: --config Release ${{ matrix.cpack && '--target package' || '' }}
 
    - name: Install
      if: ${{ ! matrix.cpack }}
-     run: sudo cmake --install ${{ steps.cmake.outputs.build-dir }} --strip
+     run: sudo cmake --install ${{ steps.cmake.outputs.build-dir }} --config Release --strip
 
    - name: Install with CPack
      if: ${{ matrix.cpack }}

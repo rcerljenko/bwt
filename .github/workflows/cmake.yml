@@ -73,11 +73,11 @@ jobs:
       source-dir: src
       generator: ${{ matrix.generator }}
       c-compiler: ${{ matrix.compiler }}
-      build-args: ${{ matrix.cpack && '--target package' || '' }}
+      build-args: --config Release ${{ matrix.cpack && '--target package' || '' }}
 
    - name: Install
      if: ${{ ! matrix.cpack }}
-     run: sudo cmake --install ${{ steps.cmake.outputs.build-dir }} --strip
+     run: sudo cmake --install ${{ steps.cmake.outputs.build-dir }} --config Release --strip
 
    - name: Install with CPack
      if: ${{ matrix.cpack }}

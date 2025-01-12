@@ -73,11 +73,11 @@ jobs:
       source-dir: src
       generator: ${{ matrix.generator }}
       c-compiler: ${{ matrix.compiler }}
-      build-args: --config Release ${{ matrix.cpack && '--target package' || '' }}
+      build-args: ${{ matrix.cpack && '--target package' || '' }}
 
    - name: Install
      if: ${{ ! matrix.cpack }}
-     run: sudo cmake --install ${{ steps.cmake.outputs.build-dir }} --config Release --strip
+     run: sudo cmake --install ${{ steps.cmake.outputs.build-dir }} --strip
 
    - name: Install with CPack
      if: ${{ matrix.cpack }}
@@ -157,10 +157,9 @@ jobs:
       generator: ${{ matrix.generator }}
       c-compiler: ${{ matrix.compiler }}
       args: ${{ matrix.arch && format('-A {0}', matrix.arch) || '' }} ${{ matrix.toolset && format('-T {0}', matrix.toolset) || '' }}
-      build-args: --config Release
 
    - name: Install
-     run: cmake --install ${{ steps.cmake.outputs.build-dir }} --config Release --strip
+     run: cmake --install ${{ steps.cmake.outputs.build-dir }} --strip
 
    - name: Get bin dir
      id: powershell

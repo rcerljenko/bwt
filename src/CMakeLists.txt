@@ -62,7 +62,7 @@ endif()
 
 if(UNIX)
 	if(APPLE)
-		set_target_properties(pbwt PROPERTIES INSTALL_RPATH "${CMAKE_CURRENT_BINARY_DIR}/libbwt")
+		set_target_properties(pbwt PROPERTIES INSTALL_RPATH "${CMAKE_CURRENT_BINARY_DIR}/libbwt ${CMAKE_CURRENT_BINARY_DIR}/libbwt/${CMAKE_BUILD_TYPE}")
 	endif()
 
 	target_link_libraries(pbwt bwt pthread)

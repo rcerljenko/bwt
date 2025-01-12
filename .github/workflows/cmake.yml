@@ -77,7 +77,7 @@ jobs:
 
    - name: Install
      if: ${{ ! matrix.cpack }}
-     run: sudo cmake --install ${{ steps.cmake.outputs.build-dir }} --config Release
+     run: sudo cmake --install ${{ steps.cmake.outputs.build-dir }} --config Release --strip
 
    - name: Install with CPack
      if: ${{ matrix.cpack }}

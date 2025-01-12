@@ -28,10 +28,12 @@ jobs:
        compiler: musl-gcc
      - os: macos-latest
        compiler: gcc-14
+     - os: macos-latest
+       generator: Xcode
 
   runs-on: ${{ matrix.os }}
 
-  name: ${{ matrix.os }} - ${{ matrix.compiler }} ${{ matrix.cpack && '- CPack' || '' }}
+  name: ${{ matrix.os }} - ${{ matrix.compiler || matrix.generator }} ${{ matrix.cpack && '- CPack' || '' }}
 
   steps:
    - name: Pulling project
@@ -68,6 +70,7 @@ jobs:
      uses: threeal/cmake-action@v2
      with:
       source-dir: src
+      generator: ${{ matrix.generator }}
       c-compiler: ${{ matrix.compiler }}
       build-args: ${{ matrix.cpack && '--target package' || '' }}
 

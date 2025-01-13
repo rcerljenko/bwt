@@ -19,6 +19,7 @@ jobs:
     generator: ['']
     compiler: [clang]
     cpack: [false]
+    static: [false, true]
     include:
      - os: ubuntu-latest
        compiler: gcc
@@ -34,7 +35,7 @@ jobs:
 
   runs-on: ${{ matrix.os }}
 
-  name: ${{ matrix.os }} - ${{ matrix.compiler || matrix.generator }} ${{ matrix.cpack && '- CPack' || '' }}
+  name: ${{ matrix.os }} - ${{ matrix.compiler || matrix.generator }} - ${{ matrix.static && 'STATIC' || 'SHARED' }} ${{ matrix.cpack && '- CPack' || '' }}
 
   steps:
    - name: Pulling project
@@ -74,6 +75,7 @@ jobs:
       generator: ${{ matrix.generator }}
       c-compiler: ${{ matrix.compiler }}
       build-args: --config Release ${{ matrix.cpack && '--target package' || '' }}
+      options: ${{ matrix.static && 'BUILD_STATIC_LIB=ON' || '' }}
 
    - name: Install
      if: ${{ ! matrix.cpack }}
@@ -135,6 +137,7 @@ jobs:
     generator: ['']
     arch: [Win32, x64]
     toolset: ['', ClangCL]
+    static: [false, true]
     include:
      - generator: 'MinGW Makefiles'
        compiler: gcc
@@ -143,7 +146,7 @@ jobs:
 
   runs-on: windows-latest
 
-  name: Windows - ${{ matrix.generator || 'Visual Studio' }} - ${{ matrix.compiler || matrix.arch }} ${{ matrix.toolset && format('- {0}', matrix.toolset) || '' }}
+  name: Windows - ${{ matrix.generator || 'Visual Studio' }} - ${{ matrix.compiler || matrix.arch }} - ${{ matrix.static && 'STATIC' || 'SHARED' }} ${{ matrix.toolset && format('- {0}', matrix.toolset) || '' }}
 
   steps:
    - name: Pulling project
@@ -156,8 +159,9 @@ jobs:
       source-dir: src
       generator: ${{ matrix.generator }}
       c-compiler: ${{ matrix.compiler }}
-      args: ${{ matrix.arch && format('-A {0}', matrix.arch) || '' }} ${{ matrix.toolset && format('-T {0}', matrix.toolset) || '' }} -DBUILD_STATIC_LIB=ON
+      args: ${{ matrix.arch && format('-A {0}', matrix.arch) || '' }} ${{ matrix.toolset && format('-T {0}', matrix.toolset) || '' }}
       build-args: --config Release
+      options: ${{ matrix.static && 'BUILD_STATIC_LIB=ON' || '' }}
 
    - name: Install
      run: cmake --install ${{ steps.cmake.outputs.build-dir }} --config Release --strip

@@ -7,6 +7,8 @@ set(CMAKE_C_STANDARD 23)
 set(CMAKE_BUILD_PARALLEL_LEVEL "")
 set(INSTALL_PARALLEL ON)
 
+option(BUILD_STATIC_LIB "Build static library")
+
 include(CheckIPOSupported)
 
 if(CMAKE_C_COMPILER_ID MATCHES "GNU")
@@ -33,7 +35,7 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	add_compile_options(/Wall /O2 /Ob3 /Gd /Qpar /Tc)
 endif()
 
-if(CMAKE_C_COMPILER MATCHES "musl")
+if(CMAKE_C_COMPILER MATCHES "musl" OR BUILD_STATIC_LIB)
 	add_library(bwt STATIC bwt.c)
 else()
 	add_library(bwt SHARED bwt.c)

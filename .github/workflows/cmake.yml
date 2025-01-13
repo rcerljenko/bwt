@@ -156,7 +156,7 @@ jobs:
       source-dir: src
       generator: ${{ matrix.generator }}
       c-compiler: ${{ matrix.compiler }}
-      args: ${{ matrix.arch && format('-A {0}', matrix.arch) || '' }} ${{ matrix.toolset && format('-T {0}', matrix.toolset) || '' }}
+      args: ${{ matrix.arch && format('-A {0}', matrix.arch) || '' }} ${{ matrix.toolset && format('-T {0}', matrix.toolset) || '' }} -DBUILD_STATIC_LIB=ON
       build-args: --config Release
 
    - name: Install

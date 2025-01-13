@@ -28,6 +28,7 @@ jobs:
        compiler: icx
      - os: ubuntu-latest
        compiler: musl-gcc
+       static: true
      - os: macos-latest
        compiler: gcc-14
      - os: macos-latest

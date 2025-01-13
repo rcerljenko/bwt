@@ -16,7 +16,6 @@ jobs:
    fail-fast: false
    matrix:
     os: [ubuntu-latest, macos-latest]
-    generator: ['']
     compiler: [clang]
     include:
      - os: ubuntu-latest

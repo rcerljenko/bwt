@@ -16,7 +16,6 @@ jobs:
    fail-fast: false
    matrix:
     os: [ubuntu-latest, macos-latest]
-    static: [false, true]
     generator: ['']
     compiler: [clang]
     cpack: [false]

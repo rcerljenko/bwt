@@ -1,16 +1,22 @@
 #ifndef BWT_H
 #define BWT_H
 
-#ifndef _WIN32
+#ifdef _WIN32
+	#define CALL_CONV __cdecl
+
+	#ifndef BWT_STATIC
+		#ifdef BWT_DLL
+			#define DLL_EXPIMP __declspec(dllexport)
+		#else
+			#define DLL_EXPIMP __declspec(dllimport)
+		#endif
+	#else
+		#define DLL_EXPIMP
+		#define CALL_CONV
+	#endif
+#else
 	#define DLL_EXPIMP
 	#define CALL_CONV
-#else
-	#define CALL_CONV __cdecl
-	#ifdef BWT_DLL
-		#define DLL_EXPIMP __declspec(dllexport)
-	#else
-		#define DLL_EXPIMP __declspec(dllimport)
-	#endif
 #endif
 
 typedef unsigned int bwt_size_t;

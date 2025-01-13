@@ -37,6 +37,10 @@ endif()
 
 if(CMAKE_C_COMPILER MATCHES "musl" OR BUILD_STATIC_LIB)
 	add_library(bwt STATIC bwt.c)
+
+	if(WIN32)
+		target_compile_definitions(bwt PUBLIC BWT_STATIC)
+	endif()
 else()
 	add_library(bwt SHARED bwt.c)
 endif()

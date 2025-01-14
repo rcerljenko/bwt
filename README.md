@@ -25,7 +25,7 @@ sudo cmake --install build --strip --config Release
 By default, CMake will build a shared library. To build a static library you can pass a custom flag to the generator command:
 
 ```sh
-cmake -B build -DBUILD_STATIC_LIB=ON
+cmake -B build -DBUILD_SHARED_LIBS=OFF
 ```
 
 **Important note:** When building a shared library on Windows, without install part, shared lib (\*.dll) needs to be copied to the same dir as \*.exe file after build process.

@@ -7,7 +7,7 @@ set(CMAKE_C_STANDARD 23)
 set(CMAKE_BUILD_PARALLEL_LEVEL "")
 set(INSTALL_PARALLEL ON)
 
-option(BUILD_STATIC_LIB "Build static library")
+option(BUILD_SHARED_LIBS "Build shared library" ON)
 
 include(CheckIPOSupported)
 
@@ -35,14 +35,10 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	add_compile_options(/Wall /O2 /Ob3 /Gd /Qpar /Tc)
 endif()
 
-if(CMAKE_C_COMPILER MATCHES "musl" OR BUILD_STATIC_LIB)
-	add_library(bwt STATIC bwt.c)
+add_library(bwt bwt.c)
 
-	if(WIN32)
-		target_compile_definitions(bwt PUBLIC BWT_STATIC)
-	endif()
-else()
-	add_library(bwt SHARED bwt.c)
+if(WIN32 AND NOT BUILD_SHARED_LIBS)
+	target_compile_definitions(bwt PUBLIC BWT_STATIC)
 endif()
 
 set_target_properties(bwt PROPERTIES PUBLIC_HEADER bwt.h)

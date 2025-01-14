@@ -74,7 +74,7 @@ jobs:
       generator: ${{ matrix.generator }}
       c-compiler: ${{ matrix.compiler }}
       build-args: --config Release ${{ matrix.cpack && '--target package' || '' }}
-      options: ${{ matrix.static && 'BUILD_STATIC_LIB=ON' || '' }}
+      options: ${{ matrix.static && 'BUILD_SHARED_LIBS=OFF' || '' }}
 
    - name: Install
      if: ${{ ! matrix.cpack }}
@@ -160,7 +160,7 @@ jobs:
       c-compiler: ${{ matrix.compiler }}
       args: ${{ matrix.arch && format('-A {0}', matrix.arch) || '' }} ${{ matrix.toolset && format('-T {0}', matrix.toolset) || '' }}
       build-args: --config Release
-      options: ${{ matrix.static && 'BUILD_STATIC_LIB=ON' || '' }}
+      options: ${{ matrix.static && 'BUILD_SHARED_LIBS=OFF' || '' }}
 
    - name: Install
      run: cmake --install ${{ steps.cmake.outputs.build-dir }} --config Release --strip

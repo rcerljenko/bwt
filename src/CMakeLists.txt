@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.25)
 
 add_subdirectory(libbwt)
 
@@ -19,7 +19,7 @@ set(CPACK_PACKAGE_CHECKSUM SHA3_512)
 set(CPACK_PACKAGE_VENDOR "Ricardo Cerljenko")
 set(CPACK_PACKAGE_CONTACT ${CPACK_PACKAGE_VENDOR})
 
-if(UNIX AND NOT APPLE)
+if(LINUX)
 	set(CPACK_GENERATOR DEB)
 else()
 	set(CPACK_GENERATOR ZIP)

@@ -17,7 +17,7 @@ jobs:
    matrix:
     os: [ubuntu-latest, macos-latest, ubuntu-24.04-arm]
     generator: ['']
-    compiler: [clang]
+    compiler: [gcc, clang]
     include:
      - os: ubuntu-latest
        compiler: gcc
@@ -28,9 +28,10 @@ jobs:
        compiler: musl-gcc
        static: true
      - os: macos-latest
-       compiler: gcc-14
-     - os: macos-latest
        generator: Xcode
+     - os: macos-latest
+       compiler: gcc
+       compilerAlias: gcc-14
 
   runs-on: ${{ matrix.os }}
 
@@ -72,7 +73,7 @@ jobs:
      with:
       source-dir: src
       generator: ${{ matrix.generator }}
-      c-compiler: ${{ matrix.compiler }}
+      c-compiler: ${{ matrix.compilerAlias || matrix.compiler }}
       build-args: --config Release ${{ matrix.cpack && '--target package' || '' }}
       options: ${{ matrix.static && 'BUILD_SHARED_LIBS=OFF' || '' }}
 

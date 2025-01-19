@@ -20,10 +20,8 @@ jobs:
     compiler: [gcc, clang]
     include:
      - os: ubuntu-latest
-       compiler: gcc
-       cpack: true
-     - os: ubuntu-latest
        compiler: icx
+       cpack: true
      - os: ubuntu-latest
        compiler: musl-gcc
        static: true

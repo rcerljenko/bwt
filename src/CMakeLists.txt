@@ -12,6 +12,7 @@ set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_BUILD_PARALLEL_LEVEL "")
 set(INSTALL_PARALLEL ON)
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 set(CPACK_THREADS 0)
 set(CPACK_STRIP_FILES TRUE)
@@ -61,10 +62,6 @@ else()
 endif()
 
 if(UNIX)
-	if(APPLE)
-		set_target_properties(pbwt PROPERTIES INSTALL_RPATH "${CMAKE_CURRENT_BINARY_DIR}/libbwt;${CMAKE_CURRENT_BINARY_DIR}/libbwt/${CMAKE_BUILD_TYPE}")
-	endif()
-
 	target_link_libraries(pbwt bwt pthread)
 else()
 	target_link_libraries(pbwt bwt)

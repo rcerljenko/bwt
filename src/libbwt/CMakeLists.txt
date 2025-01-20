@@ -54,6 +54,4 @@ install(TARGETS bwt PUBLIC_HEADER)
 
 if(LINUX)
 	install(CODE "execute_process(COMMAND ldconfig)")
-elseif(APPLE)
-	install(CODE "execute_process(COMMAND update_dyld_shared_cache)")
 endif()

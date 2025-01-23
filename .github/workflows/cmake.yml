@@ -145,7 +145,8 @@ jobs:
      - generator: 'MinGW Makefiles'
        compiler: clang
      - generator: 'MinGW Makefiles'
-       compiler: BFD
+       compiler: clang
+       linker: BFD
 
   runs-on: windows-latest
 

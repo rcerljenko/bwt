@@ -66,6 +66,12 @@ jobs:
       sudo apt-get update -q
       sudo apt-get install -y -q musl-tools
 
+   - name: Install mold linker
+     if: ${{ matrix.linker == 'MOLD' }}
+     run: |
+      sudo apt-get update -q
+      sudo apt-get install -y -q mold
+
    - name: Setup CMake
      id: cmake
      uses: threeal/cmake-action@v2

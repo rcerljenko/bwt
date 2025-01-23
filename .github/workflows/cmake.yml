@@ -135,17 +135,21 @@ jobs:
     generator: ['']
     arch: [Win32, x64]
     toolset: ['', ClangCL]
-    linker: [SYSTEM, LLD]
     static: [false, true]
     include:
      - generator: 'MinGW Makefiles'
        compiler: gcc
      - generator: 'MinGW Makefiles'
+       compiler: gcc
+       linker: LLD
+     - generator: 'MinGW Makefiles'
        compiler: clang
+     - generator: 'MinGW Makefiles'
+       compiler: BFD
 
   runs-on: windows-latest
 
-  name: Windows - ${{ matrix.generator || 'Visual Studio' }} - ${{ matrix.compiler || matrix.arch }} - ${{ matrix.linker }} - ${{ matrix.static && 'STATIC' || 'SHARED' }} ${{ matrix.toolset && format('- {0}', matrix.toolset) || '' }}
+  name: Windows - ${{ matrix.generator || 'Visual Studio' }} - ${{ matrix.compiler || matrix.arch }} - ${{ matrix.static && 'STATIC' || 'SHARED' }} ${{ matrix.linker && format('- {0}', matrix.linker) || '' }} ${{ matrix.toolset && format('- {0}', matrix.toolset) || '' }}
 
   steps:
    - name: Pulling project

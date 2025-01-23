@@ -140,7 +140,9 @@ jobs:
     include:
      - generator: 'MinGW Makefiles'
        compiler: gcc
-       linker: BFD
+     - generator: 'MinGW Makefiles'
+       compiler: gcc
+       linker: LLD
      - generator: 'MinGW Makefiles'
        compiler: clang
 

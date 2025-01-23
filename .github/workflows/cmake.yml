@@ -135,7 +135,7 @@ jobs:
     generator: ['']
     arch: [Win32, x64]
     toolset: ['', ClangCL]
-    linker: [SYSTEM, LLD]
+    linker: [DEFAULT, LLD]
     static: [false, true]
     include:
      - generator: 'MinGW Makefiles'
@@ -143,7 +143,6 @@ jobs:
        linker: BFD
      - generator: 'MinGW Makefiles'
        compiler: clang
-       linker: BFD
 
   runs-on: windows-latest
 

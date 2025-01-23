@@ -21,10 +21,10 @@ jobs:
     include:
      - os: ubuntu-latest
        compiler: icx
-       linker: MOLD
        cpack: true
      - os: ubuntu-latest
        compiler: musl-gcc
+       linker: MOLD
        static: true
      - os: macos-latest
        generator: Xcode

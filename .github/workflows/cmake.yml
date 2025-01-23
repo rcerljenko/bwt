@@ -135,7 +135,7 @@ jobs:
     generator: ['']
     arch: [Win32, x64]
     toolset: ['', ClangCL]
-    linker: [DEFAULT, LLD]
+    linker: [SYSTEM, LLD]
     static: [false, true]
     include:
      - generator: 'MinGW Makefiles'

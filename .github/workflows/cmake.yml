@@ -18,10 +18,10 @@ jobs:
     os: [ubuntu-latest, macos-latest, ubuntu-24.04-arm]
     generator: ['']
     compiler: [gcc, clang]
-    linker: [DEFAULT, LLD, MOLD]
     include:
      - os: ubuntu-latest
        compiler: icx
+       linker: MOLD
        cpack: true
      - os: ubuntu-latest
        compiler: musl-gcc
@@ -34,7 +34,7 @@ jobs:
 
   runs-on: ${{ matrix.os }}
 
-  name: ${{ matrix.os }} - ${{ matrix.compiler || matrix.generator }} - ${{ matrix.linker }} - ${{ matrix.static && 'STATIC' || 'SHARED' }} ${{ matrix.cpack && '- CPack' || '' }}
+  name: ${{ matrix.os }} - ${{ matrix.compiler || matrix.generator }} - ${{ matrix.static && 'STATIC' || 'SHARED' }} ${{ matrix.linker && format('- {0}', matrix.linker) || '' }} ${{ matrix.cpack && '- CPack' || '' }}
 
   steps:
    - name: Pulling project
@@ -80,7 +80,7 @@ jobs:
       generator: ${{ matrix.generator }}
       c-compiler: ${{ matrix.compilerAlias || matrix.compiler }}
       build-args: --config Release ${{ matrix.cpack && '--target package' || '' }}
-      options: CMAKE_LINKER_TYPE=${{ matrix.linker }} ${{ matrix.static && 'BUILD_SHARED_LIBS=OFF' || '' }}
+      options: ${{ matrix.linker && format('CMAKE_LINKER_TYPE={0}', matrix.linker) || '' }} ${{ matrix.static && 'BUILD_SHARED_LIBS=OFF' || '' }}
 
    - name: Install
      if: ${{ ! matrix.cpack }}

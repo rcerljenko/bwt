@@ -139,6 +139,7 @@ jobs:
   strategy:
    fail-fast: false
    matrix:
+    os: [windows-latest, windows-11-arm]
     generator: ['']
     arch: [Win32, x64]
     toolset: ['', ClangCL]
@@ -152,9 +153,9 @@ jobs:
      - generator: 'MinGW Makefiles'
        compiler: clang
 
-  runs-on: windows-latest
+  runs-on: ${{ matrix.os }}
 
-  name: Windows - ${{ matrix.generator || 'Visual Studio' }} - ${{ matrix.compiler || matrix.arch }} - ${{ matrix.static && 'STATIC' || 'SHARED' }} ${{ matrix.linker && format('- {0}', matrix.linker) || '' }} ${{ matrix.toolset && format('- {0}', matrix.toolset) || '' }}
+  name: ${{ matrix.os }} - ${{ matrix.generator || 'Visual Studio' }} - ${{ matrix.compiler || matrix.arch }} - ${{ matrix.static && 'STATIC' || 'SHARED' }} ${{ matrix.linker && format('- {0}', matrix.linker) || '' }} ${{ matrix.toolset && format('- {0}', matrix.toolset) || '' }}
 
   steps:
    - name: Pulling project

@@ -38,7 +38,7 @@ jobs:
 
   steps:
    - name: Pulling project
-     uses: actions/checkout@v4
+     uses: actions/checkout@v5
 
    - name: Add Intel APT repository
      if: ${{ matrix.compiler == 'icx' }}
@@ -158,7 +158,7 @@ jobs:
 
   steps:
    - name: Pulling project
-     uses: actions/checkout@v4
+     uses: actions/checkout@v5
 
    - name: Setup CMake
      id: cmake

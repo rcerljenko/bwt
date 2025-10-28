@@ -141,7 +141,7 @@ jobs:
    matrix:
     generator: ['']
     arch: [Win32, x64]
-    toolset: ['', ClangCL]
+    toolset: ['', ClangCL, icx]
     static: [false, true]
     include:
      - generator: 'MinGW Makefiles'
@@ -159,6 +159,15 @@ jobs:
   steps:
    - name: Pulling project
      uses: actions/checkout@v5
+
+   - name: Download Intel oneAPI compiler
+     if: ${{ matrix.toolset == 'icx' }}
+     working-directory: ${{ runner.temp }}
+     run: Invoke-WebRequest https://registrationcenter-download.intel.com/akdlm/IRC_NAS/93a83a9d-6490-4f91-a401-a55bdd4bffaa/w_dpcpp_cpp_runtime_p_2025.3.0.640.exe -OutFile intel-icx-compiler-runtime.exe
+
+   - name: Install Intel oneAPI compiler
+     if: ${{ matrix.toolset == 'icx' }}
+     run: ${{ runner.temp }}/intel-icx-compiler-runtime.exe
 
    - name: Setup CMake
      id: cmake

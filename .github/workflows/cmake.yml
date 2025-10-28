@@ -77,7 +77,7 @@ jobs:
      uses: threeal/cmake-action@v2
      with:
       source-dir: src
-      generator: ${{ matrix.generator }}
+      generator: '${{ matrix.generator }}'
       c-compiler: ${{ matrix.compilerAlias || matrix.compiler }}
       build-args: --config Release ${{ matrix.cpack && '--target package' || '' }}
       options: ${{ matrix.linker && format('CMAKE_LINKER_TYPE={0}', matrix.linker) || '' }} ${{ matrix.static && 'BUILD_SHARED_LIBS=OFF' || '' }}
@@ -151,7 +151,7 @@ jobs:
        linker: LLD
      - generator: 'MinGW Makefiles'
        compiler: clang
-     - generator: 'MinGW Makefiles'
+     - generator: 'Ninja'
        compiler: icx
 
   runs-on: windows-latest
@@ -176,7 +176,7 @@ jobs:
      uses: threeal/cmake-action@v2
      with:
       source-dir: src
-      generator: ${{ matrix.generator }}
+      generator: '${{ matrix.generator }}'
       c-compiler: ${{ matrix.compiler }}
       args: ${{ matrix.arch && format('-A {0}', matrix.arch) || '' }} ${{ matrix.toolset && format('-T {0}', matrix.toolset) || '' }}
       build-args: --config Release

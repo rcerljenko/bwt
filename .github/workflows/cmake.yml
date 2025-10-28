@@ -30,7 +30,7 @@ jobs:
        generator: Xcode
      - os: macos-latest
        compiler: gcc
-       compilerAlias: gcc-14
+       compilerAlias: gcc-15
 
   runs-on: ${{ matrix.os }}
 

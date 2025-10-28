@@ -171,12 +171,6 @@ jobs:
      if: ${{ matrix.compiler == 'icx' }}
      run: ${{ runner.temp }}/intel-icx-compiler.exe -a --silent --eula accept
 
-   - name: Setup Intel oneAPI environment
-     if: ${{ matrix.compiler == 'icx' }}
-     run: |
-      C:\${{ matrix.arch == 'x64' && 'ProgramFiles' || 'ProgramFiles(x86)'}}\Intel\oneAPI\setvars.bat
-      Get-Item Env: >> $GITHUB_ENV
-
    - name: Setup CMake
      id: cmake
      uses: threeal/cmake-action@v2
@@ -184,6 +178,7 @@ jobs:
       source-dir: src
       generator: '${{ matrix.generator }}'
       c-compiler: ${{ matrix.compiler }}
+      cxx-compiler: ${{ matrix.compiler }}
       args: ${{ matrix.arch && format('-A {0}', matrix.arch) || '' }} ${{ matrix.toolset && format('-T {0}', matrix.toolset) || '' }}
       build-args: --config Release
       options: ${{ matrix.linker && format('CMAKE_LINKER_TYPE={0}', matrix.linker) || '' }} ${{ matrix.static && 'BUILD_SHARED_LIBS=OFF' || '' }}

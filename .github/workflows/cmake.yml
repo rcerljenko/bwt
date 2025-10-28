@@ -171,7 +171,8 @@ jobs:
 
    - name: Setup Intel oneAPI environment
      if: ${{ matrix.toolset == 'Intel C++ Compiler 2025' }}
-     run: C:\ProgramFiles(x86)\Intel\oneAPI\setvars.bat
+     working-directory: ProgramFiles(x86)\Intel\oneAPI
+     run: ./setvars.bat
 
    - name: Setup CMake
      id: cmake

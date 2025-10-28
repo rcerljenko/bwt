@@ -151,7 +151,7 @@ jobs:
        linker: LLD
      - generator: 'MinGW Makefiles'
        compiler: clang
-     - generator: 'Ninja'
+     - generator: 'MinGW Makefiles'
        compiler: icx
 
   runs-on: windows-latest
@@ -165,11 +165,17 @@ jobs:
    - name: Download Intel oneAPI compiler
      if: ${{ matrix.compiler == 'icx' }}
      working-directory: ${{ runner.temp }}
-     run: Invoke-WebRequest https://registrationcenter-download.intel.com/akdlm/IRC_NAS/1f18901e-877d-469d-a41a-a10f11b39336/intel-oneapi-base-toolkit-2025.3.0.372_offline.exe -OutFile intel-icx-compiler-runtime.exe
+     run: Invoke-WebRequest https://registrationcenter-download.intel.com/akdlm/IRC_NAS/1f18901e-877d-469d-a41a-a10f11b39336/intel-oneapi-base-toolkit-2025.3.0.372_offline.exe -OutFile intel-icx-compiler.exe
 
    - name: Install Intel oneAPI compiler
      if: ${{ matrix.compiler == 'icx' }}
-     run: ${{ runner.temp }}/intel-icx-compiler-runtime.exe -a --silent --eula accept
+     run: ${{ runner.temp }}/intel-icx-compiler.exe -a --silent --eula accept
+
+   - name: Setup Intel oneAPI environment
+     if: ${{ matrix.compiler == 'icx' }}
+     run: |
+      C:\${{ matrix.arch == 'x64' && 'ProgramFiles' || 'ProgramFiles(x86)'}}\Intel\oneAPI\setvars.bat
+      Get-Item Env: >> $GITHUB_ENV
 
    - name: Setup CMake
      id: cmake

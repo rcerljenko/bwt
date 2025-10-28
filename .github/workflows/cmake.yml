@@ -141,7 +141,7 @@ jobs:
    matrix:
     generator: ['']
     arch: [Win32, x64]
-    toolset: ['', ClangCL]
+    toolset: ['', ClangCL, 'Intel C++ Compiler 2025']
     static: [false, true]
     include:
      - generator: 'MinGW Makefiles'
@@ -151,8 +151,6 @@ jobs:
        linker: LLD
      - generator: 'MinGW Makefiles'
        compiler: clang
-     - generator: 'MinGW Makefiles'
-       compiler: icx
 
   runs-on: windows-latest
 
@@ -178,8 +176,7 @@ jobs:
       source-dir: src
       generator: '${{ matrix.generator }}'
       c-compiler: ${{ matrix.compiler }}
-      cxx-compiler: ${{ matrix.compiler }}
-      args: ${{ matrix.arch && format('-A {0}', matrix.arch) || '' }} ${{ matrix.toolset && format('-T {0}', matrix.toolset) || '' }}
+      args: ${{ matrix.arch && format('-A {0}', matrix.arch) || '' }} ${{ matrix.toolset && format('-T "{0}"', matrix.toolset) || '' }}
       build-args: --config Release
       options: ${{ matrix.linker && format('CMAKE_LINKER_TYPE={0}', matrix.linker) || '' }} ${{ matrix.static && 'BUILD_SHARED_LIBS=OFF' || '' }}
 

@@ -141,7 +141,7 @@ jobs:
    matrix:
     generator: ['']
     arch: [Win32, x64]
-    toolset: ['', ClangCL, 'Intel C++ Compiler 2025']
+    toolset: ['', ClangCL]
     static: [false, true]
     include:
      - generator: 'MinGW Makefiles'
@@ -151,6 +151,8 @@ jobs:
        linker: LLD
      - generator: 'MinGW Makefiles'
        compiler: clang
+     - generator: 'MinGW Makefiles'
+       compiler: icx
 
   runs-on: windows-latest
 
@@ -161,12 +163,12 @@ jobs:
      uses: actions/checkout@v5
 
    - name: Download Intel oneAPI compiler
-     if: ${{ matrix.toolset == 'Intel C++ Compiler 2025' }}
+     if: ${{ matrix.compiler == 'icx' }}
      working-directory: ${{ runner.temp }}
      run: Invoke-WebRequest https://registrationcenter-download.intel.com/akdlm/IRC_NAS/93a83a9d-6490-4f91-a401-a55bdd4bffaa/w_dpcpp_cpp_runtime_p_2025.3.0.640.exe -OutFile intel-icx-compiler-runtime.exe
 
    - name: Install Intel oneAPI compiler
-     if: ${{ matrix.toolset == 'Intel C++ Compiler 2025' }}
+     if: ${{ matrix.compiler == 'icx' }}
      run: ${{ runner.temp }}/intel-icx-compiler-runtime.exe
 
    - name: Setup CMake
@@ -176,8 +178,8 @@ jobs:
       source-dir: src
       generator: ${{ matrix.generator }}
       c-compiler: ${{ matrix.compiler }}
-      args: ${{ matrix.arch && format('-A {0}', matrix.arch) || '' }} ${{ matrix.toolset && format('-T "{0}"', matrix.toolset) || '' }}
-      build-args: -v --config Release
+      args: ${{ matrix.arch && format('-A {0}', matrix.arch) || '' }} ${{ matrix.toolset && format('-T {0}', matrix.toolset) || '' }}
+      build-args: --config Release
       options: ${{ matrix.linker && format('CMAKE_LINKER_TYPE={0}', matrix.linker) || '' }} ${{ matrix.static && 'BUILD_SHARED_LIBS=OFF' || '' }}
 
    - name: Install

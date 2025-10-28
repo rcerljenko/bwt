@@ -167,7 +167,7 @@ jobs:
 
    - name: Install Intel oneAPI compiler
      if: ${{ matrix.toolset == 'Intel C++ Compiler 2025' }}
-     run: ${{ runner.temp }}/intel-icx-compiler.exe --s --r --a -s --eula accept
+     run: ${{ runner.temp }}/intel-icx-compiler.exe -a -s --eula accept
 
    - name: Setup CMake
      id: cmake

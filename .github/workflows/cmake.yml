@@ -161,12 +161,12 @@ jobs:
      uses: actions/checkout@v5
 
    - name: Download Intel oneAPI compiler
-     if: ${{ matrix.compiler == 'icx' }}
+     if: ${{ matrix.toolset == 'Intel C++ Compiler 2025' }}
      working-directory: ${{ runner.temp }}
      run: Invoke-WebRequest https://registrationcenter-download.intel.com/akdlm/IRC_NAS/1f18901e-877d-469d-a41a-a10f11b39336/intel-oneapi-base-toolkit-2025.3.0.372_offline.exe -OutFile intel-icx-compiler.exe
 
    - name: Install Intel oneAPI compiler
-     if: ${{ matrix.compiler == 'icx' }}
+     if: ${{ matrix.toolset == 'Intel C++ Compiler 2025' }}
      run: ${{ runner.temp }}/intel-icx-compiler.exe -s --eula accept
 
    - name: Setup CMake

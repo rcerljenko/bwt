@@ -68,9 +68,7 @@ jobs:
 
    - name: Install mold linker
      if: ${{ matrix.linker == 'MOLD' }}
-     run: |
-      sudo apt-get update -q
-      sudo apt-get install -y -q mold
+     uses: rui314/setup-mold@v1
 
    - name: Setup CMake
      id: cmake

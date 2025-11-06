@@ -15,16 +15,16 @@ jobs:
   strategy:
    fail-fast: false
    matrix:
-    os: [ubuntu-latest, macos-latest, ubuntu-24.04-arm]
+    os: [ubuntu-latest, macos-latest]
     generator: ['']
     compiler: [gcc, clang]
+    linker: [DEFAULT, LLD, MOLD]
     include:
      - os: ubuntu-latest
        compiler: icx
        cpack: true
      - os: ubuntu-latest
        compiler: musl-gcc
-       linker: MOLD
        static: true
      - os: macos-latest
        generator: Xcode

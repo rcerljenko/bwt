@@ -73,6 +73,10 @@ jobs:
       sudo apt-get update -q
       sudo apt-get install -y -q lld
 
+   - name: Install LLD linker
+     if: ${{ matrix.linker == 'LLD' && matrix.os == 'macos-latest' }}
+     run: brew install lld
+
    - name: Install mold linker
      if: ${{ matrix.linker == 'MOLD' }}
      uses: rui314/setup-mold@v1

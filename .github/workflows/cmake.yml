@@ -160,6 +160,7 @@ jobs:
     generator: ['']
     arch: [Win32, x64]
     toolset: ['', ClangCL]
+    linker: [DEFAULT, LLD]
     static: [false, true]
     include:
      - generator: 'MinGW Makefiles'
@@ -169,6 +170,9 @@ jobs:
        linker: LLD
      - generator: 'MinGW Makefiles'
        compiler: clang
+     - generator: 'MinGW Makefiles'
+       compiler: clang
+       linker: LLD
 
   runs-on: windows-latest
 

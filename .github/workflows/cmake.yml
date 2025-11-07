@@ -18,6 +18,7 @@ jobs:
     os: [ubuntu-latest, macos-latest]
     generator: ['']
     compiler: [gcc, clang]
+    linker: [DEFAULT]
     include:
      - os: ubuntu-latest
        compiler: icx

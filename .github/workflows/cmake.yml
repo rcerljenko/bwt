@@ -18,7 +18,6 @@ jobs:
     os: [ubuntu-latest, macos-latest]
     generator: ['']
     compiler: [gcc, clang]
-    linker: [DEFAULT, LLD]
     include:
      - os: ubuntu-latest
        compiler: icx
@@ -32,6 +31,15 @@ jobs:
      - os: macos-latest
        compiler: gcc
        compilerAlias: gcc-15
+     - os: macos-latest
+       compiler: clang
+       linker: LLD
+     - os: ubuntu-latest
+       compiler: gcc
+       linker: LLD
+     - os: ubuntu-latest
+       compiler: clang
+       linker: LLD
 
   runs-on: ${{ matrix.os }}
 

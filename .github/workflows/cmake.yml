@@ -15,9 +15,10 @@ jobs:
   strategy:
    fail-fast: false
    matrix:
-    os: [ubuntu-latest, macos-latest, ubuntu-24.04-arm]
+    os: [ubuntu-latest, macos-latest]
     generator: ['']
     compiler: [gcc, clang]
+    linker: [DEFAULT, LLD]
     include:
      - os: ubuntu-latest
        compiler: icx
@@ -65,6 +66,12 @@ jobs:
      run: |
       sudo apt-get update -q
       sudo apt-get install -y -q musl-tools
+
+   - name: Install LLD linker
+     if: ${{ matrix.linker == 'LLD' && matrix.os == 'ubuntu-latest' }}
+     run: |
+      sudo apt-get update -q
+      sudo apt-get install -y -q lld
 
    - name: Install mold linker
      if: ${{ matrix.linker == 'MOLD' }}

@@ -6,7 +6,7 @@
 
 	#ifdef BWT_STATIC
 		#define DLL_EXPIMP
-	#elif defined(BWT_DLL)
+	#elif defined(_DLL)
 		#define DLL_EXPIMP __declspec(dllexport)
 	#else
 		#define DLL_EXPIMP __declspec(dllimport)

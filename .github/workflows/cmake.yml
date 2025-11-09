@@ -77,13 +77,13 @@ jobs:
       sudo apt-get install -y -q musl-tools
 
    - name: Install LLD linker
-     if: ${{ matrix.linker == 'LLD' && matrix.os == 'ubuntu-latest' }}
+     if: ${{ matrix.linker == 'LLD' && runner.os == 'Linux' }}
      run: |
       sudo apt-get update -q
       sudo apt-get install -y -q lld
 
    - name: Install LLD linker
-     if: ${{ matrix.linker == 'LLD' && matrix.os == 'macos-latest' }}
+     if: ${{ matrix.linker == 'LLD' && runner.os == 'macOS' }}
      run: brew install lld
 
    - name: Install mold linker

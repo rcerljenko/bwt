@@ -1,7 +1,7 @@
 #ifndef BWT_H
 #define BWT_H
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 	#define CALL_CONV __cdecl
 
 	#ifdef BWT_STATIC

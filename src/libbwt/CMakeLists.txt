@@ -30,7 +30,7 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "IntelLLVM")
 		add_compile_options(-Weverything -O3 -vec -xHost)
 	endif()
 elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
-	add_compile_options(/Wall /O2 /Ob3 /Gd /Qpar)
+	add_compile_options(/Wall /sdl /permissive- /O2 /Ob3 /Gd /Qpar)
 endif()
 
 add_library(bwt bwt.c)

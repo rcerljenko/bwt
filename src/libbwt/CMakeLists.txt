@@ -35,7 +35,7 @@ endif()
 
 add_library(bwt bwt.c)
 
-if(WIN32 AND NOT BUILD_SHARED_LIBS)
+if(MSVC AND NOT BUILD_SHARED_LIBS)
 	target_compile_definitions(bwt PUBLIC BWT_STATIC)
 endif()
 

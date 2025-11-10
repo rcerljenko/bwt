@@ -14,7 +14,7 @@
 	#define THREAD_RETURN NULL
 	typedef pthread_t thread_t;
 #else
-	#include <windows.h>
+	#include <Windows.h>
 	#include <process.h>
 	#define THREAD_RETURN 0U
 	typedef HANDLE thread_t;

@@ -1,5 +1,7 @@
 #ifdef __linux__
 	#define _GNU_SOURCE
+#elif defined(_WIN32)
+	#define BWT_DLL
 #endif
 
 #include <stdlib.h>

@@ -4,9 +4,9 @@
 #ifdef _WIN32
 	#define CALL_CONV __cdecl
 
-	#if defined(BWT_STATIC) || !defined(_MSC_VER)
+	#ifdef BWT_STATIC
 		#define DLL_EXPIMP
-	#elif defined(_DLL)
+	#elif defined(BWT_DLL)
 		#define DLL_EXPIMP __declspec(dllexport)
 	#else
 		#define DLL_EXPIMP __declspec(dllimport)

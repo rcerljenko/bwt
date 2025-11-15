@@ -215,7 +215,7 @@ jobs:
 
    - name: Compression test using STDIN
      working-directory: ${{ steps.powershell.outputs.bin-dir }}
-     run: type ${{ runner.temp }}\bwt.tar | ./pbwt -p 9 -o ${{ runner.temp }}\bwt-stdin.tar.bwt
+     run: Get-Content ${{ runner.temp }}\bwt.tar | ./pbwt -p 9 -o ${{ runner.temp }}\bwt-stdin.tar.bwt
 
    - name: Compression test using STDOUT
      working-directory: ${{ steps.powershell.outputs.bin-dir }}
@@ -229,6 +229,10 @@ jobs:
      working-directory: ${{ steps.powershell.outputs.bin-dir }}
      run: ./pbwt -d -o ${{ runner.temp }}\bwt-stdin.tar ${{ runner.temp }}\bwt-stdin.tar.bwt
 
-   - name: Compare decompressed files
+   - name: Compare decompressed files 1/2
      working-directory: ${{ runner.temp }}
-     run: fc.exe /b bwt.tar bwt-file.tar
+     run: Compare-Object -CaseSensitive (Get-Content ./bwt.tar) (Get-Content ./bwt-file.tar)
+
+   - name: Compare decompressed files 2/2
+     working-directory: ${{ runner.temp }}
+     run: Compare-Object -CaseSensitive (Get-Content ./bwt.tar) (Get-Content ./bwt-stdin.tar)

@@ -229,6 +229,10 @@ jobs:
      working-directory: ${{ steps.powershell.outputs.bin-dir }}
      run: ./pbwt -d -o ${{ runner.temp }}\bwt-stdin.tar ${{ runner.temp }}\bwt-stdin.tar.bwt
 
-   - name: Compare decompressed files
+   - name: Compare decompressed files 1/2
      working-directory: ${{ runner.temp }}
      run: fc.exe /b bwt.tar bwt-file.tar
+
+   - name: Compare decompressed files 2/2
+     working-directory: ${{ runner.temp }}
+     run: fc.exe /b bwt.tar bwt-stdin.tar

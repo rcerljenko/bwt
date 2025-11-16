@@ -16,6 +16,8 @@
 #else
 	#include <Windows.h>
 	#include <process.h>
+	#include <fcntl.h>
+
 	#define THREAD_RETURN 0U
 	typedef HANDLE thread_t;
 #endif
@@ -552,7 +554,21 @@ int main(const int argc, char **argv)
 	FILE *fp_in, *fp_out = NULL;
 
 	fp_in = freopen(NULL, FOPEN_INPUT_MODE, stdin);
+#if _WIN32
+	if(!fp_in)
+	{
+		_setmode(_fileno(stdin), _O_BINARY);
+	}
+#endif
+
 	fp_in = freopen(NULL, FOPEN_OUTPUT_MODE, stdout);
+#if _WIN32
+	if(!fp_in)
+	{
+		_setmode(_fileno(stdout), _O_BINARY);
+	}
+#endif
+
 	fp_in = stdin;
 
 #ifndef _WIN32

@@ -17,6 +17,7 @@
 	#include <Windows.h>
 	#include <process.h>
 	#include <fcntl.h>
+	#include <io.h>
 
 	#define THREAD_RETURN 0U
 	typedef HANDLE thread_t;

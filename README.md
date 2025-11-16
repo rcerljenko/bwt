@@ -7,7 +7,7 @@
 After git clone or downloaded and extracted zip file (assuming [CMake](https://cmake.org/download/) is installed):
 
 ```sh
-cd bwt/src
+cd src
 cmake -B build
 cmake --build build
 sudo cmake --install build --strip

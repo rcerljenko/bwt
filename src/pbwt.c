@@ -16,6 +16,7 @@
 #else
 	#include <Windows.h>
 	#include <process.h>
+	#include <psapi.h>
 	#include <fcntl.h>
 	#include <io.h>
 
@@ -84,7 +85,6 @@ static struct stats_t stats = {0};
 #ifndef _WIN32
 static void *threaded_compress(void* const void_bwt_data);
 static void *threaded_decompress(void* const void_bwt_data);
-static size_t get_memusage(void);
 static void sighandler(const int signum);
 #else
 static unsigned int __stdcall threaded_compress(void* const void_bwt_data);
@@ -96,6 +96,7 @@ static int bwt_decompress(FILE* const restrict fp_in, FILE* const restrict fp_ou
 static void create_output_path(char* restrict input, char* const output, const unsigned char dec_flag);
 static size_t get_filesize(FILE* const restrict fp);
 static unsigned short get_threadcount(void);
+static size_t get_memusage(void);
 static void show_statistics(const int signum);
 static void show_help(void);
 
@@ -358,6 +359,7 @@ static void create_output_path(char* restrict input, char* const output, const u
 	strncat(output, basename(input), NAME_MAX - ext_len);
 #else
 	char input_name[_MAX_FNAME + 1], input_ext[_MAX_EXT + 1];
+
 	_splitpath(input, NULL, NULL, input_name, input_ext);
 	strcat(input_name, input_ext);
 	strncat(output, input_name, _MAX_FNAME - ext_len);
@@ -387,13 +389,14 @@ static unsigned short get_threadcount(void)
 #else
 	SYSTEM_INFO sysinfo;
 	GetSystemInfo(&sysinfo);
+
 	return sysinfo.dwNumberOfProcessors;
 #endif
 }
 
-#ifndef _WIN32
 static size_t get_memusage(void)
 {
+#ifndef _WIN32
 	FILE* const restrict fp = fopen("/proc/self/statm", "rb");
 	if(!fp) return 0;
 
@@ -404,8 +407,16 @@ static size_t get_memusage(void)
 	fclose(fp);
 
 	return vm_rss * page_size;
+#else
+	PROCESS_MEMORY_COUNTERS pmc;
+
+	if(!GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) return 0;
+
+	return pmc.WorkingSetSize;
+#endif
 }
 
+#ifndef _WIN32
 static void sighandler(const int signum)
 {
 	time(&stats.end_time);
@@ -503,13 +514,11 @@ static void show_statistics(const int signum)
 		"Speed: %.2f MB/s\n",
 		stats.curr_fs_in, stats.curr_fs_out, diff_fs, diff_perc, ratio, time_buffer, speed);
 
-#ifndef _WIN32
 	if(signum)
 	{
 		const float memory = get_memusage() / (1024.0 * 1024.0);
 		fprintf(stderr, "Memory (RAM): %.2f MB\n\n", memory);
 	}
-#endif
 }
 
 static void show_help(void)

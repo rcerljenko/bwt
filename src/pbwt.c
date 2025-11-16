@@ -554,20 +554,16 @@ int main(const int argc, char **argv)
 	struct flags_t flags = {0};
 	FILE *fp_in, *fp_out = NULL;
 
-	fp_in = freopen(NULL, FOPEN_INPUT_MODE, stdin);
 #if _WIN32
-	if(!fp_in)
-	{
-		_setmode(_fileno(stdin), _O_BINARY);
-	}
+	_setmode(_fileno(stdin), _O_BINARY);
+#else
+	freopen(NULL, FOPEN_INPUT_MODE, stdin);
 #endif
 
-	fp_in = freopen(NULL, FOPEN_OUTPUT_MODE, stdout);
 #if _WIN32
-	if(!fp_in)
-	{
-		_setmode(_fileno(stdout), _O_BINARY);
-	}
+	_setmode(_fileno(stdout), _O_BINARY);
+#else
+	freopen(NULL, FOPEN_INPUT_MODE, stdout);
 #endif
 
 	fp_in = stdin;

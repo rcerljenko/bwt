@@ -557,13 +557,13 @@ int main(const int argc, char **argv)
 #if _WIN32
 	_setmode(_fileno(stdin), _O_BINARY);
 #else
-	fp_in = freopen(NULL, FOPEN_INPUT_MODE, stdin);
+	freopen(NULL, FOPEN_INPUT_MODE, stdin);
 #endif
 
 #if _WIN32
 	_setmode(_fileno(stdout), _O_BINARY);
 #else
-	fp_in = freopen(NULL, FOPEN_INPUT_MODE, stdout);
+	freopen(NULL, FOPEN_OUTPUT_MODE, stdout);
 #endif
 
 	fp_in = stdin;

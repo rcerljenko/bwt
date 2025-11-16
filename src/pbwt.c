@@ -489,13 +489,11 @@ static void show_statistics(const int signum)
 		ratio = (double) stats.curr_fs_in / stats.curr_fs_out;
 	}
 
-#ifndef _WIN32
 	if(signum && stats.filesize_in)
 	{
 		const unsigned short progress = (100 * stats.curr_fs_in) / stats.filesize_in;
 		fprintf(stderr, "Progress: %hu%%\n", progress);
 	}
-#endif
 
 	fprintf(stderr, "Bytes read: %zu B\n"
 		"Bytes written: %zu B\n"
@@ -527,10 +525,8 @@ static void show_help(void)
 		"If <input_file> is STDIN and output file is omitted (no valid -%c flag), output file is STDOUT (like -%c flag).\n"
 #ifndef _WIN32
 		"Other processes can send signal SIGUSR1 to get progress info.\n"
-		"\nPossible options (can be combined together):\n"
-#else
-		"\nPossible options:\n"
 #endif
+		"\nPossible options (can be combined together):\n"
 		"\t-%c - Write output to STDOUT (ignored if valid -%c flag exists).\n"
 		"\t-%c - Decompression mode.\n"
 		"\t-%c - Show help and exit.\n"

@@ -132,6 +132,7 @@ static unsigned int __stdcall threaded_decompress(void* const void_bwt_data)
 	struct bwt_data_t* const restrict bwt_data = void_bwt_data;
 
 	if(bwt_data->status) bwt_data->header.block_size = rld(bwt_data->data, bwt_data->header.block_size);
+
 	ibwt(bwt_data->data, bwt_data->header.block_size, bwt_data->header.index);
 
 	return THREAD_RETURN;
@@ -143,6 +144,7 @@ static int bwt_compress(FILE* const restrict fp_in, FILE* const restrict fp_out,
 	const size_t fread_size = main_block_size * thread_count;
 
 	unsigned char* const data = malloc(fread_size);
+
 	if(!data)
 	{
 		fprintf(stderr, "%s: Not enough memory.\n", filename);
@@ -186,6 +188,7 @@ static int bwt_compress(FILE* const restrict fp_in, FILE* const restrict fp_out,
 			CloseHandle(threads[i]);
 #endif
 			tmp_block_size = bwt_data[i].header.block_size;
+
 			if(!bwt_data[i].status) bwt_data[i].header.block_size = 0;
 
 			fwrite(&bwt_data[i].header, sizeof(struct header_t), 1, fp_out);
@@ -220,12 +223,14 @@ static int bwt_compress(FILE* const restrict fp_in, FILE* const restrict fp_out,
 static int bwt_decompress(FILE* const restrict fp_in, FILE* const restrict fp_out, const unsigned short thread_count)
 {
 	bwt_size_t main_block_size;
+
 	stats.curr_fs_in = fread(&main_block_size, 1, 1, fp_in);
 	if(stats.curr_fs_in != 1) return EXIT_SUCCESS;
 
 	main_block_size = 1U << main_block_size;
 
 	unsigned char* const data = malloc(main_block_size * thread_count);
+
 	if(!data)
 	{
 		fprintf(stderr, "%s: Not enough memory.\n", filename);
@@ -241,9 +246,11 @@ static int bwt_decompress(FILE* const restrict fp_in, FILE* const restrict fp_ou
 	while(fread(&bwt_data[i].header, sizeof(struct header_t), 1, fp_in) == 1)
 	{
 		bwt_data[i].data = data + main_block_size * i;
+
 		if(bwt_data[i].header.block_size)
 		{
 			status = fread(bwt_data[i].data, 1, bwt_data[i].header.block_size, fp_in);
+
 			if(status == bwt_data[i].header.block_size)
 			{
 				stats.curr_fs_in += status + sizeof(struct header_t);
@@ -261,6 +268,7 @@ static int bwt_decompress(FILE* const restrict fp_in, FILE* const restrict fp_ou
 		else
 		{
 			bwt_data[i].header.block_size = fread(bwt_data[i].data, 1, main_block_size, fp_in);
+
 			if(ferror(fp_in))
 			{
 				perror(filename);
@@ -295,6 +303,7 @@ static int bwt_decompress(FILE* const restrict fp_in, FILE* const restrict fp_ou
 			}
 
 			status = fwrite(data, 1, n, fp_out);
+
 			if(status == n)
 			{
 				stats.curr_fs_out += n;
@@ -317,6 +326,7 @@ static int bwt_decompress(FILE* const restrict fp_in, FILE* const restrict fp_ou
 	else if(status && i)
 	{
 		unsigned short j;
+
 		for(j = n = 0; j < i; j++)
 		{
 #ifndef _WIN32
@@ -329,6 +339,7 @@ static int bwt_decompress(FILE* const restrict fp_in, FILE* const restrict fp_ou
 		}
 
 		status = fwrite(data, 1, n, fp_out);
+
 		if(status == n) stats.curr_fs_out += n;
 		else
 		{
@@ -388,6 +399,7 @@ static unsigned short get_threadcount(void)
 	return sysconf(_SC_NPROCESSORS_ONLN);
 #else
 	SYSTEM_INFO sysinfo;
+
 	GetSystemInfo(&sysinfo);
 
 	return sysinfo.dwNumberOfProcessors;
@@ -476,6 +488,7 @@ static void show_statistics(const int signum)
 	float diff_perc = 0, ratio = 0, speed = 0;
 
 	const time_t diff_time = difftime(stats.end_time, stats.start_time);
+
 	if(diff_time)
 	{
 		const struct tm* const restrict time_info = localtime(&diff_time);
@@ -561,13 +574,9 @@ int main(const int argc, char **argv)
 
 #ifndef _WIN32
 	freopen(NULL, FOPEN_INPUT_MODE, stdin);
-#else
-	_setmode(_fileno(stdin), _O_BINARY);
-#endif
-
-#ifndef _WIN32
 	freopen(NULL, FOPEN_OUTPUT_MODE, stdout);
 #else
+	_setmode(_fileno(stdin), _O_BINARY);
 	_setmode(_fileno(stdout), _O_BINARY);
 #endif
 
@@ -586,6 +595,7 @@ int main(const int argc, char **argv)
 			case HELP_FLAG:
 			{
 				show_help();
+
 				return EXIT_SUCCESS;
 			}
 			case DEC_FLAG:
@@ -626,6 +636,7 @@ int main(const int argc, char **argv)
 			default:
 			{
 				fprintf(stderr, "Run %s -%c for help.\n", filename, HELP_FLAG);
+
 				return EXIT_FAILURE;
 			}
 		}
@@ -642,16 +653,20 @@ int main(const int argc, char **argv)
 	if(input)
 	{
 		fp_in = fopen(input, FOPEN_INPUT_MODE);
+
 		if(!fp_in)
 		{
 			perror(filename);
+
 			return EXIT_FAILURE;
 		}
 
 		stats.filesize_in = get_filesize(fp_in);
+
 		if(!stats.filesize_in)
 		{
 			fclose(fp_in);
+
 			return EXIT_SUCCESS;
 		}
 	}
@@ -674,14 +689,17 @@ int main(const int argc, char **argv)
 			{
 				fprintf(stderr, "%s: Input and output file must be different.\n", filename);
 				fclose(fp_in);
+
 				return EXIT_FAILURE;
 			}
 
 			fp_out = fopen(output, FOPEN_OUTPUT_MODE);
+
 			if(!fp_out)
 			{
 				perror(filename);
 				fclose(fp_in);
+
 				return EXIT_FAILURE;
 			}
 		}
@@ -710,6 +728,7 @@ int main(const int argc, char **argv)
 	if(status == EXIT_SUCCESS)
 	{
 		if(flags.remove) remove(input);
+
 		if(flags.verbose)
 		{
 			time(&stats.end_time);

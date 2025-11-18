@@ -2,7 +2,7 @@
 
 ## Portable Multithreaded Burrows-Wheeler Transform + Run Length Encoding Compressor/Decompressor
 
-[![CMake CI](actions/workflows/cmake.yml/badge.svg)](actions/workflows/cmake.yml)
+[![CMake CI](https://github.com/rcerljenko/bwt/actions/workflows/cmake.yml/badge.svg)](https://github.com/rcerljenko/bwt/actions/workflows/cmake.yml)
 
 ### Build & Install
 

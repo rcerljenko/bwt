@@ -12,15 +12,17 @@
 	#define MAX_PATH PATH_MAX
 	#define SIGTYPE SIGUSR1
 	#define THREAD_RETURN NULL
+
 	typedef pthread_t thread_t;
 #else
-	#include <Windows.h>
+	#include <windows.h>
 	#include <process.h>
 	#include <psapi.h>
 	#include <fcntl.h>
 	#include <io.h>
 
 	#define THREAD_RETURN 0U
+
 	typedef HANDLE thread_t;
 #endif
 

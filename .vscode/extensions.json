@@ -1,6 +1,6 @@
 {
 	"recommendations": [
-		"xaver.clang-format",
+		"ms-vscode.cpptools",
 		"davidanson.vscode-markdownlint"
 	]
 }

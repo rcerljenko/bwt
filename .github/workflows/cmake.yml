@@ -33,7 +33,7 @@ jobs:
       sudo apt-get install -y -q clang-format
 
    - name: Run ClangFormat
-     run: clang-format --Werror --fail-on-incomplete-format --verbose src/*
+     run: clang-format --Werror --fail-on-incomplete-format --verbose src/**
 
  unix:
   if: github.event.pull_request.draft == false

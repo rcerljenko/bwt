@@ -9,6 +9,20 @@ concurrency:
  cancel-in-progress: true
 
 jobs:
+ lint:
+  if: github.event.pull_request.draft == false
+
+  runs-on: ubuntu-latest
+
+  name: Lint
+
+  steps:
+   - name: Pulling project
+     uses: actions/checkout@v6
+
+   - name: Run ClangFormat
+     run: clang-format --Werror --fail-on-incomplete-format --verbose src/*
+
  unix:
   if: github.event.pull_request.draft == false
 

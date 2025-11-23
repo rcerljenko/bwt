@@ -20,8 +20,13 @@ jobs:
    - name: Pulling project
      uses: actions/checkout@v6
 
+   - name: Install latest ClangFormat
+     run: |
+      sudo apt-get update -q
+      sudo apt-get install -y -q clang-format
+
    - name: Run ClangFormat
-     run: clang-format --Werror --verbose src/*
+     run: clang-format --Werror --fail-on-incomplete-format --verbose src/*
 
  unix:
   if: github.event.pull_request.draft == false

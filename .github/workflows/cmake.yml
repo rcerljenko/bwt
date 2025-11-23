@@ -23,6 +23,11 @@ jobs:
    - name: Install latest LLVM
      run: sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
 
+   - name: Install latest ClangFormat
+     run: |
+      sudo apt-get update -q
+      sudo apt-get install -y -q clang-format
+
    - name: Run ClangFormat
      run: clang-format --Werror --fail-on-incomplete-format --verbose src/*
 

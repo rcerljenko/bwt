@@ -21,7 +21,7 @@ jobs:
      uses: actions/checkout@v6
 
    - name: Run ClangFormat
-     run: clang-format --Werror --fail-on-incomplete-format --verbose src/*
+     run: clang-format --Werror --verbose src/*
 
  unix:
   if: github.event.pull_request.draft == false

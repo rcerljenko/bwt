@@ -725,6 +725,7 @@ int main(const int argc, char **argv)
 
 	int status;
 	unsigned short thread_count = get_threadcount();
+
 	if (jobs && jobs < thread_count) {
 		thread_count = jobs;
 	}
@@ -739,9 +740,8 @@ int main(const int argc, char **argv)
 		if (block_size < PRESET_MIN || block_size > PRESET_MAX) {
 			block_size = PRESET_DEF;
 		}
-		block_size += SIZE_THRESH;
 
-		status = bwt_compress(fp_in, fp_out, thread_count, block_size);
+		status = bwt_compress(fp_in, fp_out, thread_count, block_size + SIZE_THRESH);
 	}
 
 	fclose(fp_in);

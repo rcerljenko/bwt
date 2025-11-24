@@ -133,6 +133,7 @@ DLL_EXPIMP bwt_size_t CALL_CONV rle(void *const void_data, const bwt_size_t n)
 
 	while (data < end && len < n) {
 		curr_char = *data++;
+
 		for (count = 0; data < end && curr_char == *data && count <= UCHAR_MAX; count++, data++);
 
 		*result++ = curr_char;

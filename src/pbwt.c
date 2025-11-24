@@ -217,11 +217,7 @@ static int bwt_compress(FILE *const restrict fp_in, FILE *const restrict fp_out,
 	free(bwt_data);
 	free(data);
 
-	if (status) {
-		return EXIT_SUCCESS;
-	} else {
-		return EXIT_FAILURE;
-	}
+	return status ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
 static int bwt_decompress(FILE *const restrict fp_in, FILE *const restrict fp_out, const unsigned short thread_count)
@@ -346,11 +342,7 @@ static int bwt_decompress(FILE *const restrict fp_in, FILE *const restrict fp_ou
 	free(bwt_data);
 	free(data);
 
-	if (status) {
-		return EXIT_SUCCESS;
-	} else {
-		return EXIT_FAILURE;
-	}
+	return status ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
 static void create_output_path(char *restrict input, char *const output, const unsigned char dec_flag)

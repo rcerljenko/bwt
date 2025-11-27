@@ -45,11 +45,23 @@ DLL_EXPIMP bwt_size_t CALL_CONV bwt(void *const void_data, const bwt_size_t n)
 		return 0;
 	}
 
-	unsigned char *restrict data = void_data;
-	bwt_size_t i, index = n;
 	struct bwt_info_t data_info;
 	data_info.rotations = malloc(n * 2 - 1);
+
+	if (!data_info.rotations) {
+		return 0;
+	}
+
 	bwt_size_t *restrict positions = malloc(sizeof(bwt_size_t) * n);
+
+	if (!positions) {
+		free(data_info.rotations);
+
+		return 0;
+	}
+
+	unsigned char *restrict data = void_data;
+	bwt_size_t i, index = n;
 
 	memcpy(data_info.rotations, data, n);
 	memcpy(data_info.rotations + n, data, n - 1);
@@ -86,12 +98,24 @@ DLL_EXPIMP void CALL_CONV ibwt(void *const void_data, const bwt_size_t n, bwt_si
 		return;
 	}
 
+	unsigned char *const restrict tmp_data = malloc(n);
+
+	if (!tmp_data) {
+		return;
+	}
+
+	bwt_size_t *restrict transform = malloc(sizeof(bwt_size_t) * n);
+
+	if (!transform) {
+		free(tmp_data);
+
+		return;
+	}
+
 	unsigned char *restrict data = void_data;
 	bwt_size_t i;
 	unsigned char curr_char;
 	const unsigned char *pos;
-	unsigned char *const restrict tmp_data = malloc(n);
-	bwt_size_t *restrict transform = malloc(sizeof(bwt_size_t) * n);
 
 	memcpy(tmp_data, data, n);
 	qsort(data, n, 1, ibwt_cmp);
@@ -124,12 +148,17 @@ DLL_EXPIMP bwt_size_t CALL_CONV rle(void *const void_data, const bwt_size_t n)
 		return 0;
 	}
 
+	unsigned char *restrict result = malloc(n);
+
+	if (!result) {
+		return 0;
+	}
+
 	unsigned char *restrict data = void_data;
 	bwt_size_t len = 0;
 	unsigned short count;
 	unsigned char curr_char;
 	const unsigned char *const end = data + n;
-	unsigned char *restrict result = malloc(n);
 
 	while (data < end && len < n) {
 		curr_char = *data++;
@@ -166,9 +195,14 @@ DLL_EXPIMP bwt_size_t CALL_CONV rld(void *const void_data, const bwt_size_t n)
 		return 0;
 	}
 
+	unsigned char *restrict tmp_data = malloc(n);
+
+	if (!tmp_data) {
+		return 0;
+	}
+
 	unsigned char *restrict data = void_data;
 	unsigned char curr_char;
-	unsigned char *restrict tmp_data = malloc(n);
 	const unsigned char *const start = data;
 	const unsigned char *const tmp_end = tmp_data + n - 1;
 

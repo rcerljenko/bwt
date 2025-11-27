@@ -21,6 +21,7 @@ typedef pthread_t thread_t;
 	#include <fcntl.h>
 	#include <io.h>
 
+	#define SIGTYPE CTRL_BREAK_EVENT
 	#define THREAD_RETURN 0U
 
 typedef HANDLE thread_t;
@@ -85,6 +86,7 @@ static void sighandler(const int signum);
 #else
 static unsigned int __stdcall threaded_compress(void *const void_bwt_data);
 static unsigned int __stdcall threaded_decompress(void *const void_bwt_data);
+static int __stdcall sighandler(const unsigned long signum);
 static short getopt(const unsigned short argc, char **const restrict argv, const char *const restrict args);
 #endif
 static int bwt_compress(FILE *const restrict fp_in, FILE *const restrict fp_out, const unsigned short thread_count, const unsigned char block_size);
@@ -93,7 +95,7 @@ static void create_output_path(char *restrict input, char *const output, const u
 static size_t get_filesize(FILE *const restrict fp);
 static unsigned short get_threadcount(void);
 static size_t get_memusage(void);
-static void show_statistics(const int signum);
+static void show_statistics(const unsigned short is_signal);
 static void show_help(void);
 
 #ifndef _WIN32
@@ -432,9 +434,24 @@ static size_t get_memusage(void)
 static void sighandler(const int signum)
 {
 	time(&stats.end_time);
-	show_statistics(signum);
+	show_statistics(1);
 }
 #else
+static int __stdcall sighandler(const unsigned long signum)
+{
+	switch (signum) {
+		case SIGTYPE: {
+			time(&stats.end_time);
+			show_statistics(1);
+
+			return 1;
+		}
+		default: {
+			return 0;
+		}
+	}
+}
+
 static short getopt(const unsigned short argc, char **const restrict argv, const char *const restrict args)
 {
 	char curr_arg;
@@ -485,7 +502,7 @@ static short getopt(const unsigned short argc, char **const restrict argv, const
 }
 #endif
 
-static void show_statistics(const int signum)
+static void show_statistics(const unsigned short is_signal)
 {
 	char time_buffer[] = "00m:00s";
 	size_t diff_fs = 0;
@@ -512,7 +529,7 @@ static void show_statistics(const int signum)
 		ratio = (double) stats.curr_fs_in / stats.curr_fs_out;
 	}
 
-	if (signum && stats.filesize_in) {
+	if (is_signal && stats.filesize_in) {
 		const unsigned short progress = (100 * stats.curr_fs_in) / stats.filesize_in;
 		fprintf(stderr, "Progress: %hu%%\n", progress);
 	}
@@ -531,7 +548,7 @@ static void show_statistics(const int signum)
 			time_buffer,
 			speed);
 
-	if (signum) {
+	if (is_signal) {
 		const float memory = get_memusage() / (1024.0 * 1024.0);
 		fprintf(stderr, "Memory (RAM): %.2f MB\n\n", memory);
 	}
@@ -549,7 +566,9 @@ static void show_help(void)
 					"If <input_file> is omitted, input file is STDIN.\n"
 					"If <input_file> is STDIN and output file is omitted (no valid -%c flag), output file is STDOUT (like -%c flag).\n"
 #ifndef _WIN32
-					"Other processes can send signal SIGUSR1 to get progress info.\n"
+					"\nOther processes can send signal SIGUSR1 to get progress info.\n"
+#else
+					"\nYou can use CTRL + BREAK key combination to get progress info.\n"
 #endif
 					"\nPossible options (can be combined together):\n"
 					"\t-%c - Write output to STDOUT (ignored if valid -%c flag exists).\n"
@@ -732,6 +751,8 @@ int main(const int argc, char **argv)
 
 #ifndef _WIN32
 	signal(SIGTYPE, sighandler);
+#else
+	SetConsoleCtrlHandler(sighandler, 1);
 #endif
 
 	if (flags.dec) {

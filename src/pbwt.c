@@ -613,8 +613,8 @@ int main(const int argc, char **argv)
 	FILE *fp_in, *fp_out = NULL;
 
 #ifndef _WIN32
-	freopen(NULL, FOPEN_INPUT_MODE, stdin);
-	freopen(NULL, FOPEN_OUTPUT_MODE, stdout);
+	fp_in = freopen(NULL, FOPEN_INPUT_MODE, stdin);
+	fp_in = freopen(NULL, FOPEN_OUTPUT_MODE, stdout);
 #else
 	_setmode(_fileno(stdin), _O_BINARY);
 	_setmode(_fileno(stdout), _O_BINARY);

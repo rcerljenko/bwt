@@ -13,5 +13,19 @@
 	"json.format.enable": true,
 	"editor.codeActionsOnSave": {
 		"source.fixAll": "explicit"
-	}
+	},
+	"cmake.autoSelectActiveFolder": false,
+	"cmake.buildBeforeRun": true,
+	"cmake.clearOutputBeforeBuild": true,
+	"cmake.configureOnEdit": false,
+	"cmake.configureOnOpen": false,
+	"cmake.deleteBuildDirOnCleanConfigure": true,
+	"cmake.enableAutomaticKitScan": false,
+	"cmake.ignoreCMakeListsMissing": true,
+	"cmake.options.statusBarVisibility": "visible",
+	"cmake.saveBeforeBuild": true,
+	"cmake.skipConfigureIfCachePresent": false,
+	"cmake.defaultActiveFolder": "${workspaceFolder}/src",
+	"cmake.sourceDirectory": "${workspaceFolder}/src",
+	"cmake.buildDirectory": "${workspaceFolder}/src/build"
 }

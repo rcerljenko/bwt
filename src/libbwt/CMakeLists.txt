@@ -12,7 +12,7 @@ option(BUILD_SHARED_LIBS "Build shared library" ON)
 include(CheckIPOSupported)
 
 if(CMAKE_C_COMPILER_ID MATCHES "GNU")
-	add_compile_options(-Wall -Wextra -march=native -Ofast)
+	add_compile_options(-Wall -Wextra -Wpedantic -march=native -Ofast)
 
 	if(NOT APPLE)
 		add_link_options(-s)

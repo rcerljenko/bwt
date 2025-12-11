@@ -289,9 +289,7 @@ static int bwt_decompress(FILE *const restrict fp_in, FILE *const restrict fp_ou
 #else
 		threads[i] = (thread_t) _beginthreadex(NULL, 0, threaded_decompress, &bwt_data[i], 0, NULL);
 #endif
-		i++;
-
-		if (i < thread_count) {
+		if (++i < thread_count) {
 			continue;
 		}
 

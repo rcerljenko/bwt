@@ -181,15 +181,21 @@ static int bwt_compress(FILE *const restrict fp_in, FILE *const restrict fp_out,
 
 		for (i = 0; i < j; i++) {
 #ifndef _WIN32
-			pthread_join(threads[i], NULL);
+			if (status) {
+				pthread_join(threads[i], NULL);
+			} else {
+				pthread_cancel(threads[i]);
+
+				continue;
+			}
 #else
-			WaitForSingleObject(threads[i], INFINITE);
+			WaitForSingleObject(threads[i], status ? INFINITE : 0);
 			CloseHandle(threads[i]);
-#endif
+
 			if (!status) {
 				continue;
 			}
-
+#endif
 			tmp_block_size = bwt_data[i].header.block_size;
 
 			if (!bwt_data[i].status) {

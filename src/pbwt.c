@@ -186,6 +186,10 @@ static int bwt_compress(FILE *const restrict fp_in, FILE *const restrict fp_out,
 			WaitForSingleObject(threads[i], INFINITE);
 			CloseHandle(threads[i]);
 #endif
+			if (!status) {
+				continue;
+			}
+
 			tmp_block_size = bwt_data[i].header.block_size;
 
 			if (!bwt_data[i].status) {
@@ -200,8 +204,6 @@ static int bwt_compress(FILE *const restrict fp_in, FILE *const restrict fp_out,
 			} else {
 				perror(filename);
 				status = 0;
-
-				break;
 			}
 		}
 
@@ -289,28 +291,30 @@ static int bwt_decompress(FILE *const restrict fp_in, FILE *const restrict fp_ou
 #endif
 		i++;
 
-		if (i == thread_count) {
-			for (i = n = 0; i < thread_count; i++) {
+		if (i < thread_count) {
+			continue;
+		}
+
+		for (i = n = 0; i < thread_count; i++) {
 #ifndef _WIN32
-				pthread_join(threads[i], NULL);
+			pthread_join(threads[i], NULL);
 #else
-				WaitForSingleObject(threads[i], INFINITE);
-				CloseHandle(threads[i]);
+			WaitForSingleObject(threads[i], INFINITE);
+			CloseHandle(threads[i]);
 #endif
-				n += bwt_data[i].header.block_size;
-			}
+			n += bwt_data[i].header.block_size;
+		}
 
-			status = fwrite(data, 1, n, fp_out);
+		status = fwrite(data, 1, n, fp_out);
 
-			if (status == n) {
-				stats.curr_fs_out += n;
-				i = 0;
-			} else {
-				perror(filename);
-				status = 0;
+		if (status == n) {
+			stats.curr_fs_out += n;
+			i = 0;
+		} else {
+			perror(filename);
+			status = 0;
 
-				break;
-			}
+			break;
 		}
 	}
 

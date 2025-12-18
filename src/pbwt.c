@@ -44,6 +44,7 @@ typedef HANDLE thread_t;
 
 #define ARGS "hdcrvp:j:o:"
 #define FILE_EXT ".bwt"
+
 #define PRESET_MIN 1U
 #define PRESET_MAX 9U
 #define PRESET_DEF 5U
@@ -441,15 +442,19 @@ static size_t get_memusage(void)
 #ifndef _WIN32
 static void sighandler(const int signum)
 {
-	time(&stats.end_time);
-	show_statistics(1);
+	switch (signum) {
+		case SIGTYPE: {
+			show_statistics(1);
+
+			break;
+		}
+	}
 }
 #else
 static int __stdcall sighandler(const unsigned long signum)
 {
 	switch (signum) {
 		case SIGTYPE: {
-			time(&stats.end_time);
 			show_statistics(1);
 
 			return 1;
@@ -516,6 +521,7 @@ static void show_statistics(const unsigned short is_signal)
 	size_t diff_fs = 0;
 	float diff_perc = 0, ratio = 0, speed = 0;
 
+	time(&stats.end_time);
 	const time_t diff_time = difftime(stats.end_time, stats.start_time);
 
 	if (diff_time) {
@@ -582,7 +588,7 @@ static void show_help(void)
 					"\t-%c - Write output to STDOUT (ignored if valid -%c flag exists).\n"
 					"\t-%c - Decompression mode.\n"
 					"\t-%c - Show help and exit.\n"
-					"\t-%c <1-%hu> - Number of parallel jobs (threads). If omitted or wrong value, fallback to available threads (%hu).\n"
+					"\t-%c <1-%hu> - Number of parallel jobs (threads). If omitted or wrong value, fallback to all available threads (%hu).\n"
 					"\t-%c <output_name> - Custom output filename (if omitted, output filename is input_file" FILE_EXT " in compression and without " FILE_EXT " in decompression mode).\n"
 					"\t\t- If given string ends with '/' (path delimiter), output is then given path + above rule.\n"
 					"\t-%c <%u-%u> - Compression preset level (ignored in decompression mode).\n"
@@ -782,7 +788,6 @@ int main(const int argc, char **argv)
 		}
 
 		if (flags.verbose) {
-			time(&stats.end_time);
 			show_statistics(0);
 		}
 	} else if (output[0]) {

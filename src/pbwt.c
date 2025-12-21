@@ -151,15 +151,43 @@ static int bwt_compress(FILE *const restrict fp_in, FILE *const restrict fp_out,
 		return EXIT_FAILURE;
 	}
 
+	struct bwt_data_t *const restrict bwt_data = malloc(sizeof(struct bwt_data_t) * thread_count);
+
+	if (!bwt_data) {
+		fprintf(stderr, "%s: Not enough memory.\n", filename);
+
+		free(data);
+
+		return EXIT_FAILURE;
+	}
+
+	thread_t *const restrict threads = malloc(sizeof(thread_t) * thread_count);
+
+	if (!threads) {
+		fprintf(stderr, "%s: Not enough memory.\n", filename);
+
+		free(bwt_data);
+		free(data);
+
+		return EXIT_FAILURE;
+	}
+
+	stats.curr_fs_out = fwrite(&block_size, 1, 1, fp_out);
+
+	if (stats.curr_fs_out != 1) {
+		perror(filename);
+
+		free(threads);
+		free(bwt_data);
+		free(data);
+
+		return EXIT_FAILURE;
+	}
+
 	size_t i, n;
 	unsigned short j;
 	bwt_size_t tmp_block_size;
 	unsigned char status = 1;
-
-	struct bwt_data_t *const restrict bwt_data = malloc(sizeof(struct bwt_data_t) * thread_count);
-	thread_t *const restrict threads = malloc(sizeof(thread_t) * thread_count);
-
-	stats.curr_fs_out = fwrite(&block_size, 1, 1, fp_out);
 
 	while ((n = fread(data, 1, fread_size, fp_in))) {
 		stats.curr_fs_in += n;
@@ -251,11 +279,29 @@ static int bwt_decompress(FILE *const restrict fp_in, FILE *const restrict fp_ou
 		return EXIT_FAILURE;
 	}
 
+	struct bwt_data_t *const restrict bwt_data = malloc(sizeof(struct bwt_data_t) * thread_count);
+
+	if (!bwt_data) {
+		fprintf(stderr, "%s: Not enough memory.\n", filename);
+
+		free(data);
+
+		return EXIT_FAILURE;
+	}
+
+	thread_t *const restrict threads = malloc(sizeof(thread_t) * thread_count);
+
+	if (!threads) {
+		fprintf(stderr, "%s: Not enough memory.\n", filename);
+
+		free(bwt_data);
+		free(data);
+
+		return EXIT_FAILURE;
+	}
+
 	size_t n, status = 1;
 	unsigned short i = 0;
-
-	struct bwt_data_t *const restrict bwt_data = malloc(sizeof(struct bwt_data_t) * thread_count);
-	thread_t *const restrict threads = malloc(sizeof(thread_t) * thread_count);
 
 	while (fread(&bwt_data[i].header, sizeof(struct header_t), 1, fp_in) == 1) {
 		bwt_data[i].data = data + main_block_size * i;

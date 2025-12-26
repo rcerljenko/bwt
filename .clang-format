@@ -91,7 +91,7 @@ KeepEmptyLines:
   AtEndOfFile: true
   AtStartOfBlock: false
   AtStartOfFile: true
-Language: Cpp
+Language: C
 LineEnding: LF
 MaxEmptyLinesToKeep: 1
 NamespaceIndentation: All
@@ -139,3 +139,11 @@ SpaceBeforeParensOptions:
   BeforeNonEmptyParentheses: false
 AlignAfterOpenBracket: Align
 ContinuationIndentWidth: 1
+BreakBinaryOperations: Never
+RemoveEmptyLinesInUnwrappedLines: true
+AllowShortNamespacesOnASingleLine: false
+WrapNamespaceBodyWithEmptyLines: Never
+IndentExportBlock: true
+BreakBeforeTemplateCloser: true
+EnumTrailingComma: Remove
+SpaceAfterOperatorKeyword: true

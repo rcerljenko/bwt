@@ -435,9 +435,13 @@ static void create_output_path(char *restrict input, char *const output, const u
 
 static size_t get_filesize(FILE *const restrict fp)
 {
+	const size_t offset = ftell(fp);
+
 	fseek(fp, 0, SEEK_END);
+
 	const size_t size = ftell(fp);
-	fseek(fp, 0, SEEK_SET);
+
+	fseek(fp, offset, SEEK_SET);
 
 	return size;
 }

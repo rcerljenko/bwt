@@ -96,6 +96,7 @@ static void create_output_path(char *restrict input, char *const output, const u
 static size_t get_filesize(FILE *const restrict fp);
 static unsigned short get_threadcount(void);
 static size_t get_memusage(void);
+static int set_streams_to_binary_mode(void);
 static void show_statistics(const unsigned short is_signal);
 static void show_help(void);
 
@@ -489,6 +490,49 @@ static size_t get_memusage(void)
 #endif
 }
 
+static int set_streams_to_binary_mode(void)
+{
+#ifndef _WIN32
+	FILE *fp;
+
+	fp = freopen(NULL, FOPEN_INPUT_MODE, stdin);
+
+	if (!fp) {
+		perror(filename);
+
+		return EXIT_FAILURE;
+	}
+
+	fp = freopen(NULL, FOPEN_OUTPUT_MODE, stdout);
+
+	if (!fp) {
+		perror(filename);
+
+		return EXIT_FAILURE;
+	}
+#else
+	int mode;
+
+	mode = _setmode(_fileno(stdin), _O_BINARY);
+
+	if (mode == -1) {
+		perror(filename);
+
+		return EXIT_FAILURE;
+	}
+
+	mode = _setmode(_fileno(stdout), _O_BINARY);
+
+	if (mode == -1) {
+		perror(filename);
+
+		return EXIT_FAILURE;
+	}
+#endif
+
+	return EXIT_SUCCESS;
+}
+
 #ifndef _WIN32
 static void sighandler(const int signum)
 {
@@ -670,27 +714,23 @@ int main(const int argc, char **argv)
 {
 	time(&stats.start_time);
 
-	int c;
+	int c, status;
 	unsigned long jobs = 0, block_size = PRESET_DEF;
 	char *input, output[MAX_PATH + 1] = {0};
 	struct flags_t flags = {0};
-	FILE *fp_in, *fp_out = NULL;
-
-#ifndef _WIN32
-	fp_in = freopen(NULL, FOPEN_INPUT_MODE, stdin);
-	fp_in = freopen(NULL, FOPEN_OUTPUT_MODE, stdout);
-#else
-	_setmode(_fileno(stdin), _O_BINARY);
-	_setmode(_fileno(stdout), _O_BINARY);
-#endif
-
-	fp_in = stdin;
+	FILE *fp_in = stdin, *fp_out = NULL;
 
 #ifndef _WIN32
 	filename = basename(argv[0]);
 #else
 	_splitpath(argv[0], NULL, NULL, filename, NULL);
 #endif
+
+	status = set_streams_to_binary_mode();
+
+	if (status == EXIT_FAILURE) {
+		return EXIT_FAILURE;
+	}
 
 	while ((c = getopt(argc, argv, ARGS)) != -1) {
 		switch (c) {
@@ -806,7 +846,6 @@ int main(const int argc, char **argv)
 		}
 	}
 
-	int status;
 	unsigned short thread_count = get_threadcount();
 
 	if (jobs && jobs < thread_count) {

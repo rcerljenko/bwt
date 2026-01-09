@@ -196,44 +196,40 @@ jobs:
       options: ${{ matrix.linker && format('CMAKE_LINKER_TYPE={0}', matrix.linker) || '' }} ${{ matrix.static && 'BUILD_SHARED_LIBS=OFF' || '' }}
 
    - name: Install
-     run: cmake --install ${{ steps.cmake.outputs.build-dir }} --config Release --strip
-
-   - name: Get bin dir
-     id: bin-dir
-     run: echo "bin-dir=${env:${{ matrix.arch == 'x64' && 'ProgramFiles' || 'ProgramFiles(x86)'}}}/libbwt/bin" >> $env:GITHUB_OUTPUT
+     run: cmake --install ${{ steps.cmake.outputs.build-dir }} --config Release --strip --prefix ${{ runner.temp }}
 
    - name: Run program
-     working-directory: ${{ steps.bin-dir.outputs.bin-dir }}
+     working-directory: ${{ runner.temp }}
      run: ./pbwt -h
 
    - name: Prepare for tests
      run: tar -c -f ${{ runner.temp }}/bwt.tar .
 
    - name: Compression test using FILE
-     working-directory: ${{ steps.bin-dir.outputs.bin-dir }}
-     run: ./pbwt -p 9 -o ${{ runner.temp }}/bwt-file.tar.bwt ${{ runner.temp }}/bwt.tar
+     working-directory: ${{ runner.temp }}
+     run: ./pbwt -p 9 -o bwt-file.tar.bwt bwt.tar
 
    - name: Compression test using STDIN
      working-directory: ${{ runner.temp }}
      shell: bash
-     run: cat bwt.tar | ${{ steps.bin-dir.outputs.bin-dir }}/pbwt -p 9 -o bwt-stdin.tar.bwt
+     run: cat bwt.tar | ./pbwt -p 9 -o bwt-stdin.tar.bwt
 
    - name: Compression test using STDOUT
      working-directory: ${{ runner.temp }}
      shell: bash
-     run: ${{ steps.bin-dir.outputs.bin-dir }}/pbwt -p 9 -v -c bwt.tar > bwt-stdout.tar.bwt
+     run: ./pbwt -p 9 -v -c bwt.tar > bwt-stdout.tar.bwt
 
    - name: Decompression test using FILE
-     working-directory: ${{ steps.bin-dir.outputs.bin-dir }}
-     run: ./pbwt -d -o ${{ runner.temp }}/bwt-file.tar ${{ runner.temp }}/bwt-file.tar.bwt
+     working-directory: ${{ runner.temp }}
+     run: ./pbwt -d -o bwt-file.tar bwt-file.tar.bwt
 
    - name: Decompression test using STDIN file
-     working-directory: ${{ steps.bin-dir.outputs.bin-dir }}
-     run: ./pbwt -d -o ${{ runner.temp }}/bwt-stdin.tar ${{ runner.temp }}/bwt-stdin.tar.bwt
+     working-directory: ${{ runner.temp }}
+     run: ./pbwt -d -o bwt-stdin.tar bwt-stdin.tar.bwt
 
    - name: Decompression test using STDOUT file
-     working-directory: ${{ steps.bin-dir.outputs.bin-dir }}
-     run: ./pbwt -d -o ${{ runner.temp }}/bwt-stdout.tar ${{ runner.temp }}/bwt-stdout.tar.bwt
+     working-directory: ${{ runner.temp }}
+     run: ./pbwt -d -o bwt-stdout.tar bwt-stdout.tar.bwt
 
    - name: Compare decompressed files 1/2
      working-directory: ${{ runner.temp }}

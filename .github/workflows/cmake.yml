@@ -237,7 +237,7 @@ jobs:
      working-directory: ${{ runner.temp }}
      run: cmp -s bwt.tar bwt-file.tar
 
-   - name: Compare decompressed files 2/2
+   - name: Compare decompressed files 2/3
      working-directory: ${{ runner.temp }}
      run: cmp -s bwt.tar bwt-stdin.tar
 

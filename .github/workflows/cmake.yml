@@ -198,7 +198,7 @@ jobs:
    - name: Install
      run: |
       cmake --install ${{ steps.cmake.outputs.build-dir }} --config Release --strip --prefix ${{ runner.temp }}\pbwt
-      echo ${{ runner.temp }}\pbwt >> $GITHUB_PATH
+      echo "${{ runner.temp }}\pbwt" >> $GITHUB_PATH
 
    - name: Run program
      working-directory: ${{ runner.temp }}

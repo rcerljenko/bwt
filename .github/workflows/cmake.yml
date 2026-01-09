@@ -196,44 +196,42 @@ jobs:
       options: ${{ matrix.linker && format('CMAKE_LINKER_TYPE={0}', matrix.linker) || '' }} ${{ matrix.static && 'BUILD_SHARED_LIBS=OFF' || '' }}
 
    - name: Install
-     run: |
-      cmake --install ${{ steps.cmake.outputs.build-dir }} --config Release --strip --prefix ${{ runner.temp }}\pbwt
-      echo "${{ runner.temp }}\pbwt" >> $GITHUB_PATH
+     run: cmake --install ${{ steps.cmake.outputs.build-dir }} --config Release --strip --prefix ${{ runner.temp }}\pbwt
 
    - name: Run program
      working-directory: ${{ runner.temp }}
-     run: pbwt -h
+     run: ./pbwt/bin/pbwt -h
 
    - name: Prepare for tests
      run: tar -c -f ${{ runner.temp }}\bwt.tar .
 
    - name: Compression test using FILE
      working-directory: ${{ runner.temp }}
-     run: pbwt -p 9 -o bwt-file.tar.bwt bwt.tar
+     run: ./pbwt/bin/pbwt -p 9 -o bwt-file.tar.bwt bwt.tar
 
    - name: Compression test using STDIN
      working-directory: ${{ runner.temp }}
      shell: bash
-     run: cat bwt.tar | pbwt -p 9 -o bwt-stdin.tar.bwt
+     run: cat bwt.tar | ./pbwt/bin/pbwt -p 9 -o bwt-stdin.tar.bwt
 
    - name: Compression test using STDOUT
      working-directory: ${{ runner.temp }}
      shell: bash
-     run: pbwt -p 9 -v -c bwt.tar > bwt-stdout.tar.bwt
+     run: ./pbwt/bin/pbwt -p 9 -v -c bwt.tar > bwt-stdout.tar.bwt
 
    - name: Decompression test using FILE
      working-directory: ${{ runner.temp }}
-     run: pbwt -d -o bwt-file.tar bwt-file.tar.bwt
+     run: ./pbwt/bin/pbwt -d -o bwt-file.tar bwt-file.tar.bwt
 
    - name: Decompression test using STDIN file
      working-directory: ${{ runner.temp }}
-     run: pbwt -d -o bwt-stdin.tar bwt-stdin.tar.bwt
+     run: ./pbwt/bin/pbwt -d -o bwt-stdin.tar bwt-stdin.tar.bwt
 
    - name: Decompression test using STDOUT file
      working-directory: ${{ runner.temp }}
-     run: pbwt -d -o bwt-stdout.tar bwt-stdout.tar.bwt
+     run: ./pbwt/bin/pbwt -d -o bwt-stdout.tar bwt-stdout.tar.bwt
 
-   - name: Compare decompressed files 1/2
+   - name: Compare decompressed files 1/3
      working-directory: ${{ runner.temp }}
      run: cmp -s bwt.tar bwt-file.tar
 

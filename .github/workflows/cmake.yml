@@ -178,10 +178,6 @@ jobs:
 
   runs-on: windows-latest
 
-  defaults:
-   run:
-    shell: bash
-
   name: Windows - ${{ matrix.generator || 'Visual Studio' }} - ${{ matrix.compiler || matrix.arch }} - ${{ matrix.static && 'STATIC' || 'SHARED' }} ${{ matrix.linker && format('- {0}', matrix.linker) || '' }} ${{ matrix.toolset && format('- {0}', matrix.toolset) || '' }}
 
   steps:
@@ -219,10 +215,12 @@ jobs:
 
    - name: Compression test using STDIN
      working-directory: ${{ steps.bin-dir.outputs.bin-dir }}
-     run: type ${{ runner.temp }}/bwt.tar | ./pbwt -p 9 -o ${{ runner.temp }}/bwt-stdin.tar.bwt
+     shell: bash
+     run: cat ${{ runner.temp }}/bwt.tar | ./pbwt -p 9 -o ${{ runner.temp }}/bwt-stdin.tar.bwt
 
    - name: Compression test using STDOUT
      working-directory: ${{ steps.bin-dir.outputs.bin-dir }}
+     shell: bash
      run: ./pbwt -p 9 -v -c ${{ runner.temp }}/bwt.tar > ${{ runner.temp }}/bwt-stdout.tar.bwt
 
    - name: Decompression test using FILE

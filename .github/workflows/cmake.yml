@@ -178,6 +178,10 @@ jobs:
 
   runs-on: windows-latest
 
+  defaults:
+   run:
+    shell: bash
+
   name: Windows - ${{ matrix.generator || 'Visual Studio' }} - ${{ matrix.compiler || matrix.arch }} - ${{ matrix.static && 'STATIC' || 'SHARED' }} ${{ matrix.linker && format('- {0}', matrix.linker) || '' }} ${{ matrix.toolset && format('- {0}', matrix.toolset) || '' }}
 
   steps:
@@ -199,44 +203,48 @@ jobs:
      run: cmake --install ${{ steps.cmake.outputs.build-dir }} --config Release --strip
 
    - name: Get bin dir
-     id: powershell
-     run: Write-Output "bin-dir=${env:${{ matrix.arch == 'x64' && 'ProgramFiles' || 'ProgramFiles(x86)'}}}\libbwt\bin" >> $env:GITHUB_OUTPUT
+     id: bin-dir
+     run: echo "bin-dir=${env:${{ matrix.arch == 'x64' && 'ProgramFiles' || 'ProgramFiles(x86)'}}}/libbwt/bin" >> $env:GITHUB_OUTPUT
 
    - name: Run program
-     working-directory: ${{ steps.powershell.outputs.bin-dir }}
+     working-directory: ${{ steps.bin-dir.outputs.bin-dir }}
      run: ./pbwt -h
 
    - name: Prepare for tests
-     run: 7z a -ttar -r ${{ runner.temp }}\bwt.tar .
+     run: tar -c -f ${{ runner.temp }}/bwt.tar .
 
    - name: Compression test using FILE
-     working-directory: ${{ steps.powershell.outputs.bin-dir }}
-     run: ./pbwt -p 9 -o ${{ runner.temp }}\bwt-file.tar.bwt ${{ runner.temp }}\bwt.tar
+     working-directory: ${{ steps.bin-dir.outputs.bin-dir }}
+     run: ./pbwt -p 9 -o ${{ runner.temp }}/bwt-file.tar.bwt ${{ runner.temp }}/bwt.tar
 
    - name: Compression test using STDIN
-     working-directory: ${{ steps.powershell.outputs.bin-dir }}
-     run: type ${{ runner.temp }}\bwt.tar | ./pbwt -p 9 -o ${{ runner.temp }}\bwt-stdin.tar.bwt
+     working-directory: ${{ steps.bin-dir.outputs.bin-dir }}
+     run: type ${{ runner.temp }}/bwt.tar | ./pbwt -p 9 -o ${{ runner.temp }}/bwt-stdin.tar.bwt
 
    - name: Compression test using STDOUT
-     working-directory: ${{ steps.powershell.outputs.bin-dir }}
-     run: ./pbwt -p 9 -v -c ${{ runner.temp }}\bwt.tar > ${{ runner.temp }}\bwt-stdout.tar.bwt
+     working-directory: ${{ steps.bin-dir.outputs.bin-dir }}
+     run: ./pbwt -p 9 -v -c ${{ runner.temp }}/bwt.tar > ${{ runner.temp }}/bwt-stdout.tar.bwt
 
    - name: Decompression test using FILE
-     working-directory: ${{ steps.powershell.outputs.bin-dir }}
-     run: ./pbwt -d -o ${{ runner.temp }}\bwt-file.tar ${{ runner.temp }}\bwt-file.tar.bwt
+     working-directory: ${{ steps.bin-dir.outputs.bin-dir }}
+     run: ./pbwt -d -o ${{ runner.temp }}/bwt-file.tar ${{ runner.temp }}/bwt-file.tar.bwt
 
    - name: Decompression test using STDIN file
-     working-directory: ${{ steps.powershell.outputs.bin-dir }}
-     run: ./pbwt -d -o ${{ runner.temp }}\bwt-stdin.tar ${{ runner.temp }}\bwt-stdin.tar.bwt
+     working-directory: ${{ steps.bin-dir.outputs.bin-dir }}
+     run: ./pbwt -d -o ${{ runner.temp }}/bwt-stdin.tar ${{ runner.temp }}/bwt-stdin.tar.bwt
 
    - name: Decompression test using STDOUT file
-     working-directory: ${{ steps.powershell.outputs.bin-dir }}
-     run: ./pbwt -d -o ${{ runner.temp }}\bwt-stdout.tar ${{ runner.temp }}\bwt-stdout.tar.bwt
+     working-directory: ${{ steps.bin-dir.outputs.bin-dir }}
+     run: ./pbwt -d -o ${{ runner.temp }}/bwt-stdout.tar ${{ runner.temp }}/bwt-stdout.tar.bwt
 
    - name: Compare decompressed files 1/2
      working-directory: ${{ runner.temp }}
-     run: fc.exe /b bwt.tar bwt-file.tar
+     run: cmp -s bwt.tar bwt-file.tar
 
    - name: Compare decompressed files 2/2
      working-directory: ${{ runner.temp }}
-     run: fc.exe /b bwt.tar bwt-stdout.tar
+     run: cmp -s bwt.tar bwt-stdin.tar
+
+   - name: Compare decompressed files 3/3
+     working-directory: ${{ runner.temp }}
+     run: cmp -s bwt.tar bwt-stdout.tar

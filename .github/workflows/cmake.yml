@@ -90,6 +90,10 @@ jobs:
      if: ${{ matrix.linker == 'MOLD' }}
      uses: rui314/setup-mold@v1
 
+   - name: Setup latest Xcode version
+     if: ${{ matrix.generator == 'Xcode' }}
+     uses: maxim-lobanov/setup-xcode@v1
+
    - name: Setup CMake
      id: cmake
      uses: threeal/cmake-action@v2

@@ -6,6 +6,7 @@
 	#include <signal.h>
 	#include <limits.h>
 	#include <libgen.h>
+	#include <unistd.h>
 	#include <pthread.h>
 
 	#define MAX_PATH PATH_MAX

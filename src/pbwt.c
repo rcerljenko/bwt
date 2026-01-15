@@ -28,6 +28,9 @@ typedef HANDLE thread_t;
 #include <string.h>
 #include <time.h>
 
+#include "utils.h"
+#include "libbwt/bwt.h"
+
 #define OUTPUT_FLAG 'o'
 #define DEC_FLAG 'd'
 #define STDOUT_FLAG 'c'
@@ -44,12 +47,6 @@ typedef HANDLE thread_t;
 #define PRESET_MAX 9U
 #define PRESET_DEF 5U
 #define SIZE_THRESH 11U
-
-#define FOPEN_INPUT_MODE "rb"
-#define FOPEN_OUTPUT_MODE "wb"
-
-#include "utils.h"
-#include "libbwt/bwt.h"
 
 struct header_t {
 		bwt_size_t block_size, index;

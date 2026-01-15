@@ -3,6 +3,9 @@
 
 #include <stdio.h>
 
+#define FOPEN_INPUT_MODE "rb"
+#define FOPEN_OUTPUT_MODE "wb"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

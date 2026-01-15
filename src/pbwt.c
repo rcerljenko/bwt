@@ -1,22 +1,6 @@
-#define OUTPUT_FLAG 'o'
-#define DEC_FLAG 'd'
-#define STDOUT_FLAG 'c'
-#define REMOVE_FLAG 'r'
-#define PRESET_FLAG 'p'
-#define JOBS_FLAG 'j'
-#define VERBOSE_FLAG 'v'
-#define HELP_FLAG 'h'
-
-#define ARGS "hdcrvp:j:o:"
-#define FILE_EXT ".bwt"
-
-#define PRESET_MIN 1U
-#define PRESET_MAX 9U
-#define PRESET_DEF 5U
-#define SIZE_THRESH 11U
-
-#define FOPEN_INPUT_MODE "rb"
-#define FOPEN_OUTPUT_MODE "wb"
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
 #ifndef _WIN32
 	#if defined(__linux__) && defined(__GLIBC__)
@@ -43,7 +27,26 @@ typedef pthread_t thread_t;
 typedef HANDLE thread_t;
 #endif
 
-#include <time.h>
+#define OUTPUT_FLAG 'o'
+#define DEC_FLAG 'd'
+#define STDOUT_FLAG 'c'
+#define REMOVE_FLAG 'r'
+#define PRESET_FLAG 'p'
+#define JOBS_FLAG 'j'
+#define VERBOSE_FLAG 'v'
+#define HELP_FLAG 'h'
+
+#define ARGS "hdcrvp:j:o:"
+#define FILE_EXT ".bwt"
+
+#define PRESET_MIN 1U
+#define PRESET_MAX 9U
+#define PRESET_DEF 5U
+#define SIZE_THRESH 11U
+
+#define FOPEN_INPUT_MODE "rb"
+#define FOPEN_OUTPUT_MODE "wb"
+
 #include "utils.h"
 #include "libbwt/bwt.h"
 

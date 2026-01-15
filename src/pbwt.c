@@ -1,7 +1,3 @@
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-
 #ifndef _WIN32
 	#if defined(__linux__) && defined(__GLIBC__)
 		#define _GNU_SOURCE
@@ -26,6 +22,10 @@ typedef pthread_t thread_t;
 
 typedef HANDLE thread_t;
 #endif
+
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
 #define OUTPUT_FLAG 'o'
 #define DEC_FLAG 'd'

@@ -1,8 +1,9 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.30)
 
 project(libbwt C)
 
 set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_CONFIGURATION_TYPES ${CMAKE_BUILD_TYPE})
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_BUILD_PARALLEL_LEVEL "")
 set(INSTALL_PARALLEL ON)

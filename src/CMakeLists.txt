@@ -50,7 +50,7 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	add_compile_options(/Wall /permissive- /O2 /Ob3 /Gd /Qpar)
 endif()
 
-add_executable(pbwt pbwt.c)
+add_executable(pbwt pbwt.c utils.c)
 
 check_ipo_supported(RESULT IPO_SUPPORTED)
 

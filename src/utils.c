@@ -48,9 +48,11 @@ unsigned short get_threadcount(void)
 size_t get_memusage(void)
 {
 #ifndef _WIN32
-	FILE *const restrict fp = fopen("/proc/self/statm", "rb");
+	FILE *const restrict fp = fopen("/proc/self/statm", FOPEN_INPUT_MODE);
 
 	if (!fp) {
+		perror(filename);
+
 		return 0;
 	}
 

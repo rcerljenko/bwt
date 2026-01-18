@@ -79,6 +79,8 @@ jobs:
    - name: Install latest Clang compiler
      if: ${{ matrix.compiler == 'clang' && runner.os == 'Linux' }}
      uses: egor-tensin/setup-clang@v2
+     with:
+      version: 21
 
    - name: Install LLD linker
      if: ${{ matrix.linker == 'LLD' && runner.os == 'Linux' }}

@@ -127,7 +127,7 @@ jobs:
 
    - name: Compression test using FILE
      working-directory: ${{ runner.temp }}
-     run: pbwt -p 9 -o bwt-file.tar.bwt bwt.tar
+     run: pbwt -p 9 ${{ runner.temp }}/bwt.tar
 
    - name: Compression test using STDIN
      working-directory: ${{ runner.temp }}
@@ -139,7 +139,7 @@ jobs:
 
    - name: Decompression test using FILE
      working-directory: ${{ runner.temp }}
-     run: pbwt -d -o bwt-file.tar bwt-file.tar.bwt
+     run: pbwt -d -o bwt-file.tar bwt.tar.bwt
 
    - name: Decompression test using STDIN file
      working-directory: ${{ runner.temp }}

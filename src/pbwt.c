@@ -1,8 +1,4 @@
 #ifndef _WIN32
-	#if defined(__linux__) && defined(__GLIBC__)
-		#define _GNU_SOURCE
-	#endif
-
 	#include <signal.h>
 	#include <limits.h>
 	#include <libgen.h>

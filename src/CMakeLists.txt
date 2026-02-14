@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.30)
 
-add_subdirectory(libbwt)
+option(BUILD_BWT_LIBRARY "Build BWT library" ON)
+
+if(BUILD_BWT_LIBRARY)
+	add_subdirectory(libbwt)
+endif()
 
 project(pbwt
 	VERSION 1.0.0

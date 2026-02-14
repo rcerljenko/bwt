@@ -24,7 +24,13 @@ cmake --build build --config Release
 sudo cmake --install build --strip --config Release
 ```
 
-By default, CMake will build a shared library. To build a static library you can pass a custom flag to the generator command:
+By default, CMake will build a library part before it builds main program. To only build a main program you can pass a custom flag to the generator command:
+
+```sh
+cmake -B build -DBUILD_BWT_LIBRARY=OFF
+```
+
+When building a library, CMake will by default build a shared library. To build a static library you can pass a custom flag to the generator command:
 
 ```sh
 cmake -B build -DBUILD_SHARED_LIBS=OFF

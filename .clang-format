@@ -137,7 +137,7 @@ SpaceBeforeParensOptions:
   AfterRequiresInClause: false
   AfterRequiresInExpression: false
   BeforeNonEmptyParentheses: false
-AlignAfterOpenBracket: Align
+AlignAfterOpenBracket: true
 ContinuationIndentWidth: 1
 BreakBinaryOperations: Never
 RemoveEmptyLinesInUnwrappedLines: true
@@ -147,3 +147,9 @@ IndentExportBlock: true
 BreakBeforeTemplateCloser: true
 EnumTrailingComma: Remove
 SpaceAfterOperatorKeyword: true
+SpaceInEmptyBraces: Never
+NumericLiteralCase:
+  ExponentLetter: Lower
+  HexDigit: Lower
+  Prefix: Lower
+  Suffix: Lower

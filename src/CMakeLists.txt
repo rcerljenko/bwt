@@ -74,6 +74,8 @@ if(UNIX)
 	endif()
 
 	target_link_libraries(pbwt bwt pthread)
+
+	install(FILES man/pbwt.1 TYPE MAN)
 else()
 	target_link_libraries(pbwt bwt)
 endif()

@@ -1,0 +1,53 @@
+.TH PBWT 1
+.SH NAME
+pbwt - Portable Multithreaded Burrows-Wheeler Transform + Run Length Encoding Compressor/Decompressor
+.SH SYNOPSIS
+.B pbwt
+[OPTIONS]
+[<input_file>]
+If <input_file> is omitted, input file is STDIN.
+.br
+If <input_file> is STDIN and output file is omitted (no valid -o flag), output file is STDOUT (like -c flag).
+.br
+Other processes can send signal SIGUSR1 to get progress info.
+.SH DESCRIPTION
+.B pbwt
+Portable Multithreaded Burrows-Wheeler Transform + Run Length Encoding Compressor/Decompressor.
+.SH OPTIONS
+.TP
+.BR -c
+Write output to STDOUT (ignored if valid -o flag exists).
+.TP
+.BR -d
+Decompression mode.
+.TP
+.BR -h
+Show help and exit.
+.TP
+.BR -j " "\fR<1-n>
+Number of parallel jobs (threads). If omitted or wrong value, fallback to all available threads (n).
+.TP
+.BR -o " "\fR<output_name>
+Custom output filename (if omitted, output filename is input_file.bwt in compression and without .bwt in decompression mode).
+.br
+If given string ends with '/' (path delimiter), output is then given path + above rule.
+.TP
+.BR -p " "\fR<1-9>
+Compression preset level (ignored in decompression mode).
+.br
+Higher presets may give better compression ratio (if omitted or wrong value, preset is 5).
+.TP
+.BR -r
+Remove input file after successful operation (ignored when input file is STDIN).
+.TP
+.BR -v
+Verbose mode - show statistics after successful operation.
+.SH EXIT STATUS
+.TP
+.BR 0
+Successful program execution.
+.TP
+.BR 1
+Operational error.
+.SH AUTHORS
+Ricardo Cerljenko (ricardo.cerljenko@gmail.com)

@@ -74,6 +74,9 @@ if(UNIX)
 	endif()
 
 	target_link_libraries(pbwt bwt pthread)
+
+	include(GNUInstallDirs)
+	install(FILES man/pbwt.1 DESTINATION "${CMAKE_INSTALL_MANDIR}/man1")
 else()
 	target_link_libraries(pbwt bwt)
 endif()

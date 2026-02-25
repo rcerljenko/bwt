@@ -123,9 +123,7 @@ jobs:
      run: pbwt -h
 
    - name: Check man page
-     run: |
-      sudo mandb -q
-      man pbwt
+     run: man pbwt
 
    - name: Prepare for tests
      run: tar -c -f ${{ runner.temp }}/bwt.tar .

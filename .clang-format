@@ -152,4 +152,4 @@ NumericLiteralCase:
   ExponentLetter: Lower
   HexDigit: Lower
   Prefix: Lower
-  Suffix: Lower
+  Suffix: Upper

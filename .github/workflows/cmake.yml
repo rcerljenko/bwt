@@ -124,7 +124,7 @@ jobs:
 
    - name: Check man page
      run: |
-      mandb -q
+      mandb -d
       man pbwt
 
    - name: Prepare for tests

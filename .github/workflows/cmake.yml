@@ -123,7 +123,7 @@ jobs:
      run: pbwt -h
 
    - name: Check man page
-     run: man pbwt
+     run: man pbwt | col -b
 
    - name: Prepare for tests
      run: tar -c -f ${{ runner.temp }}/bwt.tar .

@@ -128,6 +128,26 @@ jobs:
    - name: Prepare for tests
      run: tar -c -f ${{ runner.temp }}/bwt.tar .
 
+   - name: Test missing argument value (-j)
+     working-directory: ${{ runner.temp }}
+     run: pbwt -j && exit 1 || exit 0
+
+   - name: Test missing argument value (-o)
+     working-directory: ${{ runner.temp }}
+     run: pbwt -o && exit 1 || exit 0
+
+   - name: Test missing argument value (-p)
+     working-directory: ${{ runner.temp }}
+     run: pbwt -p && exit 1 || exit 0
+
+   - name: Test unknown argument
+     working-directory: ${{ runner.temp }}
+     run: pbwt -z && exit 1 || exit 0
+
+   - name: Test input and output file with the same name
+     working-directory: ${{ runner.temp }}
+     run: pbwt -o bwt.tar bwt.tar && exit 1 || exit 0
+
    - name: Compression test using FILE
      working-directory: ${{ runner.temp }}
      run: pbwt -p 9 -o bwt-file.tar.bwt bwt.tar
@@ -217,6 +237,31 @@ jobs:
 
    - name: Prepare for tests
      run: tar -c -f ${{ runner.temp }}\bwt.tar .
+
+   - name: Test missing argument value (-j)
+     working-directory: ${{ runner.temp }}
+     shell: bash
+     run: ./pbwt/bin/pbwt -j && exit 1 || exit 0
+
+   - name: Test missing argument value (-o)
+     working-directory: ${{ runner.temp }}
+     shell: bash
+     run: ./pbwt/bin/pbwt -o && exit 1 || exit 0
+
+   - name: Test missing argument value (-p)
+     working-directory: ${{ runner.temp }}
+     shell: bash
+     run: ./pbwt/bin/pbwt -p && exit 1 || exit 0
+
+   - name: Test unknown argument
+     working-directory: ${{ runner.temp }}
+     shell: bash
+     run: ./pbwt/bin/pbwt -z && exit 1 || exit 0
+
+   - name: Test input and output file with the same name
+     working-directory: ${{ runner.temp }}
+     shell: bash
+     run: ./pbwt/bin/pbwt -o bwt.tar bwt.tar && exit 1 || exit 0
 
    - name: Compression test using FILE
      working-directory: ${{ runner.temp }}

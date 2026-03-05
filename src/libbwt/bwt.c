@@ -87,7 +87,7 @@ DLL_EXPIMP bwt_size_t CALL_CONV bwt(void *const void_data, const bwt_size_t n)
 	}
 
 	free(positions - n);
-	free(data_info.rotations);
+	// free(data_info.rotations);
 
 	return index;
 }

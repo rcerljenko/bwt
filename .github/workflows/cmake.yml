@@ -218,11 +218,11 @@ jobs:
 
    - name: Valgrind Memcheck - Compression test
      working-directory: ${{ runner.temp }}
-     run: valgrind -v --error-exitcode=1 --leak-check=full --errors-for-leak-kinds=all pbwt -v -p 9 -o bwt-file.tar.bwt bwt.tar
+     run: valgrind -q --error-exitcode=1 --leak-check=full --errors-for-leak-kinds=all pbwt -v -p 9 -o bwt-file.tar.bwt bwt.tar
 
    - name: Valgrind Memcheck - Decompression test
      working-directory: ${{ runner.temp }}
-     run: valgrind -v --error-exitcode=1 --leak-check=full --errors-for-leak-kinds=all pbwt -v -d -o bwt-file.tar bwt-file.tar.bwt
+     run: valgrind -q --error-exitcode=1 --leak-check=full --errors-for-leak-kinds=all pbwt -v -d -o bwt-file.tar bwt-file.tar.bwt
 
  windows:
   if: github.event.pull_request.draft == false

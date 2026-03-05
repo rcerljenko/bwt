@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.30)
 
 option(BUILD_BWT_LIBRARY "Build BWT library" ON)
-option(CMAKE_BUILD_TYPE "Build type" Release)
 
 if(BUILD_BWT_LIBRARY)
 	add_subdirectory(libbwt)
@@ -12,6 +11,10 @@ project(pbwt
 	DESCRIPTION "Portable Multithreaded Burrows-Wheeler Transform + Run Length Encoding Compressor/Decompressor"
 	HOMEPAGE_URL "https://github.com/rcerljenko/bwt"
 	LANGUAGES C)
+
+if(NOT CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE Release)
+endif()
 
 set(CMAKE_BUILD_PARALLEL_LEVEL "")
 set(INSTALL_PARALLEL ON)

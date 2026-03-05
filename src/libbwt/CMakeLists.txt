@@ -3,7 +3,10 @@ cmake_minimum_required(VERSION 3.30)
 project(libbwt C)
 
 option(BUILD_SHARED_LIBS "Build shared library" ON)
-option(CMAKE_BUILD_TYPE "Build type" Release)
+
+if(NOT CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE Release)
+endif()
 
 set(CMAKE_BUILD_PARALLEL_LEVEL "")
 set(INSTALL_PARALLEL ON)

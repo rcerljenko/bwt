@@ -5,7 +5,6 @@ project(libbwt C)
 option(BUILD_SHARED_LIBS "Build shared library" ON)
 option(CMAKE_BUILD_TYPE "Build type" Release)
 
-set(CMAKE_CONFIGURATION_TYPES ${CMAKE_BUILD_TYPE})
 set(CMAKE_BUILD_PARALLEL_LEVEL "")
 set(INSTALL_PARALLEL ON)
 set(CMAKE_C_STANDARD 23)

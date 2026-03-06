@@ -189,7 +189,7 @@ jobs:
 
   runs-on: ubuntu-latest
 
-  name: Valgrind
+  name: Valgrind checks
 
   steps:
    - name: Pulling project
@@ -216,13 +216,21 @@ jobs:
       sudo apt-get update -q
       sudo apt-get install -y -q valgrind
 
-   - name: Valgrind Memcheck - Compression test
+   - name: Memcheck - Compression test
      working-directory: ${{ runner.temp }}
      run: valgrind -q --error-exitcode=1 --leak-check=full --errors-for-leak-kinds=all pbwt -v -p 9 -o bwt-file.tar.bwt bwt.tar
 
-   - name: Valgrind Memcheck - Decompression test
+   - name: Memcheck - Decompression test
      working-directory: ${{ runner.temp }}
      run: valgrind -q --error-exitcode=1 --leak-check=full --errors-for-leak-kinds=all pbwt -v -d -o bwt-file.tar bwt-file.tar.bwt
+
+   - name: DRD - Compression test
+     working-directory: ${{ runner.temp }}
+     run: valgrind -q --error-exitcode=1 --tool=drd --check-stack-var=yes --free-is-write=yes pbwt -v -p 9 -o bwt-file.tar.bwt bwt.tar
+
+   - name: DRD - Decompression test
+     working-directory: ${{ runner.temp }}
+     run: valgrind -q --error-exitcode=1 --tool=drd --check-stack-var=yes --free-is-write=yes pbwt -v -d -o bwt-file.tar bwt-file.tar.bwt
 
  windows:
   if: github.event.pull_request.draft == false

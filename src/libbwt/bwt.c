@@ -19,7 +19,7 @@ static inline int bwt_cmp(const void *const a, const void *const b, void *const 
 #elif defined(_WIN32) || defined(__APPLE__)
 static inline int bwt_cmp(void *const arg, const void *const a, const void *const b);
 #endif
-static inline int ibwt_cmp(const void *const a, const void *const b);
+static inline int bwti_cmp(const void *const a, const void *const b);
 
 #ifdef __linux__
 static inline int bwt_cmp(const void *const a, const void *const b, void *const arg)
@@ -34,7 +34,7 @@ static inline int bwt_cmp(void *const arg, const void *const a, const void *cons
 	return memcmp(data_info->rotations + i, data_info->rotations + j, data_info->len);
 }
 
-static inline int ibwt_cmp(const void *const a, const void *const b)
+static inline int bwti_cmp(const void *const a, const void *const b)
 {
 	return *(unsigned char *) a - *(unsigned char *) b;
 }
@@ -92,7 +92,7 @@ DLL_EXPIMP bwt_size_t CALL_CONV bwt(void *const void_data, const bwt_size_t n)
 	return index;
 }
 
-DLL_EXPIMP void CALL_CONV ibwt(void *const void_data, const bwt_size_t n, bwt_size_t index)
+DLL_EXPIMP void CALL_CONV bwti(void *const void_data, const bwt_size_t n, bwt_size_t index)
 {
 	if (!void_data || n < 2 || index >= n) {
 		return;
@@ -118,7 +118,7 @@ DLL_EXPIMP void CALL_CONV ibwt(void *const void_data, const bwt_size_t n, bwt_si
 	const unsigned char *pos;
 
 	memcpy(tmp_data, data, n);
-	qsort(data, n, 1, ibwt_cmp);
+	qsort(data, n, 1, bwti_cmp);
 
 	for (i = 0, curr_char = *data, pos = tmp_data; i < n; i++, data++, pos++) {
 		if (curr_char != *data) {
@@ -140,6 +140,53 @@ DLL_EXPIMP void CALL_CONV ibwt(void *const void_data, const bwt_size_t n, bwt_si
 
 	free(transform);
 	free(tmp_data);
+}
+
+DLL_EXPIMP void CALL_CONV mtf(void *const void_data, bwt_size_t n)
+{
+	if (!void_data || n < 2) {
+		return;
+	}
+
+	unsigned char *restrict data = void_data;
+	unsigned char i = UCHAR_MAX, list[UCHAR_MAX + 1];
+	const unsigned char *pos;
+
+	do {
+		list[i] = i;
+	} while (i--);
+
+	while (n--) {
+		pos = memchr(list, *data, sizeof(list));
+
+		i = *pos;
+		*data++ = pos - list;
+
+		memmove(list + 1, list, pos - list);
+		list[0] = i;
+	}
+}
+
+DLL_EXPIMP void CALL_CONV mtfi(void *const void_data, bwt_size_t n)
+{
+	if (!void_data || n < 2) {
+		return;
+	}
+
+	unsigned char *restrict data = void_data;
+	unsigned char i = UCHAR_MAX, list[UCHAR_MAX + 1];
+
+	do {
+		list[i] = i;
+	} while (i--);
+
+	while (n--) {
+		i = *data;
+		*data = list[i];
+
+		memmove(list + 1, list, i);
+		list[0] = *data++;
+	}
 }
 
 DLL_EXPIMP bwt_size_t CALL_CONV rle(void *const void_data, const bwt_size_t n)

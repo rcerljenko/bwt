@@ -162,7 +162,7 @@ DLL_EXPIMP void CALL_CONV mtf(void *const void_data, bwt_size_t n)
 		i = *pos;
 		*data++ = pos - list;
 
-		memcpy(list + 1, list, pos - list);
+		memmove(list + 1, list, pos - list);
 		list[0] = i;
 	}
 }
@@ -184,7 +184,7 @@ DLL_EXPIMP void CALL_CONV mtfi(void *const void_data, bwt_size_t n)
 		i = *data;
 		*data = list[i];
 
-		memcpy(list + 1, list, i);
+		memmove(list + 1, list, i);
 		list[0] = *data++;
 	}
 }

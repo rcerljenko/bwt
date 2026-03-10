@@ -149,15 +149,15 @@ DLL_EXPIMP void CALL_CONV mtf(void *const void_data, bwt_size_t n)
 	}
 
 	unsigned char *restrict data = void_data;
-	const unsigned char *pos;
 	unsigned char i = UCHAR_MAX, list[UCHAR_MAX + 1];
+	const unsigned char *pos;
 
 	do {
 		list[i] = i;
 	} while (i--);
 
 	while (n--) {
-		pos = memchr(list, *data, UCHAR_MAX + 1);
+		pos = memchr(list, *data, sizeof(list));
 
 		i = *pos;
 		*data++ = pos - list;

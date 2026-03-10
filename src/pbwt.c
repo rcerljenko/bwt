@@ -94,6 +94,7 @@ static unsigned int __stdcall threaded_compress(void *const void_bwt_data)
 	const bwt_size_t tmp_block_size = bwt_data->header.block_size;
 
 	bwt_data->header.index = bwt(bwt_data->data, bwt_data->header.block_size);
+	mtf(bwt_data->data, bwt_data->header.block_size);
 	bwt_data->header.block_size = rle(bwt_data->data, bwt_data->header.block_size);
 
 	if (bwt_data->header.block_size) {
@@ -118,7 +119,8 @@ static unsigned int __stdcall threaded_decompress(void *const void_bwt_data)
 		bwt_data->header.block_size = rld(bwt_data->data, bwt_data->header.block_size);
 	}
 
-	ibwt(bwt_data->data, bwt_data->header.block_size, bwt_data->header.index);
+	mtfi(bwt_data->data, bwt_data->header.block_size);
+	bwti(bwt_data->data, bwt_data->header.block_size, bwt_data->header.index);
 
 	return THREAD_RETURN;
 }
@@ -503,7 +505,7 @@ static void show_help(void)
 	const unsigned short arch = sizeof(void *) * 8;
 	const unsigned short thread_count = get_threadcount();
 
-	fprintf(stderr, "%s - Portable Multithreaded Burrows-Wheeler Transform + Run Length Encoding Compressor/Decompressor.\n"
+	fprintf(stderr, "%s - Portable Multithreaded Burrows-Wheeler Transform + Move To Front + Run Length Encoding Compressor/Decompressor.\n"
 					"Build date: " __DATE__ " @ " __TIME__ "\n"
 					"Architecture: %hu-bit\n\n"
 					"Usage: %s [OPTIONS] [<input_file>]\n\n"

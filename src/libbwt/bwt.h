@@ -23,7 +23,9 @@ extern "C" {
 #endif
 
 DLL_EXPIMP bwt_size_t CALL_CONV bwt(void *const void_data, const bwt_size_t n);
-DLL_EXPIMP void CALL_CONV ibwt(void *const void_data, const bwt_size_t n, bwt_size_t index);
+DLL_EXPIMP void CALL_CONV bwti(void *const void_data, const bwt_size_t n, bwt_size_t index);
+DLL_EXPIMP void CALL_CONV mtf(void *const void_data, bwt_size_t n);
+DLL_EXPIMP void CALL_CONV mtfi(void *const void_data, bwt_size_t n);
 DLL_EXPIMP bwt_size_t CALL_CONV rle(void *const void_data, const bwt_size_t n);
 DLL_EXPIMP bwt_size_t CALL_CONV rld(void *const void_data, const bwt_size_t n);
 

@@ -1,6 +1,6 @@
 # pbwt
 
-## Portable Multithreaded Burrows-Wheeler Transform + Run Length Encoding Compressor/Decompressor
+## Portable Multithreaded Burrows-Wheeler Transform + Move To Front + Run Length Encoding Compressor/Decompressor
 
 [![CMake CI](https://github.com/rcerljenko/bwt/actions/workflows/cmake.yml/badge.svg)](https://github.com/rcerljenko/bwt/actions/workflows/cmake.yml)
 

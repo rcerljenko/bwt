@@ -182,10 +182,10 @@ DLL_EXPIMP void CALL_CONV mtfi(void *const void_data, bwt_size_t n)
 
 	while (n--) {
 		i = *data;
-		*data = list[i];
+		*data++ = list[i];
 
 		memmove(list + 1, list, i);
-		list[0] = *data++;
+		list[0] = i;
 	}
 }
 

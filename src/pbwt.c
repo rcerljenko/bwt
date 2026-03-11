@@ -25,7 +25,7 @@ typedef HANDLE thread_t;
 #include <time.h>
 
 #include "utils.h"
-#include "libbwt/bwt.h"
+#include "libbwt/libbwt.h"
 
 #define OUTPUT_FLAG 'o'
 #define DEC_FLAG 'd'

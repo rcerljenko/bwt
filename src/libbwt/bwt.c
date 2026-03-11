@@ -1,12 +1,11 @@
 #ifdef __linux__
 	#define _GNU_SOURCE
-#elif defined(_WIN32)
-	#define BWT_DLL
 #endif
 
 #include <stdlib.h>
 #include <string.h>
-#include <limits.h>
+
+#include "internal.h"
 #include "bwt.h"
 
 struct bwt_info_t {
@@ -140,136 +139,4 @@ DLL_EXPIMP void CALL_CONV bwti(void *const void_data, const bwt_size_t n, bwt_si
 
 	free(transform);
 	free(tmp_data);
-}
-
-DLL_EXPIMP void CALL_CONV mtf(void *const void_data, bwt_size_t n)
-{
-	if (!void_data || n < 2) {
-		return;
-	}
-
-	unsigned char *restrict data = void_data;
-	unsigned char i = UCHAR_MAX, list[UCHAR_MAX + 1];
-	const unsigned char *pos;
-
-	do {
-		list[i] = i;
-	} while (i--);
-
-	while (n--) {
-		pos = memchr(list, *data, sizeof(list));
-
-		i = *pos;
-		*data++ = pos - list;
-
-		memmove(list + 1, list, pos - list);
-		list[0] = i;
-	}
-}
-
-DLL_EXPIMP void CALL_CONV mtfi(void *const void_data, bwt_size_t n)
-{
-	if (!void_data || n < 2) {
-		return;
-	}
-
-	unsigned char *restrict data = void_data;
-	unsigned char i = UCHAR_MAX, list[UCHAR_MAX + 1];
-
-	do {
-		list[i] = i;
-	} while (i--);
-
-	while (n--) {
-		i = *data;
-		*data = list[i];
-
-		memmove(list + 1, list, i);
-		list[0] = *data++;
-	}
-}
-
-DLL_EXPIMP bwt_size_t CALL_CONV rle(void *const void_data, const bwt_size_t n)
-{
-	if (!void_data || n < 4) {
-		return 0;
-	}
-
-	unsigned char *restrict result = malloc(n);
-
-	if (!result) {
-		return 0;
-	}
-
-	unsigned char *restrict data = void_data;
-	bwt_size_t len = 0;
-	unsigned short count;
-	unsigned char curr_char;
-	const unsigned char *const end = data + n;
-
-	while (data < end && len < n) {
-		curr_char = *data++;
-
-		for (count = 0; data < end && curr_char == *data && count <= UCHAR_MAX; count++, data++);
-
-		*result++ = curr_char;
-
-		if (count) {
-			*result++ = curr_char;
-			*result++ = count - 1;
-			len += 3;
-		} else {
-			len++;
-		}
-	}
-
-	result -= len;
-
-	if (len < n) {
-		memcpy(data - n, result, len);
-	} else {
-		len = 0;
-	}
-
-	free(result);
-
-	return len;
-}
-
-DLL_EXPIMP bwt_size_t CALL_CONV rld(void *const void_data, const bwt_size_t n)
-{
-	if (!void_data || n < 3) {
-		return 0;
-	}
-
-	unsigned char *restrict tmp_data = malloc(n);
-
-	if (!tmp_data) {
-		return 0;
-	}
-
-	unsigned char *restrict data = void_data;
-	unsigned char curr_char;
-	const unsigned char *const start = data;
-	const unsigned char *const tmp_end = tmp_data + n - 1;
-
-	memcpy(tmp_data, data, n);
-
-	while (tmp_data <= tmp_end) {
-		*data++ = curr_char = *tmp_data++;
-
-		if (tmp_data < tmp_end && curr_char == *tmp_data) {
-			tmp_data++;
-
-			do {
-				*data++ = curr_char;
-			} while ((*tmp_data)--);
-
-			tmp_data++;
-		}
-	}
-
-	free(tmp_data - n);
-
-	return data - start;
 }

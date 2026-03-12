@@ -58,7 +58,7 @@ if(WIN32 AND NOT BUILD_SHARED_LIBS)
 	target_compile_definitions(bwt PUBLIC BWT_STATIC)
 endif()
 
-set_target_properties(bwt PROPERTIES PUBLIC_HEADER libbwt.h)
+target_sources(bwt PUBLIC FILE_SET libbwt_headers TYPE HEADERS FILES libbwt.h bwt.h mtf.h rle.h main.h)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
 	include(CheckIPOSupported)
@@ -72,8 +72,10 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
 	endif()
 endif()
 
+include(GNUInstallDirs)
+
 install(TARGETS bwt LIBRARY)
-install(TARGETS bwt PUBLIC_HEADER)
+install(TARGETS bwt FILE_SET libbwt_headers DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libbwt)
 
 if(LINUX)
 	install(CODE "execute_process(COMMAND ldconfig)")

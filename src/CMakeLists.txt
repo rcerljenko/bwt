@@ -77,7 +77,7 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /Z7")
 endif()
 
-add_executable(pbwt pbwt.c utils.c)
+add_executable(pbwt pbwt.c utils/utils.c)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
 	include(CheckIPOSupported)

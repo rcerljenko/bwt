@@ -20,11 +20,12 @@ typedef pthread_t thread_t;
 typedef HANDLE thread_t;
 #endif
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
-#include "utils.h"
+#include "utils/utils.h"
 #include "libbwt/libbwt.h"
 
 #define OUTPUT_FLAG 'o'

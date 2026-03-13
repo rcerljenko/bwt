@@ -2,7 +2,7 @@
 #include <string.h>
 #include <limits.h>
 
-#include "internal.h"
+#include "../include/internal.h"
 #include "rle.h"
 
 DLL_EXPIMP bwt_size_t CALL_CONV rle(void *const void_data, const bwt_size_t n)

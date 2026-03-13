@@ -1,7 +1,7 @@
 #ifndef MTF_H
 #define MTF_H
 
-#include "main.h"
+#include "../include/main.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,7 +1,7 @@
 #ifndef RLE_H
 #define RLE_H
 
-#include "main.h"
+#include "../include/main.h"
 
 #ifdef __cplusplus
 extern "C" {

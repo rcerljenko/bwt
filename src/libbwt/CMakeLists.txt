@@ -52,13 +52,13 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /Z7")
 endif()
 
-add_library(bwt bwt.c mtf.c rle.c)
+add_library(bwt bwt/bwt.c mtf/mtf.c rle/rle.c)
 
 if(WIN32 AND NOT BUILD_SHARED_LIBS)
 	target_compile_definitions(bwt PUBLIC BWT_STATIC)
 endif()
 
-target_sources(bwt PUBLIC FILE_SET libbwt_headers TYPE HEADERS FILES libbwt.h bwt.h mtf.h rle.h main.h)
+target_sources(bwt PUBLIC FILE_SET libbwt_headers TYPE HEADERS FILES libbwt.h include/main.h bwt/bwt.h mtf/mtf.h rle/rle.h)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
 	include(CheckIPOSupported)

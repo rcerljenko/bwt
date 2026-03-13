@@ -1,7 +1,7 @@
 #include <string.h>
 #include <limits.h>
 
-#include "internal.h"
+#include "../include/internal.h"
 #include "mtf.h"
 
 DLL_EXPIMP void CALL_CONV mtf(void *const void_data, bwt_size_t n)

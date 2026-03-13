@@ -1,7 +1,7 @@
 #ifndef BWT_H
 #define BWT_H
 
-#include "main.h"
+#include "../include/main.h"
 
 #ifdef __cplusplus
 extern "C" {

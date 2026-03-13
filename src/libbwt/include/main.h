@@ -1,5 +1,5 @@
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef BWT_MAIN_H
+#define BWT_MAIN_H
 
 #ifdef _WIN32
 	#define CALL_CONV __cdecl

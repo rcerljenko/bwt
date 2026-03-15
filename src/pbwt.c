@@ -25,6 +25,7 @@ typedef HANDLE thread_t;
 #include <string.h>
 #include <time.h>
 
+#include "features.h"
 #include "utils/utils.h"
 #include "libbwt/libbwt.h"
 
@@ -38,12 +39,23 @@ typedef HANDLE thread_t;
 #define HELP_FLAG 'h'
 
 #define ARGS "hdcrvp:j:o:"
-#define FILE_EXT ".bwt"
 
 #define PRESET_MIN 1U
 #define PRESET_MAX 9U
 #define PRESET_DEF 5U
 #define SIZE_THRESH 11U
+
+#define BWT_VERSION 1U
+#define FILE_EXT ".bwt"
+
+struct features_t {
+		unsigned char mtf : 1;
+};
+
+struct main_header_t {
+		unsigned char version, block_size;
+		struct features_t features;
+};
 
 struct header_t {
 		bwt_size_t block_size, index;
@@ -52,6 +64,7 @@ struct header_t {
 struct bwt_data_t {
 		unsigned char *data, status : 1;
 		struct header_t header;
+		struct features_t features;
 };
 
 struct flags_t {
@@ -95,7 +108,11 @@ static unsigned int __stdcall threaded_compress(void *const void_bwt_data)
 	const bwt_size_t tmp_block_size = bwt_data->header.block_size;
 
 	bwt_data->header.index = bwt(bwt_data->data, bwt_data->header.block_size);
-	mtf(bwt_data->data, bwt_data->header.block_size);
+
+	if (bwt_data->features.mtf) {
+		mtf(bwt_data->data, bwt_data->header.block_size);
+	}
+
 	bwt_data->header.block_size = rle(bwt_data->data, bwt_data->header.block_size);
 
 	if (bwt_data->header.block_size) {
@@ -120,7 +137,10 @@ static unsigned int __stdcall threaded_decompress(void *const void_bwt_data)
 		bwt_data->header.block_size = rld(bwt_data->data, bwt_data->header.block_size);
 	}
 
-	mtfi(bwt_data->data, bwt_data->header.block_size);
+	if (bwt_data->features.mtf) {
+		mtfi(bwt_data->data, bwt_data->header.block_size);
+	}
+
 	bwti(bwt_data->data, bwt_data->header.block_size, bwt_data->header.index);
 
 	return THREAD_RETURN;
@@ -160,9 +180,15 @@ static int bwt_compress(FILE *const restrict fp_in, FILE *const restrict fp_out,
 		return EXIT_FAILURE;
 	}
 
-	stats.curr_fs_out = fwrite(&block_size, 1, 1, fp_out);
+	struct main_header_t main_header;
 
-	if (stats.curr_fs_out != 1) {
+	main_header.version = BWT_VERSION;
+	main_header.block_size = block_size;
+	main_header.features.mtf = FEATURE_USE_MTF;
+
+	unsigned char status = fwrite(&main_header, sizeof(main_header), 1, fp_out);
+
+	if (status != 1) {
 		perror(filename);
 
 		free(threads);
@@ -172,16 +198,18 @@ static int bwt_compress(FILE *const restrict fp_in, FILE *const restrict fp_out,
 		return EXIT_FAILURE;
 	}
 
+	stats.curr_fs_out = sizeof(main_header);
+
 	size_t i, n;
 	unsigned short j;
 	bwt_size_t tmp_block_size;
-	unsigned char status = 1;
 
 	while ((n = fread(data, 1, fread_size, fp_in))) {
 		stats.curr_fs_in += n;
 
 		for (i = j = 0; i < n; i += main_block_size, j++) {
 			bwt_data[j].data = data + i;
+			bwt_data[j].features = main_header.features;
 
 			if (i + main_block_size <= n) {
 				bwt_data[j].header.block_size = main_block_size;
@@ -249,15 +277,19 @@ static int bwt_compress(FILE *const restrict fp_in, FILE *const restrict fp_out,
 
 static int bwt_decompress(FILE *const restrict fp_in, FILE *const restrict fp_out, const unsigned short thread_count)
 {
-	bwt_size_t main_block_size;
+	struct main_header_t main_header;
 
-	stats.curr_fs_in = fread(&main_block_size, 1, 1, fp_in);
+	size_t status = fread(&main_header, sizeof(main_header), 1, fp_in);
 
-	if (stats.curr_fs_in != 1) {
-		return EXIT_SUCCESS;
+	if (status != 1) {
+		perror(filename);
+
+		return EXIT_FAILURE;
 	}
 
-	main_block_size = 1U << main_block_size;
+	stats.curr_fs_in = sizeof(main_header);
+
+	const bwt_size_t main_block_size = 1U << main_header.block_size;
 
 	unsigned char *const data = malloc(main_block_size * thread_count);
 
@@ -288,11 +320,12 @@ static int bwt_decompress(FILE *const restrict fp_in, FILE *const restrict fp_ou
 		return EXIT_FAILURE;
 	}
 
-	size_t n, status = 1;
+	size_t n;
 	unsigned short i = 0;
 
 	while (fread(&bwt_data[i].header, sizeof(struct header_t), 1, fp_in) == 1) {
 		bwt_data[i].data = data + main_block_size * i;
+		bwt_data[i].features = main_header.features;
 
 		if (bwt_data[i].header.block_size) {
 			status = fread(bwt_data[i].data, 1, bwt_data[i].header.block_size, fp_in);

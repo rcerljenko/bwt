@@ -12,6 +12,9 @@ project(pbwt
 	HOMEPAGE_URL "https://github.com/rcerljenko/bwt"
 	LANGUAGES C)
 
+
+option(BWT_NO_MTF "Build without MTF pass" OFF)
+
 if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Release)
 endif()
@@ -78,6 +81,12 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 endif()
 
 add_executable(pbwt pbwt.c utils/utils.c)
+
+if(BWT_NO_MTF)
+	target_compile_definitions(pbwt PUBLIC BWT_NO_MTF)
+
+	message(WARNING "Building without MTF pass.")
+endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
 	include(CheckIPOSupported)

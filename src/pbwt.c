@@ -180,11 +180,11 @@ static int bwt_compress(FILE *const restrict fp_in, FILE *const restrict fp_out,
 		return EXIT_FAILURE;
 	}
 
-	struct main_header_t main_header = {0};
-
-	main_header.version = BWT_VERSION;
-	main_header.block_size = block_size;
-	main_header.features.mtf = FEATURE_USE_MTF;
+	struct main_header_t main_header = {
+	 .version = BWT_VERSION,
+	 .block_size = block_size,
+	 .features.mtf = FEATURE_USE_MTF,
+	};
 
 	unsigned char status = fwrite(&main_header, sizeof(main_header), 1, fp_out);
 

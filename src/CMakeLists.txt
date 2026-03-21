@@ -13,7 +13,7 @@ project(pbwt
 	LANGUAGES C)
 
 
-option(BWT_NO_MTF "Build without MTF pass" OFF)
+option(BWT_NO_MTF "Build without MTF pass")
 
 if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Release)

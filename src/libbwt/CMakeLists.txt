@@ -52,7 +52,7 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /Z7 /fsanitize=address")
 endif()
 
-add_library(bwt bwt/bwt.c mtf/mtf.c rle/rle.c)
+add_library(bwt utils.c bwt/bwt.c mtf/mtf.c rle/rle.c)
 
 if(WIN32 AND NOT BUILD_SHARED_LIBS)
 	target_compile_definitions(bwt PUBLIC BWT_STATIC)

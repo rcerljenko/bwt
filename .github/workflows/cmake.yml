@@ -218,17 +218,52 @@ jobs:
 
    - name: Memcheck - Compression test
      working-directory: ${{ runner.temp }}
-     run: pbwt -v -p 9 -o bwt-file.tar.bwt bwt.tar
+     run: valgrind -q --error-exitcode=1 --leak-check=full --errors-for-leak-kinds=all pbwt -v -p 9 -o bwt-file.tar.bwt bwt.tar
 
    - name: Memcheck - Decompression test
      working-directory: ${{ runner.temp }}
-     run: pbwt -v -d -o bwt-file.tar bwt-file.tar.bwt
+     run: valgrind -q --error-exitcode=1 --leak-check=full --errors-for-leak-kinds=all pbwt -v -d -o bwt-file.tar bwt-file.tar.bwt
 
    - name: DRD - Compression test
      working-directory: ${{ runner.temp }}
-     run: pbwt -v -p 9 -o bwt-file.tar.bwt bwt.tar
+     run: valgrind -q --error-exitcode=1 --tool=drd --check-stack-var=yes --free-is-write=yes pbwt -v -p 9 -o bwt-file.tar.bwt bwt.tar
 
    - name: DRD - Decompression test
+     working-directory: ${{ runner.temp }}
+     run: valgrind -q --error-exitcode=1 --tool=drd --check-stack-var=yes --free-is-write=yes pbwt -v -d -o bwt-file.tar bwt-file.tar.bwt
+
+ asan:
+  if: github.event.pull_request.draft == false
+
+  runs-on: ubuntu-latest
+
+  name: ASAN checks
+
+  steps:
+   - name: Pulling project
+     uses: actions/checkout@v6
+
+   - name: Setup CMake
+     id: cmake
+     uses: threeal/cmake-action@v2
+     with:
+      source-dir: src
+      options: CMAKE_BUILD_TYPE=Debug
+
+   - name: Install
+     run: sudo cmake --install ${{ steps.cmake.outputs.build-dir }}
+
+   - name: Run program
+     run: pbwt -h
+
+   - name: Prepare for tests
+     run: tar -c -f ${{ runner.temp }}/bwt.tar .
+
+   - name: Compression test
+     working-directory: ${{ runner.temp }}
+     run: pbwt -v -p 9 -o bwt-file.tar.bwt bwt.tar
+
+   - name: Decompression test
      working-directory: ${{ runner.temp }}
      run: pbwt -v -d -o bwt-file.tar bwt-file.tar.bwt
 

@@ -83,23 +83,6 @@ char filename[_MAX_FNAME + 1];
 #endif
 static struct stats_t stats = {0};
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#ifdef __SANITIZE_ADDRESS__
-const char *__asan_default_options(void);
-
-const char *__asan_default_options(void)
-{
-	return "alloc_dealloc_mismatch=1:check_initialization_order=1:continue_on_error=2:strict_string_checks=1";
-}
-#endif
-
-#ifdef __cplusplus
-}
-#endif
-
 #ifndef _WIN32
 static void *threaded_compress(void *const void_bwt_data);
 static void *threaded_decompress(void *const void_bwt_data);

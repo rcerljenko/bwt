@@ -19,6 +19,25 @@ const char *optarg;
 unsigned short optind;
 #endif
 
+#ifdef __SANITIZE_ADDRESS__
+
+	#ifdef __cplusplus
+extern "C" {
+	#endif
+
+static const char *__asan_default_options(void);
+
+static const char *__asan_default_options(void)
+{
+	return "alloc_dealloc_mismatch=1:check_initialization_order=1:continue_on_error=2:strict_string_checks=1";
+}
+
+	#ifdef __cplusplus
+}
+	#endif
+
+#endif
+
 size_t get_filesize(FILE *const restrict fp)
 {
 	const size_t offset = ftell(fp);

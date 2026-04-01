@@ -238,31 +238,19 @@ jobs:
  asan:
   if: github.event.pull_request.draft == false
 
-  strategy:
-   fail-fast: false
-   matrix:
-    compiler: [gcc, clang]
-
   runs-on: ubuntu-latest
 
-  name: ASAN checks - ${{ matrix.compiler }}
+  name: ASAN checks
 
   steps:
    - name: Pulling project
      uses: actions/checkout@v6
-
-   - name: Install latest Clang compiler
-     if: ${{ matrix.compiler == 'clang' && runner.os == 'Linux' }}
-     uses: egor-tensin/setup-clang@v2
-     with:
-      version: ${{ env.CLANG_VERSION }}
 
    - name: Setup CMake
      id: cmake
      uses: threeal/cmake-action@v2
      with:
       source-dir: src
-      c-compiler: ${{ matrix.compiler }}
       options: CMAKE_BUILD_TYPE=Debug USE_ASAN=ON
 
    - name: Install

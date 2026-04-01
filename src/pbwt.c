@@ -181,7 +181,7 @@ static int bwt_compress(FILE *const restrict fp_in, FILE *const restrict fp_out,
 		return EXIT_FAILURE;
 	}
 
-	struct main_header_t main_header;
+	struct main_header_t main_header = {0};
 
 	main_header.version = BWT_VERSION;
 	main_header.block_size = block_size;

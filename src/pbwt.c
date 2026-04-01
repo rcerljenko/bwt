@@ -83,6 +83,23 @@ char filename[_MAX_FNAME + 1];
 #endif
 static struct stats_t stats = {0};
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#ifdef __SANITIZE_ADDRESS__
+const char *__asan_default_options(void);
+
+const char *__asan_default_options(void)
+{
+	return "alloc_dealloc_mismatch=1:check_initialization_order=1:continue_on_error=2:strict_string_checks=1";
+}
+#endif
+
+#ifdef __cplusplus
+}
+#endif
+
 #ifndef _WIN32
 static void *threaded_compress(void *const void_bwt_data);
 static void *threaded_decompress(void *const void_bwt_data);
@@ -92,6 +109,7 @@ static unsigned int __stdcall threaded_compress(void *const void_bwt_data);
 static unsigned int __stdcall threaded_decompress(void *const void_bwt_data);
 static int __stdcall sighandler(const unsigned long signum);
 #endif
+
 static int bwt_compress(FILE *const restrict fp_in, FILE *const restrict fp_out, const unsigned short thread_count, const unsigned char block_size);
 static int bwt_decompress(FILE *const restrict fp_in, FILE *const restrict fp_out, const unsigned short thread_count);
 static void create_output_path(char *restrict input, char *const output, const unsigned char dec_flag);

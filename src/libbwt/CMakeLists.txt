@@ -20,7 +20,7 @@ if(CMAKE_C_COMPILER_ID MATCHES "GNU")
 	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g3")
 
 	if(USE_ASAN)
-		set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fsanitize=address,pointer-compare,pointer-subtract,leak")
+		set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fsanitize=address,pointer-compare,pointer-subtract,leak,undefined")
 	endif()
 
 	if(NOT APPLE AND CMAKE_BUILD_TYPE STREQUAL "Release")
@@ -43,7 +43,7 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
 		set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g3")
 
 		if(USE_ASAN)
-			set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fsanitize=address")
+			set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fsanitize=address,leak,undefined")
 		endif()
 	endif()
 elseif(CMAKE_C_COMPILER_ID MATCHES "IntelLLVM")

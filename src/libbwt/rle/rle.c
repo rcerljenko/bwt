@@ -47,7 +47,7 @@ DLL_EXPIMP bwt_size_t CALL_CONV rle(void *const void_data, const bwt_size_t n)
 		len = 0;
 	}
 
-	// free(result);
+	free(result);
 
 	return len;
 }

@@ -77,7 +77,7 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	add_compile_options(/Wall /permissive- /Gd)
 
 	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /O2 /Ob3 /Qpar")
-	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /Z7 /fsanitize=address")
+	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /Z7")
 endif()
 
 add_executable(pbwt pbwt.c utils/utils.c)

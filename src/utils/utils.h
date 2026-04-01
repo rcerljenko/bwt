@@ -15,6 +15,15 @@ extern const char *optarg;
 extern unsigned short optind;
 #endif
 
+#ifdef __SANITIZE_ADDRESS__
+static const char *__asan_default_options();
+
+static const char *__asan_default_options()
+{
+	return "alloc_dealloc_mismatch=1:check_initialization_order=1:continue_on_error=2:strict_string_checks=1";
+}
+#endif
+
 size_t get_filesize(FILE *const restrict fp);
 unsigned short get_threadcount(void);
 size_t get_memusage(void);

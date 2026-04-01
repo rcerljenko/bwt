@@ -232,6 +232,43 @@ jobs:
      working-directory: ${{ runner.temp }}
      run: valgrind -q --error-exitcode=1 --tool=drd --check-stack-var=yes --free-is-write=yes pbwt -v -d -o bwt-file.tar bwt-file.tar.bwt
 
+ msvc-memcheck:
+  if: github.event.pull_request.draft == false
+
+  runs-on: windows-latest
+
+  name: MSVC memcheck
+
+  steps:
+   - name: Pulling project
+     uses: actions/checkout@v6
+
+   - name: Setup CMake
+     id: cmake
+     uses: threeal/cmake-action@v2
+     with:
+      source-dir: src
+      build-args: --config Debug
+      options: CMAKE_BUILD_TYPE=Debug
+
+   - name: Install
+     run: cmake --install ${{ steps.cmake.outputs.build-dir }} --config Debug --prefix ${{ runner.temp }}\pbwt
+
+   - name: Run program
+     working-directory: ${{ runner.temp }}
+     run: ./pbwt/bin/pbwt -h
+
+   - name: Prepare for tests
+     run: tar -c -f ${{ runner.temp }}\bwt.tar .
+
+   - name: Compression test
+     working-directory: ${{ runner.temp }}
+     run: ./pbwt/bin/pbwt -v -p 9 -o bwt-file.tar.bwt bwt.tar
+
+   - name: Decompression test
+     working-directory: ${{ runner.temp }}
+     run: ./pbwt/bin/pbwt -v -d -o bwt-file.tar bwt-file.tar.bwt
+
  windows:
   if: github.event.pull_request.draft == false
 

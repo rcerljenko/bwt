@@ -30,14 +30,15 @@ List of possible options you can pass to the CMake generator command:
 
 | Option | Default | Description |
 | --- | --- | --- |
+| `USE_ASAN` | `OFF` | Pass `ON` to build with ASAN runtime checks |
 | `BWT_NO_MTF` | `OFF` | Pass `ON` to build without MTF pass |
 | `BUILD_BWT_LIBRARY` | `ON` | Pass `OFF` to build a main program only (without library part) |
 | `BUILD_SHARED_LIBS` | `ON` | Pass `OFF` to build a static library instead of a shared library |
 
-So, for example, if you want to build without MTF pass you can simply pass that flag to the CMake generator command:
+So, for example, if you want to build with ASAN runtime checks you can simply pass that flag to the CMake generator command:
 
 ```sh
-cmake -B build -DBWT_NO_MTF=ON
+cmake -B build -DUSE_ASAN=ON
 ```
 
 ### Usage

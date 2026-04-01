@@ -248,7 +248,7 @@ jobs:
      uses: threeal/cmake-action@v2
      with:
       source-dir: src
-      options: CMAKE_BUILD_TYPE=Debug
+      options: CMAKE_BUILD_TYPE=Debug USE_ASAN=ON
 
    - name: Install
      run: sudo cmake --install ${{ steps.cmake.outputs.build-dir }}

@@ -19,6 +19,7 @@ size_t get_filesize(FILE *const restrict fp);
 unsigned short get_threadcount(void);
 size_t get_memusage(void);
 int set_streams_to_binary_mode(void);
+
 #ifdef _WIN32
 short getopt(const unsigned short argc, char **const restrict argv, const char *const restrict args);
 #endif

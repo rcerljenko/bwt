@@ -92,6 +92,7 @@ static unsigned int __stdcall threaded_compress(void *const void_bwt_data);
 static unsigned int __stdcall threaded_decompress(void *const void_bwt_data);
 static int __stdcall sighandler(const unsigned long signum);
 #endif
+
 static int bwt_compress(FILE *const restrict fp_in, FILE *const restrict fp_out, const unsigned short thread_count, const unsigned char block_size);
 static int bwt_decompress(FILE *const restrict fp_in, FILE *const restrict fp_out, const unsigned short thread_count);
 static void create_output_path(char *restrict input, char *const output, const unsigned char dec_flag);

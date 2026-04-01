@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.30)
 project(libbwt C)
 
 option(BUILD_SHARED_LIBS "Build shared library" ON)
+option(USE_ASAN "Use ASAN checks")
 
 if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Release)
@@ -18,6 +19,10 @@ if(CMAKE_C_COMPILER_ID MATCHES "GNU")
 	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Ofast")
 	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g3")
 
+	if(USE_ASAN)
+		set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fsanitize=address,pointer-compare,pointer-subtract,leak,undefined")
+	endif()
+
 	if(NOT APPLE AND CMAKE_BUILD_TYPE STREQUAL "Release")
 		add_link_options(-s)
 	endif()
@@ -27,11 +32,19 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
 
 		set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /O2 /Qvec")
 		set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /Z7")
+
+		if(USE_ASAN)
+			set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /fsanitize=address")
+		endif()
 	else()
 		add_compile_options(-Weverything)
 
 		set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3")
 		set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g3")
+
+		if(USE_ASAN)
+			set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fsanitize=address,leak,undefined")
+		endif()
 	endif()
 elseif(CMAKE_C_COMPILER_ID MATCHES "IntelLLVM")
 	if(MSVC)
@@ -50,9 +63,13 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 
 	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /O2 /Ob3 /Qpar")
 	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /Z7")
+
+	if(USE_ASAN)
+		set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /fsanitize=address")
+	endif()
 endif()
 
-add_library(bwt bwt/bwt.c mtf/mtf.c rle/rle.c)
+add_library(bwt utils.c bwt/bwt.c mtf/mtf.c rle/rle.c)
 
 if(WIN32 AND NOT BUILD_SHARED_LIBS)
 	target_compile_definitions(bwt PUBLIC BWT_STATIC)

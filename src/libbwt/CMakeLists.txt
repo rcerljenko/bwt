@@ -16,7 +16,7 @@ if(CMAKE_C_COMPILER_ID MATCHES "GNU")
 	add_compile_options(-Wall -Wextra -Wpedantic -march=native)
 
 	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Ofast")
-	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g3")
+	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g3 -fsanitize=address,pointer-compare,pointer-subtract,leak")
 
 	if(NOT APPLE AND CMAKE_BUILD_TYPE STREQUAL "Release")
 		add_link_options(-s)
@@ -31,7 +31,7 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
 		add_compile_options(-Weverything)
 
 		set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3")
-		set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g3")
+		set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g3 -fsanitize=address")
 	endif()
 elseif(CMAKE_C_COMPILER_ID MATCHES "IntelLLVM")
 	if(MSVC)

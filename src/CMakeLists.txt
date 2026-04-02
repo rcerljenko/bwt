@@ -10,8 +10,8 @@ project(pbwt
 	VERSION 1.0.0
 	DESCRIPTION "Portable Multithreaded Burrows-Wheeler Transform + Run Length Encoding Compressor/Decompressor"
 	HOMEPAGE_URL "https://github.com/rcerljenko/bwt"
-	LANGUAGES C)
-
+	LANGUAGES C
+)
 
 option(BWT_NO_MTF "Build without MTF pass")
 option(USE_ASAN "Use ASAN checks")

@@ -85,7 +85,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
 	else()
 		message(WARNING "IPO is not supported.")
 	endif()
-elseif(MSVC)
+elseif(USE_ASAN AND MSVC)
 	set_target_properties(bwt PROPERTIES MSVC_RUNTIME_CHECKS "PossibleDataLoss,StackFrameErrorCheck,UninitializedVariable")
 endif()
 

@@ -91,10 +91,6 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 
 	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /O2 /Ob3 /Qpar")
 	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /Z7")
-
-	if(USE_ASAN)
-		set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /fsanitize=address")
-	endif()
 endif()
 
 add_executable(pbwt pbwt.c utils/utils.c)
@@ -115,6 +111,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
 	else()
 		message(WARNING "IPO is not supported.")
 	endif()
+elseif(MSVC)
+	set_target_properties(bwt PROPERTIES MSVC_RUNTIME_CHECKS PossibleDataLoss StackFrameErrorCheck UninitializedVariable)
 endif()
 
 if(UNIX)

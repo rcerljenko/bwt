@@ -231,9 +231,14 @@ jobs:
  asan:
   if: github.event.pull_request.draft == false
 
+  strategy:
+   fail-fast: false
+   matrix:
+    type: [USE_ASAN, USE_TSAN]
+
   runs-on: ubuntu-latest
 
-  name: ASAN checks
+  name: ${{ matrix.type }} checks
 
   steps:
    - name: Pulling project
@@ -244,42 +249,7 @@ jobs:
      uses: threeal/cmake-action@v2
      with:
       source-dir: src
-      options: CMAKE_BUILD_TYPE=Debug USE_ASAN=ON
-
-   - name: Install
-     run: sudo cmake --install ${{ steps.cmake.outputs.build-dir }}
-
-   - name: Run program
-     run: pbwt -h
-
-   - name: Prepare for tests
-     run: tar -c -f ${{ runner.temp }}/bwt.tar .
-
-   - name: Compression test
-     working-directory: ${{ runner.temp }}
-     run: pbwt -v -p 9 -o bwt-file.tar.bwt bwt.tar
-
-   - name: Decompression test
-     working-directory: ${{ runner.temp }}
-     run: pbwt -v -d -o bwt-file.tar bwt-file.tar.bwt
-
- tsan:
-  if: github.event.pull_request.draft == false
-
-  runs-on: ubuntu-latest
-
-  name: TSAN checks
-
-  steps:
-   - name: Pulling project
-     uses: actions/checkout@v6
-
-   - name: Setup CMake
-     id: cmake
-     uses: threeal/cmake-action@v2
-     with:
-      source-dir: src
-      options: CMAKE_BUILD_TYPE=Debug USE_TSAN=ON
+      options: CMAKE_BUILD_TYPE=Debug ${{ matrix.type }}=ON
 
    - name: Install
      run: sudo cmake --install ${{ steps.cmake.outputs.build-dir }}

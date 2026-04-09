@@ -312,7 +312,7 @@ jobs:
       options: ${{ matrix.linker && format('CMAKE_LINKER_TYPE={0}', matrix.linker) || '' }} ${{ matrix.static && 'BUILD_SHARED_LIBS=OFF' || '' }} ${{ matrix.build_type == 'Debug' && 'USE_ASAN=ON' || '' }}
 
    - name: Install
-     run: cmake --install ${{ steps.cmake.outputs.build-dir }} --config ${{ matrix.build_type || 'Release' }} --strip --prefix ${{ runner.temp }}\pbwt
+     run: cmake --install ${{ steps.cmake.outputs.build-dir }} --config ${{ matrix.build_type || 'Release' }} ${{ matrix.build_type == 'Debug' && '' || '--strip' }} --prefix ${{ runner.temp }}\pbwt
 
    - name: Run program
      working-directory: ${{ runner.temp }}

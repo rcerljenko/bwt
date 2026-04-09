@@ -96,7 +96,10 @@ jobs:
      if: ${{ matrix.generator == 'Xcode' }}
      uses: maxim-lobanov/setup-xcode@v1
 
-   - name: Setup CMake
+   - name: Setup latest CMake
+     uses: lukka/get-cmake@latest
+
+   - name: Run CMake
      id: cmake
      uses: threeal/cmake-action@v2
      with:
@@ -191,7 +194,10 @@ jobs:
    - name: Pulling project
      uses: actions/checkout@v6
 
-   - name: Setup CMake
+   - name: Setup latest CMake
+     uses: lukka/get-cmake@latest
+
+   - name: Run CMake
      id: cmake
      uses: threeal/cmake-action@v2
      with:
@@ -239,7 +245,10 @@ jobs:
    - name: Pulling project
      uses: actions/checkout@v6
 
-   - name: Setup CMake
+   - name: Setup latest CMake
+     uses: lukka/get-cmake@latest
+
+   - name: Run CMake
      id: cmake
      uses: threeal/cmake-action@v2
      with:
@@ -300,7 +309,10 @@ jobs:
    - name: Pulling project
      uses: actions/checkout@v6
 
-   - name: Setup CMake
+   - name: Setup latest CMake
+     uses: lukka/get-cmake@latest
+
+   - name: Run CMake
      id: cmake
      uses: threeal/cmake-action@v2
      with:

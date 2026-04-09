@@ -34,10 +34,6 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
 
 		set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /O2 /Qvec")
 		set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /Z7")
-
-		if(USE_ASAN)
-			set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /fsanitize=address")
-		endif()
 	else()
 		add_compile_options(-Weverything)
 
@@ -45,7 +41,7 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
 		set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g3")
 
 		if(USE_ASAN)
-			set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fsanitize=address,leak,undefined")
+			set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fsanitize=address,memory,leak,undefined")
 		endif()
 	endif()
 elseif(CMAKE_C_COMPILER_ID MATCHES "IntelLLVM")

@@ -30,7 +30,8 @@ List of possible options you can pass to the CMake generator command:
 
 | Option | Default | Description |
 | --- | --- | --- |
-| `USE_ASAN` | `OFF` | Pass `ON` to build with ASAN runtime checks |
+| `USE_ASAN` | `OFF` | Pass `ON` to build with ASAN (Address sanitizer) runtime checks (can't be combined with `USE_TSAN`) |
+| `USE_TSAN` | `OFF` | Pass `ON` to build with TSAN (Thread sanitizer) runtime checks (can't be combined with `USE_ASAN`) |
 | `BWT_NO_MTF` | `OFF` | Pass `ON` to build without MTF pass |
 | `BUILD_BWT_LIBRARY` | `ON` | Pass `OFF` to build a main program only (without library part) |
 | `BUILD_SHARED_LIBS` | `ON` | Pass `OFF` to build a static library instead of a shared library |

@@ -25,10 +25,10 @@ jobs:
     include:
      - os: ubuntu-latest
        compiler: icx
-       static: true
        cpack: true
      - os: ubuntu-latest
        compiler: musl-gcc
+       static: true
      - os: macos-latest
        generator: Xcode
      - os: macos-latest

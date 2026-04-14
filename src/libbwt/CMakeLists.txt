@@ -43,6 +43,10 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
 		if(USE_ASAN)
 			set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fsanitize=address,memory,leak,undefined")
 		endif()
+
+		if(NOT APPLE AND CMAKE_BUILD_TYPE STREQUAL "Release")
+			add_link_options(-s)
+		endif()
 	endif()
 elseif(CMAKE_C_COMPILER_ID MATCHES "IntelLLVM")
 	if(MSVC)
@@ -55,6 +59,10 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "IntelLLVM")
 
 		set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -vec")
 		set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g3")
+
+		if(NOT APPLE AND CMAKE_BUILD_TYPE STREQUAL "Release")
+			add_link_options(-s)
+		endif()
 	endif()
 elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	add_compile_options(/Wall /sdl /permissive- /Gd)
@@ -62,6 +70,10 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /O2 /Ob3 /Qpar")
 	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /Z7")
 endif()
+
+#if(CMAKE_LINKER_TYPE MATCHES "MOLD")
+#	add_link_options(--zero-to-bss)
+#endif()
 
 add_library(bwt utils.c bwt/bwt.c mtf/mtf.c rle/rle.c)
 

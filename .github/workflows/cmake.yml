@@ -28,7 +28,6 @@ jobs:
        cpack: true
      - os: ubuntu-latest
        compiler: musl-gcc
-       linker: MOLD
        static: true
      - os: macos-latest
        generator: Xcode
@@ -38,6 +37,9 @@ jobs:
      - os: ubuntu-latest
        compiler: gcc
        linker: LLD
+     - os: ubuntu-latest
+       compiler: gcc
+       linker: MOLD
      - os: ubuntu-latest
        compiler: clang
        linker: LLD

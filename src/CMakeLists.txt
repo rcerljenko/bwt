@@ -99,7 +99,7 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /Z7")
 endif()
 
-if(CMAKE_LINKER_TYPE STREQUAL "MOLD")
+if(CMAKE_LINKER_TYPE MATCHES "MOLD")
 	add_link_options(--zero-to-bss)
 endif()
 

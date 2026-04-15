@@ -9,8 +9,15 @@ if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Release)
 endif()
 
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+	set(IS_RELEASE_BUILD TRUE)
+else()
+	set(IS_RELEASE_BUILD FALSE)
+endif()
+
 set(CMAKE_BUILD_PARALLEL_LEVEL "")
 set(INSTALL_PARALLEL ON)
+set(CMAKE_LINK_WHAT_YOU_USE TRUE)
 set(CMAKE_LINK_WARNING_AS_ERROR TRUE)
 set(CMAKE_VERIFY_PRIVATE_HEADER_SETS ON)
 set(CMAKE_C_STANDARD 23)
@@ -23,10 +30,6 @@ if(CMAKE_C_COMPILER_ID MATCHES "GNU")
 
 	if(USE_ASAN)
 		set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fsanitize=address,pointer-compare,pointer-subtract,leak,undefined")
-	endif()
-
-	if(NOT APPLE AND CMAKE_BUILD_TYPE STREQUAL "Release")
-		add_link_options(-s)
 	endif()
 elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
 	if(MSVC)
@@ -43,10 +46,6 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
 		if(USE_ASAN)
 			set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fsanitize=address,memory,leak,undefined")
 		endif()
-
-		if(NOT APPLE AND CMAKE_BUILD_TYPE STREQUAL "Release")
-			add_link_options(-s)
-		endif()
 	endif()
 elseif(CMAKE_C_COMPILER_ID MATCHES "IntelLLVM")
 	if(MSVC)
@@ -59,10 +58,6 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "IntelLLVM")
 
 		set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -vec")
 		set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g3")
-
-		if(NOT APPLE AND CMAKE_BUILD_TYPE STREQUAL "Release")
-			add_link_options(-s)
-		endif()
 	endif()
 elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	add_compile_options(/Wall /sdl /permissive- /Gd)
@@ -71,11 +66,11 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /Z7")
 endif()
 
-#if(CMAKE_LINKER_TYPE MATCHES "MOLD")
-#	add_link_options(--zero-to-bss)
-#endif()
-
 add_library(bwt utils.c bwt/bwt.c mtf/mtf.c rle/rle.c)
+
+#if(CMAKE_LINKER_TYPE MATCHES "MOLD")
+#	target_link_options(bwt PRIVATE "LINKER:--zero-to-bss")
+#endif()
 
 if(WIN32 AND NOT BUILD_SHARED_LIBS)
 	target_compile_definitions(bwt PUBLIC BWT_STATIC)
@@ -83,7 +78,7 @@ endif()
 
 target_sources(bwt PUBLIC FILE_SET libbwt_headers TYPE HEADERS FILES libbwt.h include/main.h bwt/bwt.h mtf/mtf.h rle/rle.h)
 
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
+if(IS_RELEASE_BUILD)
 	include(CheckIPOSupported)
 
 	check_ipo_supported(RESULT IPO_SUPPORTED)
@@ -93,8 +88,18 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
 	else()
 		message(WARNING "IPO is not supported.")
 	endif()
+
+	if(NOT MSVC AND NOT APPLE)
+		include(CheckLinkerFlag)
+
+		check_linker_flag(C "LINKER:-s" LINKER_HAS_STRIP_FEATURE)
+
+		if(LINKER_HAS_STRIP_FEATURE)
+			target_link_options(bwt PRIVATE "LINKER:-s")
+		endif()
+	endif()
 elseif(USE_ASAN AND MSVC)
-	set_target_properties(bwt PROPERTIES MSVC_RUNTIME_CHECKS "PossibleDataLoss,StackFrameErrorCheck,UninitializedVariable")
+	set_target_properties(bwt PROPERTIES MSVC_RUNTIME_CHECKS "PossibleDataLoss;StackFrameErrorCheck;UninitializedVariable")
 endif()
 
 include(GNUInstallDirs)

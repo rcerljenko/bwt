@@ -89,7 +89,7 @@ if(IS_RELEASE_BUILD)
 		message(WARNING "IPO is not supported.")
 	endif()
 
-	if(NOT MSVC)
+	if(NOT MSVC AND NOT APPLE)
 		include(CheckLinkerFlag)
 
 		check_linker_flag(C "LINKER:-s" LINKER_HAS_STRIP_FEATURE)

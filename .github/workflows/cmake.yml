@@ -34,6 +34,9 @@ jobs:
      - os: macos-latest
        compiler: gcc
        compilerAlias: gcc-15
+     - os: macos-latest
+       compiler: clang
+       linker: LLD
      - os: ubuntu-latest
        compiler: gcc
        linker: LLD
@@ -89,6 +92,10 @@ jobs:
      run: |
       sudo apt-get update -q
       sudo apt-get install -y -q lld
+
+   - name: Install LLD linker
+     if: ${{ matrix.linker == 'LLD' && runner.os == 'macOS' }}
+     run: brew install lld
 
    - name: Install mold linker
      if: ${{ matrix.linker == 'MOLD' }}

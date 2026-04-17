@@ -318,6 +318,10 @@ jobs:
    - name: Pulling project
      uses: actions/checkout@v6
 
+   - name: Install latest Mingw-w64
+     if: ${{ matrix.compiler == 'gcc' }}
+     uses: egor-tensin/setup-mingw@v3
+
    - name: Setup latest CMake
      uses: lukka/get-cmake@latest
 

@@ -9,6 +9,7 @@ concurrency:
  cancel-in-progress: true
 
 env:
+ GCC_VERSION: 16
  CLANG_VERSION: 22
 
 jobs:
@@ -77,6 +78,12 @@ jobs:
      run: |
       sudo apt-get update -q
       sudo apt-get install -y -q musl-tools
+
+   - name: Install latest GCC compiler
+     if: ${{ matrix.compiler == 'gcc' && runner.os == 'Linux' }}
+     uses: egor-tensin/setup-gcc@v2
+     with:
+      version: ${{ env.GCC_VERSION }}
 
    - name: Install latest Clang compiler
      if: ${{ matrix.compiler == 'clang' && runner.os == 'Linux' }}

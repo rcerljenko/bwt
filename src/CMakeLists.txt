@@ -96,9 +96,9 @@ endif()
 
 add_executable(pbwt pbwt.c utils/utils.c)
 
-#if(CMAKE_LINKER_TYPE MATCHES "MOLD")
-#	target_link_options(pbwt PRIVATE "LINKER:--zero-to-bss")
-#endif()
+if(CMAKE_LINKER_TYPE MATCHES "MOLD")
+	target_link_options(pbwt PRIVATE "LINKER:--zero-to-bss")
+endif()
 
 if(BWT_NO_MTF)
 	target_compile_definitions(pbwt PUBLIC BWT_NO_MTF)

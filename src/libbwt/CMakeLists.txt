@@ -68,9 +68,9 @@ endif()
 
 add_library(bwt utils.c bwt/bwt.c mtf/mtf.c rle/rle.c)
 
-#if(CMAKE_LINKER_TYPE MATCHES "MOLD")
-#	target_link_options(bwt PRIVATE "LINKER:--zero-to-bss")
-#endif()
+if(CMAKE_LINKER_TYPE MATCHES "MOLD")
+	target_link_options(bwt PRIVATE "LINKER:--zero-to-bss")
+endif()
 
 if(WIN32 AND NOT BUILD_SHARED_LIBS)
 	target_compile_definitions(bwt PUBLIC BWT_STATIC)

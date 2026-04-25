@@ -1,6 +1,8 @@
 #ifndef BWT_MAIN_H
 #define BWT_MAIN_H
 
+#include "../memory/memory.h"
+
 #ifdef _WIN32
 	#define CALL_CONV __cdecl
 

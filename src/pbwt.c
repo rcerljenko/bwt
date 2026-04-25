@@ -65,6 +65,7 @@ struct bwt_data_t {
 		unsigned char *data, status : 1;
 		struct header_t header;
 		struct features_t features;
+		arena_t arena;
 };
 
 struct flags_t {
@@ -108,13 +109,13 @@ static unsigned int __stdcall threaded_compress(void *const void_bwt_data)
 	struct bwt_data_t *const restrict bwt_data = void_bwt_data;
 	const bwt_size_t tmp_block_size = bwt_data->header.block_size;
 
-	bwt_data->header.index = bwt(bwt_data->data, bwt_data->header.block_size);
+	bwt_data->header.index = bwt(bwt_data->data, bwt_data->header.block_size, &bwt_data->arena);
 
 	if (bwt_data->features.mtf) {
 		mtf(bwt_data->data, bwt_data->header.block_size);
 	}
 
-	bwt_data->header.block_size = rle(bwt_data->data, bwt_data->header.block_size);
+	bwt_data->header.block_size = rle(bwt_data->data, bwt_data->header.block_size, &bwt_data->arena);
 
 	if (bwt_data->header.block_size) {
 		bwt_data->status = 1;
@@ -135,14 +136,14 @@ static unsigned int __stdcall threaded_decompress(void *const void_bwt_data)
 	struct bwt_data_t *const restrict bwt_data = void_bwt_data;
 
 	if (bwt_data->status) {
-		bwt_data->header.block_size = rld(bwt_data->data, bwt_data->header.block_size);
+		bwt_data->header.block_size = rld(bwt_data->data, bwt_data->header.block_size, &bwt_data->arena);
 	}
 
 	if (bwt_data->features.mtf) {
 		mtfi(bwt_data->data, bwt_data->header.block_size);
 	}
 
-	bwti(bwt_data->data, bwt_data->header.block_size, bwt_data->header.index);
+	bwti(bwt_data->data, bwt_data->header.block_size, bwt_data->header.index, &bwt_data->arena);
 
 	return THREAD_RETURN;
 }
@@ -204,6 +205,10 @@ static int bwt_compress(FILE *const restrict fp_in, FILE *const restrict fp_out,
 	size_t i, n;
 	unsigned short j;
 	bwt_size_t tmp_block_size;
+
+	for (j = 0; j < thread_count; j++) {
+		bwt_data[j].arena = bwt_arena_create(main_block_size, BWT_MODE_COMPRESS);
+	}
 
 	while ((n = fread(data, 1, fread_size, fp_in))) {
 		stats.curr_fs_in += n;
@@ -269,6 +274,10 @@ static int bwt_compress(FILE *const restrict fp_in, FILE *const restrict fp_out,
 		status = 0;
 	}
 
+	for (j = 0; j < thread_count; j++) {
+		bwt_arena_destroy(&bwt_data[j].arena);
+	}
+
 	free(threads);
 	free(bwt_data);
 	free(data);
@@ -322,7 +331,11 @@ static int bwt_decompress(FILE *const restrict fp_in, FILE *const restrict fp_ou
 	}
 
 	size_t n;
-	unsigned short i = 0;
+	unsigned short j, i = 0;
+
+	for (j = 0; j < thread_count; j++) {
+		bwt_data[j].arena = bwt_arena_create(main_block_size, BWT_MODE_DECOMPRESS);
+	}
 
 	while (fread(&bwt_data[i].header, sizeof(struct header_t), 1, fp_in) == 1) {
 		bwt_data[i].data = data + main_block_size * i;
@@ -395,8 +408,6 @@ static int bwt_decompress(FILE *const restrict fp_in, FILE *const restrict fp_ou
 		perror(filename);
 		status = 0;
 	} else if (status && i) {
-		unsigned short j;
-
 		for (j = n = 0; j < i; j++) {
 #ifndef _WIN32
 			pthread_join(threads[j], NULL);
@@ -415,6 +426,10 @@ static int bwt_decompress(FILE *const restrict fp_in, FILE *const restrict fp_ou
 			perror(filename);
 			status = 0;
 		}
+	}
+
+	for (j = 0; j < thread_count; j++) {
+		bwt_arena_destroy(&bwt_data[j].arena);
 	}
 
 	free(threads);

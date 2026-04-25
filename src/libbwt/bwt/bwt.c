@@ -38,20 +38,20 @@ static inline int bwti_cmp(const void *const a, const void *const b)
 	return *(unsigned char *) a - *(unsigned char *) b;
 }
 
-DLL_EXPIMP bwt_size_t CALL_CONV bwt(void *const void_data, const bwt_size_t n)
+DLL_EXPIMP bwt_size_t CALL_CONV bwt(void *const void_data, const bwt_size_t n, const arena_t *const restrict arena)
 {
 	if (!void_data || n < 2) {
 		return 0;
 	}
 
 	struct bwt_info_t data_info;
-	data_info.rotations = malloc(n * 2 - 1);
+	data_info.rotations = arena_allocate(arena, n * 2 - 1);
 
 	if (!data_info.rotations) {
 		return 0;
 	}
 
-	bwt_size_t *restrict positions = malloc(sizeof(bwt_size_t) * n);
+	bwt_size_t *restrict positions = arena_allocate(arena, sizeof(bwt_size_t) * n);
 
 	if (!positions) {
 		free(data_info.rotations);
@@ -85,25 +85,24 @@ DLL_EXPIMP bwt_size_t CALL_CONV bwt(void *const void_data, const bwt_size_t n)
 		}
 	}
 
-	free(positions - n);
-	free(data_info.rotations);
+	arena_free(arena, sizeof(bwt_size_t) * n + n * 2 - 1);
 
 	return index;
 }
 
-DLL_EXPIMP void CALL_CONV bwti(void *const void_data, const bwt_size_t n, bwt_size_t index)
+DLL_EXPIMP void CALL_CONV bwti(void *const void_data, const bwt_size_t n, bwt_size_t index, const arena_t *const restrict arena)
 {
 	if (!void_data || n < 2 || index >= n) {
 		return;
 	}
 
-	unsigned char *const restrict tmp_data = malloc(n);
+	unsigned char *const restrict tmp_data = arena_allocate(arena, n);
 
 	if (!tmp_data) {
 		return;
 	}
 
-	bwt_size_t *restrict transform = malloc(sizeof(bwt_size_t) * n);
+	bwt_size_t *restrict transform = arena_allocate(arena, sizeof(bwt_size_t) * n);
 
 	if (!transform) {
 		free(tmp_data);
@@ -137,6 +136,5 @@ DLL_EXPIMP void CALL_CONV bwti(void *const void_data, const bwt_size_t n, bwt_si
 		*data++ = tmp_data[index];
 	}
 
-	free(transform);
-	free(tmp_data);
+	arena_free(arena, sizeof(bwt_size_t) * n + n);
 }

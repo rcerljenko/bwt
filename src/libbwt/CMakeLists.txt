@@ -66,7 +66,7 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /Z7")
 endif()
 
-add_library(bwt utils.c bwt/bwt.c mtf/mtf.c rle/rle.c)
+add_library(bwt utils/utils.c memory/memory.c bwt/bwt.c mtf/mtf.c rle/rle.c)
 
 if(CMAKE_LINKER_TYPE MATCHES "MOLD")
 	target_link_options(bwt PRIVATE "LINKER:--zero-to-bss")
@@ -76,7 +76,7 @@ if(WIN32 AND NOT BUILD_SHARED_LIBS)
 	target_compile_definitions(bwt PUBLIC BWT_STATIC)
 endif()
 
-target_sources(bwt PUBLIC FILE_SET libbwt_headers TYPE HEADERS FILES libbwt.h include/main.h bwt/bwt.h mtf/mtf.h rle/rle.h)
+target_sources(bwt PUBLIC FILE_SET libbwt_headers TYPE HEADERS FILES libbwt.h include/main.h memory/memory.h utils/utils.h bwt/bwt.h mtf/mtf.h rle/rle.h)
 
 if(IS_RELEASE_BUILD)
 	include(CheckIPOSupported)

@@ -1,17 +1,16 @@
-#include <stdlib.h>
 #include <string.h>
 #include <limits.h>
 
 #include "../include/internal.h"
 #include "rle.h"
 
-DLL_EXPIMP bwt_size_t CALL_CONV rle(void *const void_data, const bwt_size_t n)
+DLL_EXPIMP bwt_size_t CALL_CONV rle(void *const void_data, const bwt_size_t n, const arena_t *const restrict arena)
 {
 	if (!void_data || n < 4) {
 		return 0;
 	}
 
-	unsigned char *restrict result = malloc(n);
+	unsigned char *restrict result = arena_allocate(arena, n);
 
 	if (!result) {
 		return 0;
@@ -39,26 +38,24 @@ DLL_EXPIMP bwt_size_t CALL_CONV rle(void *const void_data, const bwt_size_t n)
 		}
 	}
 
-	result -= len;
-
 	if (len < n) {
-		memcpy(data - n, result, len);
+		memcpy(data - n, result - len, len);
 	} else {
 		len = 0;
 	}
 
-	free(result);
+	arena_free(arena, n);
 
 	return len;
 }
 
-DLL_EXPIMP bwt_size_t CALL_CONV rld(void *const void_data, const bwt_size_t n)
+DLL_EXPIMP bwt_size_t CALL_CONV rld(void *const void_data, const bwt_size_t n, const arena_t *const restrict arena)
 {
 	if (!void_data || n < 3) {
 		return 0;
 	}
 
-	unsigned char *restrict tmp_data = malloc(n);
+	unsigned char *restrict tmp_data = arena_allocate(arena, n);
 
 	if (!tmp_data) {
 		return 0;
@@ -85,7 +82,7 @@ DLL_EXPIMP bwt_size_t CALL_CONV rld(void *const void_data, const bwt_size_t n)
 		}
 	}
 
-	free(tmp_data - n);
+	arena_free(arena, n);
 
 	return data - start;
 }

@@ -24,7 +24,7 @@ void *arena_allocate(arena_t *const restrict arena, const size_t size)
 		return NULL;
 	}
 
-	const void *const current = arena->current;
+	void *current = arena->current;
 
 	arena->current += size;
 

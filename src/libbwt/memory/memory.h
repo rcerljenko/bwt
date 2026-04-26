@@ -8,8 +8,8 @@ extern "C" {
 #endif
 
 typedef struct {
-		const char *start;
-		const char *current;
+		char *start;
+		char *current;
 		size_t size;
 } arena_t;
 

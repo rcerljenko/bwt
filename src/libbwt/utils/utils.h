@@ -10,7 +10,7 @@
 extern "C" {
 #endif
 
-DLL_EXPIMP arena_t CALL_CONV bwt_arena_create(const size_t size, const char bwt_mode);
+DLL_EXPIMP arena_t CALL_CONV bwt_arena_create(const size_t size, const unsigned char bwt_mode);
 DLL_EXPIMP void CALL_CONV bwt_arena_destroy(arena_t *const restrict arena);
 
 #ifdef __cplusplus

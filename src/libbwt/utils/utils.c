@@ -22,7 +22,7 @@ const char *__asan_default_options(void)
 
 #endif
 
-DLL_EXPIMP arena_t CALL_CONV bwt_arena_create(const size_t size, const char bwt_mode)
+DLL_EXPIMP arena_t CALL_CONV bwt_arena_create(const size_t size, const unsigned char bwt_mode)
 {
 	const size_t n = bwt_mode == BWT_MODE_COMPRESS ? size * 2 - 1 : size;
 

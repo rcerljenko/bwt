@@ -323,7 +323,7 @@ jobs:
       c-compiler: ${{ matrix.compiler }}
       args: ${{ matrix.arch && format('-A {0}', matrix.arch) || '' }} ${{ matrix.toolset && format('-T {0}', matrix.toolset) || '' }}
       build-args: --config ${{ matrix.build_type || 'Release' }}
-      options: ${{ matrix.linker && format('CMAKE_LINKER_TYPE={0}', matrix.linker) || '' }} ${{ matrix.static && 'BUILD_SHARED_LIBS=OFF' || '' }} ${{ matrix.build_type == 'Debug' && 'USE_ASAN=ON' || '' }}
+      options: ${{ matrix.linker && format('CMAKE_LINKER_TYPE={0}', matrix.linker) || '' }} ${{ matrix.static && 'BUILD_SHARED_LIBS=OFF' || '' }} ${{ matrix.build_type == 'Debug' && 'CMAKE_BUILD_TYPE=Debug USE_ASAN=ON' || '' }}
 
    - name: Install
      run: cmake --install ${{ steps.cmake.outputs.build-dir }} --config ${{ matrix.build_type || 'Release' }} ${{ matrix.build_type != 'Debug' && '--strip' || '' }} --prefix ${{ runner.temp }}\pbwt

@@ -96,7 +96,7 @@ static int __stdcall sighandler(const unsigned long signum);
 static int bwt_compress(FILE *const restrict fp_in, FILE *const restrict fp_out, const unsigned short thread_count, const unsigned char block_size);
 static int bwt_decompress(FILE *const restrict fp_in, FILE *const restrict fp_out, const unsigned short thread_count);
 static void create_output_path(char *restrict input, char *const output, const unsigned char dec_flag);
-static void show_statistics(const unsigned short is_signal);
+static void show_statistics(const unsigned char is_signal);
 static void show_help(void);
 
 #ifndef _WIN32
@@ -482,7 +482,7 @@ static int __stdcall sighandler(const unsigned long signum)
 }
 #endif
 
-static void show_statistics(const unsigned short is_signal)
+static void show_statistics(const unsigned char is_signal)
 {
 	char time_buffer[] = "00m:00s";
 	size_t diff_fs = 0;

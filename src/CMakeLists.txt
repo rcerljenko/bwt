@@ -88,10 +88,10 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "IntelLLVM")
 		set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g3")
 	endif()
 elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
-	add_compile_options(/Wall /permissive- /Gd)
+	add_compile_options(/Wall /permissive- /MP /jumptablerdata)
 
 	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /O2 /Ob3 /Qpar")
-	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /Z7")
+	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /Zi /Zf")
 endif()
 
 add_executable(pbwt pbwt.c utils/utils.c)

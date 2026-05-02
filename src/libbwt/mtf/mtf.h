@@ -7,8 +7,8 @@
 extern "C" {
 #endif
 
-DLL_EXPIMP void CALL_CONV mtf(void *const void_data, bwt_size_t n);
-DLL_EXPIMP void CALL_CONV mtfi(void *const void_data, bwt_size_t n);
+DLL_EXPIMP void mtf(void *const void_data, bwt_size_t n);
+DLL_EXPIMP void mtfi(void *const void_data, bwt_size_t n);
 
 #ifdef __cplusplus
 }

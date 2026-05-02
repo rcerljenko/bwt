@@ -38,7 +38,7 @@ static inline int bwti_cmp(const void *const a, const void *const b)
 	return *(unsigned char *) a - *(unsigned char *) b;
 }
 
-DLL_EXPIMP bwt_size_t CALL_CONV bwt(void *const void_data, const bwt_size_t n)
+DLL_EXPIMP bwt_size_t bwt(void *const void_data, const bwt_size_t n)
 {
 	if (!void_data || n < 2) {
 		return 0;
@@ -91,7 +91,7 @@ DLL_EXPIMP bwt_size_t CALL_CONV bwt(void *const void_data, const bwt_size_t n)
 	return index;
 }
 
-DLL_EXPIMP void CALL_CONV bwti(void *const void_data, const bwt_size_t n, bwt_size_t index)
+DLL_EXPIMP void bwti(void *const void_data, const bwt_size_t n, bwt_size_t index)
 {
 	if (!void_data || n < 2 || index >= n) {
 		return;

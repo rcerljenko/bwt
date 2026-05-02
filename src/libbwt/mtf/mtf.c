@@ -4,7 +4,7 @@
 #include "../include/internal.h"
 #include "mtf.h"
 
-DLL_EXPIMP void CALL_CONV mtf(void *const void_data, bwt_size_t n)
+DLL_EXPIMP void mtf(void *const void_data, bwt_size_t n)
 {
 	if (!void_data || n < 2) {
 		return;
@@ -29,7 +29,7 @@ DLL_EXPIMP void CALL_CONV mtf(void *const void_data, bwt_size_t n)
 	}
 }
 
-DLL_EXPIMP void CALL_CONV mtfi(void *const void_data, bwt_size_t n)
+DLL_EXPIMP void mtfi(void *const void_data, bwt_size_t n)
 {
 	if (!void_data || n < 2) {
 		return;

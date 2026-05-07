@@ -1,0 +1,4 @@
+---
+Checks: '-*,bugprone-*,clang-analyzer-*,concurrency-*,misc-*,-misc-include-cleaner,-misc-use-internal-linkage,modernize-*,-modernize-macro-to-enum,performance-*,portability-*'
+FormatStyle: file
+...

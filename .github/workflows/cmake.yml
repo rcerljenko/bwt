@@ -50,7 +50,7 @@ jobs:
 
   steps:
    - name: Pulling project
-     uses: actions/checkout@v6
+     uses: actions/checkout@v7
 
    - name: Add Intel APT repository
      if: ${{ matrix.compiler == 'icx' }}
@@ -194,7 +194,7 @@ jobs:
 
   steps:
    - name: Pulling project
-     uses: actions/checkout@v6
+     uses: actions/checkout@v7
 
    - name: Setup latest CMake
      uses: lukka/get-cmake@latest
@@ -245,7 +245,7 @@ jobs:
 
   steps:
    - name: Pulling project
-     uses: actions/checkout@v6
+     uses: actions/checkout@v7
 
    - name: Setup latest CMake
      uses: lukka/get-cmake@latest
@@ -309,7 +309,7 @@ jobs:
 
   steps:
    - name: Pulling project
-     uses: actions/checkout@v6
+     uses: actions/checkout@v7
 
    - name: Setup latest CMake
      uses: lukka/get-cmake@latest

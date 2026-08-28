@@ -9,7 +9,7 @@ concurrency:
  cancel-in-progress: true
 
 env:
- CLANG_VERSION: 22
+ CLANG_VERSION: 23
 
 jobs:
  unix:

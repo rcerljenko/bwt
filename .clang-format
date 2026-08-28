@@ -32,8 +32,6 @@ AllowShortIfStatementsOnASingleLine: Never
 AllowShortLambdasOnASingleLine: Empty
 AllowShortLoopsOnASingleLine: true
 AlwaysBreakBeforeMultilineStrings: false
-BinPackArguments: false
-BinPackParameters: false
 BitFieldColonSpacing: Both
 BraceWrapping:
   AfterCaseLabel: false
@@ -153,3 +151,10 @@ NumericLiteralCase:
   HexDigit: Lower
   Prefix: Lower
   Suffix: Upper
+AllowShortRecordOnASingleLine: Empty
+BreakFunctionDeclarationParameters: false
+BreakBeforeReturnType: None
+PackArguments:
+  BinPack: OnePerLine
+PackParameters:
+  BinPack: OnePerLine

@@ -41,6 +41,9 @@ jobs:
        compiler: gcc
        linker: MOLD
      - os: ubuntu-latest
+       compiler: gcc
+       linker: WILD
+     - os: ubuntu-latest
        compiler: clang
        linker: LLD
 
@@ -93,6 +96,10 @@ jobs:
    - name: Install mold linker
      if: ${{ matrix.linker == 'MOLD' }}
      uses: rui314/setup-mold@v1
+
+   - name: Install Wild linker
+     if: ${{ matrix.linker == 'WILD' }}
+     uses: wild-linker/action@latest
 
    - name: Setup latest Xcode version
      if: ${{ matrix.generator == 'Xcode' }}

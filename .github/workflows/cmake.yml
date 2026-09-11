@@ -41,7 +41,7 @@ jobs:
        compiler: gcc
        linker: MOLD
      - os: ubuntu-latest
-       compiler: gcc
+       compiler: clang
        linker: WILD
      - os: ubuntu-latest
        compiler: clang

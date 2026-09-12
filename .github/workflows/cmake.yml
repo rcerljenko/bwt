@@ -42,6 +42,9 @@ jobs:
        linker: MOLD
      - os: ubuntu-latest
        compiler: clang
+       linker: WILD
+     - os: ubuntu-latest
+       compiler: clang
        linker: LLD
 
   runs-on: ${{ matrix.os }}
@@ -93,6 +96,14 @@ jobs:
    - name: Install mold linker
      if: ${{ matrix.linker == 'MOLD' }}
      uses: rui314/setup-mold@v1
+
+   - name: Install Wild linker
+     if: ${{ matrix.linker == 'WILD' }}
+     uses: wild-linker/action@latest
+
+   - name: Add Wild linker to path
+     if: ${{ matrix.linker == 'WILD' }}
+     run: echo "${{ runner.temp }}/wild-install" >> $GITHUB_PATH
 
    - name: Setup latest Xcode version
      if: ${{ matrix.generator == 'Xcode' }}

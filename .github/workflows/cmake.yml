@@ -101,6 +101,10 @@ jobs:
      if: ${{ matrix.linker == 'WILD' }}
      uses: wild-linker/action@latest
 
+   - name: Add Wild linker to path
+     if: ${{ matrix.linker == 'WILD' }}
+     run: sudo ln -s -f -v ${{ runner.temp }}/wild-install/wild /usr/bin/ld
+
    - name: Setup latest Xcode version
      if: ${{ matrix.generator == 'Xcode' }}
      uses: maxim-lobanov/setup-xcode@v1

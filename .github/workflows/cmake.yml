@@ -103,7 +103,7 @@ jobs:
 
    - name: Add Wild linker to path
      if: ${{ matrix.linker == 'WILD' }}
-     run: echo "$RUNNER_TEMP/wild-install/wild" >> $GITHUB_PATH
+     run: echo "${{ runner.temp }}/wild-install" >> $GITHUB_PATH
 
    - name: Test wild
      if: ${{ matrix.linker == 'WILD' }}

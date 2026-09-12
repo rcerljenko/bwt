@@ -105,10 +105,6 @@ jobs:
      if: ${{ matrix.linker == 'WILD' }}
      run: echo "${{ runner.temp }}/wild-install" >> $GITHUB_PATH
 
-   - name: Test wild
-     if: ${{ matrix.linker == 'WILD' }}
-     run: wild
-
    - name: Setup latest Xcode version
      if: ${{ matrix.generator == 'Xcode' }}
      uses: maxim-lobanov/setup-xcode@v1

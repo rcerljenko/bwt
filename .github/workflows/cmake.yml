@@ -103,7 +103,7 @@ jobs:
 
    - name: Add Wild linker to path
      if: ${{ matrix.linker == 'WILD' }}
-     run: sudo ln -s -f -v ${{ runner.temp }}/wild-install/wild /usr/bin/ld
+     run: echo ${{ runner.temp }}/wild-install/wild >> $GITHUB_PATH
 
    - name: Setup latest Xcode version
      if: ${{ matrix.generator == 'Xcode' }}
